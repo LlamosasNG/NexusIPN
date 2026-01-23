@@ -1,0 +1,75 @@
+import {
+  AllowNull,
+  BelongsTo,
+  BelongsToMany,
+  Column,
+  DataType,
+  Default,
+  ForeignKey,
+  Model,
+  Table,
+  Unique,
+} from 'sequelize-typescript'
+import Academy from './Academy'
+import Subject from './Subject'
+import UserSubject from './UserSubject'
+
+@Table({
+  tableName: 'users',
+})
+class User extends Model {
+  @AllowNull(false)
+  @Column({
+    type: DataType.STRING(50),
+  })
+  declare name: string
+
+  @AllowNull(false)
+  @Column({
+    type: DataType.STRING(60),
+  })
+  declare password: string
+
+  @Unique(true)
+  @AllowNull(false)
+  @Column({
+    type: DataType.STRING(50),
+    validate: {
+      isEmail: true,
+    },
+  })
+  declare email: string
+
+  @AllowNull(false)
+  @Default('Docente')
+  @Column({
+    type: DataType.ENUM('Docente', 'Jefe de Departamento', 'Academia'),
+  })
+  declare role: 'Docente' | 'Jefe de Departamento' | 'Academia'
+
+  @Column({
+    type: DataType.STRING(6),
+  })
+  declare token: string
+
+  @Default(false)
+  @Column({
+    type: DataType.BOOLEAN,
+  })
+  declare confirmed: boolean
+
+  @ForeignKey(() => Academy)
+  @AllowNull(true)
+  @Column({
+    type: DataType.INTEGER,
+  })
+  declare academyId: number
+
+  @BelongsTo(() => Academy)
+  declare academy: Academy
+
+  @BelongsToMany(() => Subject, () => UserSubject)
+  declare subjects: Subject[]
+}
+
+export default User
