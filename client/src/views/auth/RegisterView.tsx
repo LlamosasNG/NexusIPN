@@ -1,3 +1,4 @@
+import { createAccount } from '@/api/AuthAPI'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -9,14 +10,18 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import type { RegisterFormValues } from '@/types'
+import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
+import { toast } from 'sonner'
 
 export default function RegisterView() {
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({
     defaultValues: {
@@ -29,9 +34,19 @@ export default function RegisterView() {
 
   const password = watch('password')
 
-  const onSubmit = (formData: RegisterFormValues) => {
-    console.log('Datos de registro enviados:', formData)
-  }
+  const { mutate } = useMutation({
+    mutationFn: createAccount,
+    onSuccess: (data) => {
+      toast.success(data)
+      navigate('/auth/login')
+    },
+    onError: (error) => {
+      toast.error(error.message)
+      reset()
+    },
+  })
+
+  const onSubmit = (formData: RegisterFormValues) => mutate(formData)
 
   return (
     <Card className="w-full max-w-sm mx-auto">
