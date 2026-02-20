@@ -6,11 +6,13 @@ import {
   DataType,
   Default,
   ForeignKey,
+  HasMany,
   Model,
   Table,
   Unique,
 } from 'sequelize-typescript'
 import Academy from './Academy'
+import Planning from './Planning'
 import Subject from './Subject'
 import UserSubject from './UserSubject'
 
@@ -70,6 +72,9 @@ class User extends Model {
 
   @BelongsToMany(() => Subject, () => UserSubject)
   declare subjects: Subject[]
+
+  @HasMany(() => Planning)
+  declare plannings: Planning[]
 }
 
 export default User

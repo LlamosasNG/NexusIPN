@@ -7,7 +7,7 @@ import { body, param } from 'express-validator'
 
 const router: Router = Router()
 
-router.use(limiter)
+//router.use(limiter)
 router.post(
   '/create-account',
   body('name').notEmpty().withMessage('El nombre es obligatorio'),

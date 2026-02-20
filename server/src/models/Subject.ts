@@ -5,6 +5,7 @@ import {
   Column,
   DataType,
   ForeignKey,
+  HasMany,
   Model,
   Table,
   Unique,
@@ -12,6 +13,7 @@ import {
 import Academy from './Academy'
 import User from './User'
 import UserSubject from './UserSubject'
+import Planning from './Planning'
 
 @Table({
   tableName: 'subjects',
@@ -47,6 +49,9 @@ class Subject extends Model {
 
   @BelongsToMany(() => User, () => UserSubject)
   declare users: User[]
+
+  @HasMany(() => Planning)
+  declare plannings: Planning[]
 }
 
 export default Subject

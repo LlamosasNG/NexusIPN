@@ -1,11 +1,12 @@
 import api from '@/lib/axios'
-import type {
-  ConfirmToken,
-  ForgotPasswordForm,
-  LoginFormValues,
-  NewPasswordForm,
-  RegisterFormValues,
-  RequestNewCodeForm,
+import {
+  UserSchema,
+  type ConfirmToken,
+  type ForgotPasswordForm,
+  type LoginFormValues,
+  type NewPasswordForm,
+  type RegisterFormValues,
+  type RequestNewCodeForm,
 } from '@/types'
 import { isAxiosError } from 'axios'
 
@@ -88,6 +89,20 @@ export async function resetPassword({
       formData
     )
     return data
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.error)
+    }
+  }
+}
+
+export async function getUser() {
+  try {
+    const { data } = await api('/auth/user')
+    const response = UserSchema.safeParse(data)
+    if (response.success) {
+      return response.data
+    }
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       throw new Error(error.response.data.error)

@@ -1,5 +1,6 @@
 import { AuthEmail } from '@/emails/AuthEmail'
 import Academy from '@/models/Academy'
+import Subject from '@/models/Subject'
 import User from '@/models/User'
 import { checkPassword, hashPassword } from '@/utils/auth'
 import { generateJWT } from '@/utils/jwt'
@@ -40,27 +41,68 @@ export class AuthController {
   }
 
   static confirmAccount = async (req: Request, res: Response) => {
-    const { token } = req.body
-    const user = await User.findOne({ where: { token } })
-    if (!user) {
-      const error = new Error('Token no encontrado')
-      return res.status(401).json({ error: error.message })
+    try {
+      const { token } = req.body
+      const user = await User.findOne({ where: { token } })
+      if (!user) {
+        const error = new Error('Token no encontrado')
+        return res.status(401).json({ error: error.message })
+      }
+      user.token = null
+      user.confirmed = true
+      await user.save()
+      res.json('Cuenta confirmada exitosamente')
+    } catch (error) {
+      res.status(500).json({ error: 'Hubo un error al confirmar la cuenta' })
     }
-    user.token = null
-    user.confirmed = true
-    await user.save()
-    res.json('Cuenta confirmada exitosamente')
-  } 
+  }
 
   static login = async (req: Request, res: Response) => {
-    const { email, password } = req.body
+    try {
+      const { email, password } = req.body
 
-    const user = await User.findOne({ where: { email } })
-    if (!user) {
-      const error = new Error('Usuario no encontrado')
-      return res.status(404).json({ error: error.message })
+      const user = await User.findOne({ where: { email } })
+      if (!user) {
+        const error = new Error('Usuario no encontrado')
+        return res.status(404).json({ error: error.message })
+      }
+      if (!user.confirmed) {
+        user.token = generateToken()
+        await user.save()
+        await AuthEmail.sendConfirmationEmail({
+          name: user.name,
+          email: user.email,
+          token: user.token,
+        })
+        const error = new Error(
+          'La cuenta no ha sido confirmada, se ha enviado un correo para confirmarla'
+        )
+        return res.status(401).json({ error: error.message })
+      }
+      const isPasswordValid = await checkPassword(password, user.password)
+      if (!isPasswordValid) {
+        const error = new Error('Contraseña incorrecta')
+        return res.status(403).json({ error: error.message })
+      }
+      const token = generateJWT(user.id)
+      res.json(token)
+    } catch (error) {
+      res.status(500).json({ error: 'Hubo un error al iniciar sesión' })
     }
-    if (!user.confirmed) {
+  }
+
+  static requestConfirmationCode = async (req: Request, res: Response) => {
+    try {
+      const { email } = req.body
+      const user = await User.findOne({ where: { email } })
+      if (!user) {
+        const error = new Error('Usuario no encontrado')
+        return res.status(404).json({ error: error.message })
+      }
+      if (user.confirmed) {
+        const error = new Error('La cuenta ya ha sido confirmada')
+        return res.status(401).json({ error: error.message })
+      }
       user.token = generateToken()
       await user.save()
       await AuthEmail.sendConfirmationEmail({
@@ -68,66 +110,50 @@ export class AuthController {
         email: user.email,
         token: user.token,
       })
-      const error = new Error(
-        'La cuenta no ha sido confirmada, se ha enviado un correo para confirmarla'
-      )
-      return res.status(401).json({ error: error.message })
+      res.json('Correo de confirmación de cuenta enviado')
+    } catch (error) {
+      res
+        .status(500)
+        .json({ error: 'Hubo un error al enviar el correo de confirmación' })
     }
-    const isPasswordValid = await checkPassword(password, user.password)
-    if (!isPasswordValid) {
-      const error = new Error('Contraseña incorrecta')
-      return res.status(403).json({ error: error.message })
-    }
-    const token = generateJWT(user.id)
-    res.json(token)
-  }
-
-  static requestConfirmationCode = async (req: Request, res: Response) => {
-    const { email } = req.body
-    const user = await User.findOne({ where: { email } })
-    if (!user) {
-      const error = new Error('Usuario no encontrado')
-      return res.status(404).json({ error: error.message })
-    }
-    if (user.confirmed) {
-      const error = new Error('La cuenta ya ha sido confirmada')
-      return res.status(401).json({ error: error.message })
-    }  
-    user.token = generateToken()
-    await user.save()
-    await AuthEmail.sendConfirmationEmail({
-      name: user.name,
-      email: user.email,
-      token: user.token,
-    })
-    res.json('Correo de confirmación de cuenta enviado')
   }
 
   static forgotPassword = async (req: Request, res: Response) => {
-    const { email } = req.body
-    const user = await User.findOne({ where: { email } })
-    if (!user) {
-      const error = new Error('Usuario no encontrado')
-      return res.status(404).json({ error: error.message })
+    try {
+      const { email } = req.body
+      const user = await User.findOne({ where: { email } })
+      if (!user) {
+        const error = new Error('Usuario no encontrado')
+        return res.status(404).json({ error: error.message })
+      }
+      user.token = generateToken()
+      await user.save()
+      await AuthEmail.sendResetPasswordEmail({
+        name: user.name,
+        email: user.email,
+        token: user.token,
+      })
+      res.json('Correo de restablecimiento de contraseña enviado')
+    } catch (error) {
+      res.status(500).json({
+        error:
+          'Hubo un error al enviar el correo de restablecimiento de contraseña',
+      })
     }
-    user.token = generateToken()
-    await user.save()
-    await AuthEmail.sendResetPasswordEmail({
-      name: user.name,
-      email: user.email,
-      token: user.token,
-    })
-    res.json('Correo de restablecimiento de contraseña enviado')
   }
 
   static validateToken = async (req: Request, res: Response) => {
-    const { token } = req.body
-    const user = await User.findOne({ where: { token }})
-    if (!user) {
-      const error = new Error('Token no válido')
-      return res.status(403).json({ error: error.message })
+    try {
+      const { token } = req.body
+      const user = await User.findOne({ where: { token } })
+      if (!user) {
+        const error = new Error('Token no válido')
+        return res.status(403).json({ error: error.message })
+      }
+      res.json('Token válido, puedes restablecer tu contraseña')
+    } catch (error) {
+      res.status(500).json({ error: 'Hubo un error al validar el token' })
     }
-    res.json('Token válido, puedes restablecer tu contraseña')
   }
 
   static resetPassword = async (req: Request, res: Response) => {
@@ -145,6 +171,24 @@ export class AuthController {
   }
 
   static user = async (req: Request, res: Response) => {
-    res.json(req.user)
+    try {
+      const user = await User.findByPk(req.user.id, {
+        attributes: ['id', 'name', 'email', 'role'],
+        include: [
+          {
+            model: Academy,
+            attributes: ['id', 'name', 'description'],
+          },
+          {
+            model: Subject,
+            attributes: ['id', 'name'],
+            through: { attributes: ['period', 'active'] },
+          },
+        ],
+      })
+      res.json(user)
+    } catch (error) {
+      res.status(500).json({ error: 'Hubo un error al obtener el usuario' })
+    }
   }
 }

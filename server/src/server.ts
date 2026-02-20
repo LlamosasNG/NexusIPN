@@ -7,6 +7,7 @@ import { db } from './config/db'
 import academyRoutes from './routes/academyRoutes'
 import authRoutes from './routes/authRoutes'
 import subjectRoutes from './routes/subjectRoutes'
+import planningRoutes from './routes/planningRoutes'
 
 async function connectDB() {
   try {
@@ -25,5 +26,6 @@ app.use(express.json())
 app.use('/api/auth', authRoutes)
 app.use('/api/academies', academyRoutes)
 app.use('/api/subjects', subjectRoutes)
+app.use('/api/plannings', planningRoutes)
 
 export default app

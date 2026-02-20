@@ -4,7 +4,7 @@ export const subjectsByAcademy = [
     subjects: [
       {
         name: 'Herbolaria Mexicana',
-        code: 'HM-101',
+        code: 'HM-101', 
         description:
           'Estudio de plantas medicinales mexicanas y su aplicación terapéutica', 
       },

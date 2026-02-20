@@ -1,10 +1,11 @@
 import Academy from '@/models/Academy'
 import Subject from '@/models/Subject'
+import User from '@/models/User'
 import UserSubject from '@/models/UserSubject'
 import { Request, Response } from 'express'
 
 export class SubjectController {
-  static getSubjectsByAcademy = async (req: Request, res: Response) => {
+  static getByAcademy = async (req: Request, res: Response) => {
     try {
       const { academyId } = req.params
       const subjects = await Subject.findAll({
@@ -23,7 +24,7 @@ export class SubjectController {
     }
   }
 
-  static assignSubjects = async (req: Request, res: Response) => {
+  static assign = async (req: Request, res: Response) => {
     try {
       const { subjectIds, period } = req.body
       const userId = req.user.id
@@ -67,7 +68,7 @@ export class SubjectController {
     }
   }
 
-  static removeSubject = async (req: Request, res: Response) => {
+  static remove = async (req: Request, res: Response) => {
     try {
       const { subjectId } = req.params
       const userId = req.user.id
@@ -86,5 +87,34 @@ export class SubjectController {
     } catch (error) {
       res.status(500).json({ error: 'Error al remover la materia' })
     }
+  }
+
+  static getByUser = async (req: Request, res: Response) => {
+    try {
+      const user = await User.findByPk(req.user.id, {
+        include: [
+          {
+            model: Subject,
+            attributes: ['id', 'name', 'description', 'code'],
+            through: {
+              attributes: ['period', 'active'],
+            },
+            include: [
+              {
+                model: Academy,
+                attributes: ['id', 'name'],
+              },
+            ],
+          },
+        ],
+      })
+      res.json(user?.subjects || [])
+    } catch (error) {
+      res.status(500).json({ error: 'Error al obtener tus materias' })
+    }
+  }
+
+  static subject = async (req: Request, res: Response) => {
+    res.json(req.subject)
   }
 }
