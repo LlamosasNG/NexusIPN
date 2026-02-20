@@ -10,6 +10,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import type { LoginFormValues } from '@/types'
+import { EnvelopeIcon, EyeIcon } from '@heroicons/react/24/solid'
 import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router'
@@ -52,18 +53,22 @@ export default function LoginView() {
         <CardContent className="space-y-5">
           <div className="space-y-2">
             <Label htmlFor="email">Correo electrónico</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="tu@correo.com"
-              {...register('email', {
-                required: 'El correo es obligatorio',
-                pattern: {
-                  value: /\S+@\S+\.\S+/,
-                  message: 'El correo electrónico no es válido',
-                },
-              })}
-            />
+            <div className="relative">
+              <EnvelopeIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2" />
+              <Input
+                id="email"
+                type="email"
+                placeholder="tu@correo.com"
+                className="pl-10"
+                {...register('email', {
+                  required: 'El correo es obligatorio',
+                  pattern: {
+                    value: /\S+@\S+\.\S+/,
+                    message: 'El correo electrónico no es válido',
+                  },
+                })}
+              />
+            </div>
             {errors.email && (
               <p className="text-sm text-red-500 mt-1">
                 {errors.email.message}
@@ -80,14 +85,18 @@ export default function LoginView() {
                 ¿Olvidaste tu contraseña?
               </Link>
             </div>
-            <Input
-              id="password"
-              type="password"
-              placeholder="********"
-              {...register('password', {
-                required: 'La contraseña es obligatoria',
-              })}
-            />
+            <div className="relative">
+              <EyeIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2" />
+              <Input
+                id="password"
+                type="password"
+                placeholder="********"
+                className="pl-10"
+                {...register('password', {
+                  required: 'La contraseña es obligatoria',
+                })}
+              />
+            </div>
             {errors.password && (
               <p className="text-sm text-red-500 mt-1">
                 {errors.password.message}

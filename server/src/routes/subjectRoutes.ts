@@ -1,5 +1,6 @@
 import { SubjectController } from '@/controllers/SubjectController'
 import { authenticate } from '@/middleware/auth'
+import { subjectExists } from '@/middleware/subject'
 import { handleInputErrors } from '@/middleware/validation'
 import { Router } from 'express'
 import { body, param } from 'express-validator'
@@ -20,8 +21,13 @@ router.post(
     .isString()
     .withMessage('El período debe ser una cadena de texto'),
   handleInputErrors,
-  SubjectController.assignSubjects
+  SubjectController.assign
 )
+
+router.get('/my-subjects', SubjectController.getByUser)
+
+router.param('subjectId', subjectExists)
+router.get('/:subjectId', SubjectController.subject)
 
 router.get(
   '/:academyId',
@@ -29,7 +35,7 @@ router.get(
     .isInt()
     .withMessage('El ID de la academia debe ser un número válido'),
   handleInputErrors,
-  SubjectController.getSubjectsByAcademy
+  SubjectController.getByAcademy
 )
 
 router.delete(
@@ -38,7 +44,7 @@ router.delete(
     .isInt()
     .withMessage('El ID de la materia debe ser un número válido'),
   handleInputErrors,
-  SubjectController.removeSubject
+  SubjectController.remove
 )
 
 export default router

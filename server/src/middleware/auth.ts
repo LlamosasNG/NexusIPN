@@ -1,5 +1,4 @@
 import Academy from '@/models/Academy'
-import Subject from '@/models/Subject'
 import User from '@/models/User'
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
@@ -31,19 +30,8 @@ export const authenticate = async (
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
     if (typeof decoded === 'object' && decoded.id) {
       req.user = await User.findByPk(decoded.id, {
-        attributes: ['id', 'name', 'email', 'role'],
-        include: [
-          {
-            model: Academy,
-            attributes: ['id', 'name', 'description'],
-          },
-          {
-            model: Subject,
-            through: {
-              attributes: ['period', 'active'],
-            },
-          },
-        ],
+        attributes: ['id', 'name', 'email', 'role', 'academyId'],
+        include: [{ model: Academy, attributes: ['id', 'name'] }],
       })
     }
     next()

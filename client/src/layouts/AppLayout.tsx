@@ -1,3 +1,4 @@
+import InstitutionalFooter from '@/components/InstitutionalFooter'
 import { LogoHomeopatia } from '@/components/LogoHomeopatia'
 import { LogoIPN } from '@/components/LogoIPN'
 import { Outlet } from 'react-router'
@@ -26,7 +27,6 @@ export default function AppLayout() {
             <LogoHomeopatia className="h-24 w-24 bg-white p-2 rounded-lg shadow-md hidden sm:block" />
           </div>
         </div>
-
         {/* Línea decorativa dorada */}
         <div className="h-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
       </header>
@@ -37,19 +37,7 @@ export default function AppLayout() {
       </main>
 
       {/* Footer Institucional */}
-      <footer className="bg-gray-800 text-white mt-auto">
-        <div className="container mx-auto px-4 py-6">
-          <div className="text-center space-y-2">
-            <p className="font-bold italic text-[#e8c96f]">
-              "La Técnica al Servicio de la Patria"
-            </p>
-            <p className="text-sm text-gray-400">
-              © {new Date().getFullYear()} Instituto Politécnico Nacional -
-              Escuela Nacional de Medicina y Homeopatía
-            </p>
-          </div>
-        </div>
-      </footer>
+      <InstitutionalFooter />
     </div>
   )
 }
