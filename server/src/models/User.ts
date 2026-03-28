@@ -20,6 +20,16 @@ import UserSubject from './UserSubject'
   tableName: 'users',
 })
 class User extends Model {
+  @ForeignKey(() => Academy)
+  @AllowNull(true)
+  @Column({
+    type: DataType.INTEGER,
+  })
+  declare academyId: number
+
+  @BelongsTo(() => Academy)
+  declare academy: Academy
+
   @AllowNull(false)
   @Column({
     type: DataType.STRING(50),
@@ -59,16 +69,6 @@ class User extends Model {
     type: DataType.BOOLEAN,
   })
   declare confirmed: boolean
-
-  @ForeignKey(() => Academy)
-  @AllowNull(true)
-  @Column({
-    type: DataType.INTEGER,
-  })
-  declare academyId: number
-
-  @BelongsTo(() => Academy)
-  declare academy: Academy
 
   @BelongsToMany(() => Subject, () => UserSubject)
   declare subjects: Subject[]

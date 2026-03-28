@@ -54,12 +54,12 @@ export async function seedUsers() {
         await UserSubject.bulkCreate(userSubjects)
       }
 
-      console.log(colors.green('✓ Loading Users...'))
+      console.log(colors.green('Loading Users...'))
     } else {
-      console.log(colors.yellow('⚠ Users already exist, skipping'))
+      console.log(colors.yellow('Users already exist, skipping'))
     }
   } catch (error) {
-    console.error(colors.red('✗ Error loading users:'), error)
+    console.error(colors.red('Error loading users:'), error)
     throw error
   }
 }

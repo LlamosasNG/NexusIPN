@@ -1,4 +1,5 @@
 import Academy from '@/models/Academy'
+import Planning from '@/models/Planning'
 import Subject from '@/models/Subject'
 import User from '@/models/User'
 import UserSubject from '@/models/UserSubject'
@@ -95,7 +96,7 @@ export class SubjectController {
         include: [
           {
             model: Subject,
-            attributes: ['id', 'name', 'description', 'code'],
+            attributes: ['id', 'name', 'code'],
             through: {
               attributes: ['period', 'active'],
             },
@@ -103,6 +104,12 @@ export class SubjectController {
               {
                 model: Academy,
                 attributes: ['id', 'name'],
+              },
+              {
+                model: Planning,
+                where: { userId: req.user.id },
+                attributes: ['id', 'status'],
+                required: false,
               },
             ],
           },

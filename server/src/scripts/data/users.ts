@@ -1,3 +1,12 @@
+/**
+ * Códigos de materias
+ * Morfología: M-101, M-102, M-103, M-201
+ * Fisiológicas: F-101, F-201, F-202
+ * Ambiente y Salud Pública: ASP-101, ASP-102, ASP-201, ASP-202, ASP-103, ASP-104, ASP-105, ASP-106, ASP-107
+ * Terapeútica Homepática: TH-101, TH-201, TH-102
+ * Clínicas: C-101, C-102, C-103
+ */
+
 export const users = [
   {
     name: 'Juan Pérez García',
@@ -6,7 +15,7 @@ export const users = [
     academyId: 2, // Academia de Homeopatía
     role: 'Docente' as const,
     confirmed: true,
-    subjectCodes: ['MMH-201', 'FH-202', 'REP-203'], // Materias que imparte
+    subjectCodes: ['TH-101', 'TH-201', 'TH-102'], // Materias que imparte
   },
   {
     name: 'María López Hernández',
@@ -15,7 +24,7 @@ export const users = [
     academyId: 5, // Academia de Ciencias Básicas
     role: 'Docente' as const,
     confirmed: true,
-    subjectCodes: ['AH-501', 'FIS-502', 'BQ-503'],
+    subjectCodes: ['M-101', 'M-102', 'M-103', 'M-201'],
   },
   {
     name: 'Carlos Rodríguez Sánchez',
@@ -24,7 +33,7 @@ export const users = [
     academyId: 3, // Academia de Acupuntura y Rehabilitación
     role: 'Docente' as const,
     confirmed: true,
-    subjectCodes: ['ATC-301', 'MTC-302', 'RF-303'],
+    subjectCodes: ['M-101', 'M-102', 'M-103', 'M-201'],
   },
   {
     name: 'Ana Martínez Torres',
@@ -33,7 +42,7 @@ export const users = [
     academyId: 4, // Academia de Optometría
     role: 'Docente' as const,
     confirmed: true,
-    subjectCodes: ['OC-401', 'RO-402', 'PO-403'],
+    subjectCodes: ['M-101', 'M-102', 'M-103', 'M-201'],
   },
   {
     name: 'Luis González Ramírez',
@@ -42,7 +51,7 @@ export const users = [
     academyId: 1, // Academia de Medicina Tradicional y Herbolaria
     role: 'Docente' as const,
     confirmed: true,
-    subjectCodes: ['HM-101', 'FC-102', 'BM-103'],
+    subjectCodes: ['M-101', 'M-102', 'M-103', 'M-201'],
   },
   {
     name: 'Admin Sistema',

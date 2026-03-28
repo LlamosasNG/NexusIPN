@@ -1,27 +1,24 @@
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useAuth } from '@/hooks/useAuth'
 import type { GeneralDataFormValues } from '@/types'
-import {
-  Controller,
-  type Control,
-  type FieldErrors,
-  type UseFormHandleSubmit,
-  type UseFormRegister,
-} from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 
-type PlanningSection1Props = {
-  control: Control<GeneralDataFormValues>
-  register: UseFormRegister<GeneralDataFormValues>
-  handleSubmit: UseFormHandleSubmit<GeneralDataFormValues>
-  errors: FieldErrors<GeneralDataFormValues>
-}
+export function PlanningSection1() {
+  const { data: user } = useAuth()
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<GeneralDataFormValues>({
+    defaultValues: {
+      modality: 'Escolarizada',
+      type: ['Teórica'],
+      user: { name: user?.name },
+    },
+  })
 
-export function PlanningSection1({
-  control,
-  register,
-  handleSubmit,
-  errors,
-}: PlanningSection1Props) {
   const handleSend = (data: GeneralDataFormValues) => {
     console.log(data)
   }
@@ -45,6 +42,7 @@ export function PlanningSection1({
               1.1 Unidad Académica
             </Label>
             <Input
+              id="academicUnit"
               type="text"
               className="text-center border-dashed border-gray-400 rounded-none"
               {...register('academicUnit', {
@@ -160,7 +158,7 @@ export function PlanningSection1({
                           <div className="flex items-center justify-between border border-dashed border-gray-400 px-3 py-0.5">
                             <span className="text-sm">Escolarizada</span>
                             <input
-                              type="radio"
+                              type="checkbox"
                               value="escolarizada"
                               checked={field.value === 'Escolarizada'}
                               onChange={() => field.onChange('Escolarizada')}
@@ -170,7 +168,7 @@ export function PlanningSection1({
                           <div className="flex items-center justify-between border border-dashed border-gray-400 px-3 py-0.5">
                             <span className="text-sm">No escolarizada</span>
                             <input
-                              type="radio"
+                              type="checkbox"
                               value="no_escolarizada"
                               checked={field.value === 'No escolarizada'}
                               onChange={() => field.onChange('No escolarizada')}
@@ -180,7 +178,7 @@ export function PlanningSection1({
                           <div className="flex items-center justify-between border border-dashed border-gray-400 px-3 py-0.5">
                             <span className="text-sm">Mixta</span>
                             <input
-                              type="radio"
+                              type="checkbox"
                               value="mixta"
                               checked={field.value === 'Mixta'}
                               onChange={() => field.onChange('Mixta')}
@@ -199,7 +197,7 @@ export function PlanningSection1({
 
         {/* Row 3 - Tipo de unidad */}
         <div className="grid grid-cols-2 gap-4">
-          <table className="w-md dashed border-gray-400 ml-25">
+          <table className="w-full border-gray-400">
             <tbody>
               <tr>
                 <td
@@ -209,62 +207,124 @@ export function PlanningSection1({
                   1.7 Tipo de unidad de aprendizaje
                 </td>
               </tr>
-              <tr>
-                <td className="border border-dashed border-gray-400 px-3 text-sm text-center">
-                  Teórica
-                </td>
-                <td className="border border-dashed border-gray-400 px-3 text-center">
-                  <input type="checkbox" className="w-4 h-4" />
-                </td>
-                <td className="border border-dashed border-gray-400 px-3 text-sm text-center">
-                  Obligatoria
-                </td>
-                <td className="border border-dashed border-gray-400 px-3 text-center">
-                  <input type="checkbox" className="w-4 h-4" />
-                </td>
-              </tr>
-              <tr>
-                <td className="border border-dashed border-gray-400 px-3 text-sm text-center">
-                  Práctica
-                </td>
-                <td className="border border-dashed border-gray-400 px-3 text-center">
-                  <input type="checkbox" className="w-4 h-4" />
-                </td>
-                <td className="border border-dashed border-gray-400 px-3 text-sm text-center">
-                  Optativa
-                </td>
-                <td className="border border-dashed border-gray-400 px-3 text-center">
-                  <input type="checkbox" className="w-4 h-4" />
-                </td>
-              </tr>
-              <tr>
-                <td className="border border-dashed border-gray-400 px-3 text-sm text-center">
-                  Teórica - práctica
-                </td>
-                <td className="border border-dashed border-gray-400 px-3 text-center">
-                  <input type="checkbox" className="w-4 h-4" />
-                </td>
-                <td className="border border-dashed border-gray-400 px-3 text-sm text-center">
-                  Tópicos selectos
-                </td>
-                <td className="border border-dashed border-gray-400 px-3 text-center">
-                  <input type="checkbox" className="w-4 h-4" />
-                </td>
-              </tr>
-              <tr>
-                <td className="border border-dashed border-gray-400 px-3 text-sm text-center">
-                  Clínica
-                </td>
-                <td className="border border-dashed border-gray-400 px-3 text-center">
-                  <input type="checkbox" className="w-4 h-4" />
-                </td>
-                <td className="border border-dashed border-gray-400 px-3 text-sm text-center">
-                  Otro
-                </td>
-                <td className="border border-dashed border-gray-400 px-3 text-center">
-                  <input type="checkbox" className="w-4 h-4" />
-                </td>
-              </tr>
+              <Controller
+                name="type"
+                control={control}
+                render={({ field }) => {
+                  const toggleValue = (
+                    value: GeneralDataFormValues['type'][number]
+                  ) => {
+                    const currentValues = field.value || []
+                    if (currentValues.includes(value)) {
+                      // Si ya está seleccionado, lo removemos
+                      field.onChange(currentValues.filter((v) => v !== value))
+                    } else {
+                      // Si no está seleccionado, lo agregamos
+                      field.onChange([...currentValues, value])
+                    }
+                  }
+                  return (
+                    <>
+                      <tr>
+                        <td className="border border-dashed border-gray-400 px-3 text-sm text-center">
+                          Teórica
+                        </td>
+                        <td className="border border-dashed border-gray-400 px-3 text-center">
+                          <input
+                            type="checkbox"
+                            checked={field.value?.includes('Teórica')}
+                            onChange={() => toggleValue('Teórica')}
+                            className="w-4 h-4"
+                          />
+                        </td>
+                        <td className="border border-dashed border-gray-400 px-3 text-sm text-center">
+                          Obligatoria
+                        </td>
+                        <td className="border border-dashed border-gray-400 px-3 text-center">
+                          <input
+                            type="checkbox"
+                            checked={field.value?.includes('Obligatoria')}
+                            onChange={() => toggleValue('Obligatoria')}
+                            className="w-4 h-4"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="border border-dashed border-gray-400 px-3 text-sm text-center">
+                          Práctica
+                        </td>
+                        <td className="border border-dashed border-gray-400 px-3 text-center">
+                          <input
+                            type="checkbox"
+                            checked={field.value?.includes('Práctica')}
+                            onChange={() => toggleValue('Práctica')}
+                            className="w-4 h-4"
+                          />
+                        </td>
+                        <td className="border border-dashed border-gray-400 px-3 text-sm text-center">
+                          Optativa
+                        </td>
+                        <td className="border border-dashed border-gray-400 px-3 text-center">
+                          <input
+                            type="checkbox"
+                            checked={field.value?.includes('Optativa')}
+                            onChange={() => toggleValue('Optativa')}
+                            className="w-4 h-4"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="border border-dashed border-gray-400 px-3 text-sm text-center">
+                          Teórica - práctica
+                        </td>
+                        <td className="border border-dashed border-gray-400 px-3 text-center">
+                          <input
+                            type="checkbox"
+                            checked={field.value?.includes('Teórico-Práctica')}
+                            onChange={() => toggleValue('Teórico-Práctica')}
+                            className="w-4 h-4"
+                          />
+                        </td>
+                        <td className="border border-dashed border-gray-400 px-3 text-sm text-center">
+                          Tópicos selectos
+                        </td>
+                        <td className="border border-dashed border-gray-400 px-3 text-center">
+                          <input
+                            type="checkbox"
+                            checked={field.value?.includes('Tópicos Selectos')}
+                            onChange={() => toggleValue('Tópicos Selectos')}
+                            className="w-4 h-4"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="border border-dashed border-gray-400 px-3 text-sm text-center">
+                          Clínica
+                        </td>
+                        <td className="border border-dashed border-gray-400 px-3 text-center">
+                          <input
+                            type="checkbox"
+                            checked={field.value?.includes('Clínica')}
+                            onChange={() => toggleValue('Clínica')}
+                            className="w-4 h-4"
+                          />
+                        </td>
+                        <td className="border border-dashed border-gray-400 px-3 text-sm text-center">
+                          Otro
+                        </td>
+                        <td className="border border-dashed border-gray-400 px-3 text-center">
+                          <input
+                            type="checkbox"
+                            checked={field.value?.includes('Otro')}
+                            onChange={() => toggleValue('Otro')}
+                            className="w-4 h-4"
+                          />
+                        </td>
+                      </tr>
+                    </>
+                  )
+                }}
+              />
             </tbody>
           </table>
 
@@ -297,11 +357,6 @@ export function PlanningSection1({
                           required: 'Tepic es requerido',
                         })}
                       />
-                      {errors.credits?.tepic && (
-                        <p className="text-red-500 text-sm">
-                          {errors.credits.tepic.message}
-                        </p>
-                      )}
                     </td>
                     <td className="border-t border-dashed border-gray-400 px-3 text-center">
                       <Input
@@ -311,11 +366,6 @@ export function PlanningSection1({
                           required: 'SATCA es requerido',
                         })}
                       />
-                      {errors.credits?.satca && (
-                        <p className="text-red-500 text-sm">
-                          {errors.credits.satca.message}
-                        </p>
-                      )}
                     </td>
                   </tr>
                 </tbody>
@@ -659,16 +709,14 @@ export function PlanningSection1({
             {...register('user.name', {
               required: 'El nombre del docente es requerido',
             })}
+            value={user?.name}
           />
-          {errors.user?.name && (
-            <p className="text-red-500 text-sm">{errors.user.name.message}</p>
-          )}
         </div>
       </div>
       <input
         type="submit"
         value="Guardar"
-        className="bg-[#7C2855] hover:bg-[#7C2855]/80 w-full p-3  text-white font-black  text-xl cursor-pointer"
+        className="bg-[#7C2855] hover:bg-[#7C2855]/80 w-full p-3  text-white font-black  text-xl cursor-pointer mt-5"
       />
     </form>
   )

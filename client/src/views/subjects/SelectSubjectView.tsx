@@ -1,7 +1,6 @@
 // SelectSubjectView.tsx
 import { getUserSubjects } from '@/api/SubjectAPI'
 import { LoadingApp } from '@/components/LoadingApp'
-import type { Subject } from '@/types'
 import {
   AcademicCapIcon,
   ArrowLeftIcon,
@@ -17,9 +16,9 @@ export default function SelectSubjectView() {
   const type =
     (searchParams.get('type') as 'plannings' | 'resources') || 'plannings'
 
-  const { data, isLoading } = useQuery<Subject[]>({
+  const { data, isLoading } = useQuery({
     queryKey: ['user-subjects'],
-    queryFn: () => getUserSubjects(),
+    queryFn: getUserSubjects,
   })
 
   const config = {
@@ -41,6 +40,10 @@ export default function SelectSubjectView() {
   }
 
   const currentConfig = config[type]
+
+  // Filtrar materias que ya tienen planificación creada
+  const subjects =
+    type === 'plannings' ? data?.filter((s) => s.plannings.length === 0) : data
 
   if (isLoading) {
     return (
@@ -72,9 +75,9 @@ export default function SelectSubjectView() {
       </div>
 
       {/* Lista de Materias */}
-      {data && data.length > 0 ? (
+      {subjects && subjects.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data.map((subject) => (
+          {subjects.map((subject) => (
             <Link
               key={subject.id}
               to={`${currentConfig.route}/${subject.id}`}
@@ -82,7 +85,7 @@ export default function SelectSubjectView() {
             >
               <div className="p-6">
                 {/* Icono de Materia */}
-                <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#7C2855] to-[#5a1d3f] rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                <div className="flex items-center justify-center w-16 h-16 bg-linear-to-br from-[#7C2855] to-[#5a1d3f] rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
                   <AcademicCapIcon className="w-10 h-10 text-white" />
                 </div>
 
@@ -98,12 +101,17 @@ export default function SelectSubjectView() {
                   {subject.name}
                 </h3>
 
-                {/* Descripción */}
-                {subject.description && (
-                  <p className="text-sm text-gray-600 line-clamp-2 mb-4">
-                    {subject.description}
+                {/* Academia */}
+                {subject.academy && (
+                  <p className="text-sm text-gray-600 line-clamp-2 mb-2">
+                    Academia de {subject.academy.name}
                   </p>
                 )}
+
+                {/* Periodo */}
+                <p className="text-xs text-gray-500 mb-4">
+                  Periodo: {subject.UserSubject.period}
+                </p>
 
                 {/* Indicador de acción */}
                 <div className="flex items-center gap-2 text-[#7C2855] font-medium text-sm group-hover:translate-x-2 transition-transform duration-300">
@@ -113,7 +121,7 @@ export default function SelectSubjectView() {
               </div>
 
               {/* Elemento decorativo */}
-              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-bl-full" />
+              <div className="absolute top-0 right-0 w-24 h-24 bg-linear-to-br from-[#D4AF37]/10 to-transparent rounded-bl-full" />
             </Link>
           ))}
         </div>

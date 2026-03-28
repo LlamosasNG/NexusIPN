@@ -2,12 +2,13 @@ import InstitutionalFooter from '@/components/InstitutionalFooter'
 import { LogoHomeopatia } from '@/components/LogoHomeopatia'
 import { LogoIPN } from '@/components/LogoIPN'
 import { Outlet } from 'react-router'
+import { Toaster } from 'sonner'
 
 export default function AppLayout() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Header Institucional */}
-      <header className="bg-gradient-to-r from-[#7C2855] to-[#5a1d3f] shadow-lg">
+      <header className="bg-linear-to-r from-[#7C2855] to-[#5a1d3f] shadow-lg">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             {/* Logos y Título */}
@@ -28,7 +29,7 @@ export default function AppLayout() {
           </div>
         </div>
         {/* Línea decorativa dorada */}
-        <div className="h-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
+        <div className="h-1 bg-linear-to-r from-transparent via-[#D4AF37] to-transparent" />
       </header>
 
       {/* Área de Contenido Principal */}
@@ -38,6 +39,7 @@ export default function AppLayout() {
 
       {/* Footer Institucional */}
       <InstitutionalFooter />
+      <Toaster position="top-right" visibleToasts={3} />
     </div>
   )
 }

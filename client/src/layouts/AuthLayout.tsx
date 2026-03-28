@@ -7,11 +7,11 @@ export default function AuthLayout() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden p-4 sm:p-6 font-sans">
       {/* Background with gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#7C2855] via-[#5a1d3f] to-[#7C2855]" />
+      <div className="absolute inset-0 bg-linear-to-br from-[#7C2855] via-[#5a1d3f] to-[#7C2855]" />
 
       {/* Decorative elements */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-60" />
-      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-60" />
+      <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-[#D4AF37] to-transparent opacity-60" />
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-[#D4AF37] to-transparent opacity-60" />
 
       <div className="w-full max-w-lg mx-auto relative z-10">
         {/* Header */}
@@ -39,8 +39,8 @@ export default function AuthLayout() {
         <main>
           <div className="bg-white/98 backdrop-blur-sm p-8 sm:p-10 rounded-2xl shadow-2xl border-t-[6px] border-[#D4AF37] relative overflow-hidden">
             {/* Decorative corner accent */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-bl-full" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-[#7C2855]/5 to-transparent rounded-tr-full" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-[#D4AF37]/10 to-transparent rounded-bl-full" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-linear-to-tr from-[#7C2855]/5 to-transparent rounded-tr-full" />
 
             <div className="relative z-10">
               <Outlet />

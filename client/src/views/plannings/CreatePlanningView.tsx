@@ -6,11 +6,12 @@ import { PlanningSection2 } from '@/components/planning/PlanningSection2'
 import { PlanningSection3 } from '@/components/planning/PlanningSection3'
 import { PlanningSection4 } from '@/components/planning/PlanningSection4'
 import { PlanningSection5 } from '@/components/planning/PlanningSection5'
-import type { GeneralDataFormValues } from '@/types'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useParams } from 'react-router'
 
 export default function CreatePlanningView() {
+  const { planningId } = useParams()
+  console.log(planningId)
   const [currentSection, setCurrentSection] = useState(1)
   const [referencias, setReferencias] = useState([
     {
@@ -55,17 +56,6 @@ export default function CreatePlanningView() {
     }
   }
 
-  const {
-    control,
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<GeneralDataFormValues>({
-    defaultValues: {
-      modality: 'Escolarizada',
-    },
-  })
-
   return (
     <div className="min-h-screen bg-[#7C2855] flex flex-col rounded-4xl">
       <div className="flex-1 px-4 py-8">
@@ -73,14 +63,7 @@ export default function CreatePlanningView() {
         <div className="mx-auto rounded-3xl bg-white p-8 shadow-2xl">
           <PlanningFormHeader />
           {/* Render current section */}
-          {currentSection === 1 && (
-            <PlanningSection1
-              control={control}
-              register={register}
-              handleSubmit={handleSubmit}
-              errors={errors}
-            />
-          )}
+          {currentSection === 1 && <PlanningSection1 />}
           {currentSection === 2 && <PlanningSection2 />}
           {currentSection === 3 && <PlanningSection3 />}
           {currentSection === 4 && (
