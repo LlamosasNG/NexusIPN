@@ -1,6 +1,7 @@
 import AuthLayout from '@/layouts/AuthLayout'
 import LoginView from '@/views/auth/LoginView'
 import RegisterView from '@/views/auth/RegisterView'
+import ProfileTeacherView from '@/views/teacher/ProfileTeacherView'
 import { BrowserRouter, Route, Routes } from 'react-router'
 import AppLayout from './layouts/AppLayout'
 import UserLayout from './layouts/UserLayout'
@@ -9,6 +10,7 @@ import ForgotPasswordView from './views/auth/ForgotPasswordView'
 import NewPasswordView from './views/auth/NewPasswordView'
 import RequestNewCodeView from './views/auth/RequestNewCodeView'
 import DashboardView from './views/DashboardView'
+import ConfirmPlanningView from './views/plannings/ConfirmPlanningView'
 import CreatePlanningView from './views/plannings/CreatePlanningView'
 import RegisterCodeView from './views/students/RegisterCodeView'
 import SelectSubjectView from './views/subjects/SelectSubjectView'
@@ -40,12 +42,17 @@ export default function Router() {
           <Route path="/register-code" element={<RegisterCodeView />} />
         </Route>
         <Route element={<UserLayout />}>
-          <Route path="/my-home" element={<HomeTeacherView />} index />
+          <Route path="/my-home" element={<HomeTeacherView />} />
           <Route path="/select-subject" element={<SelectSubjectView />} />
           <Route
             path="/plannings/create/:subjectId"
+            element={<ConfirmPlanningView />}
+          />
+          <Route path="/my-profile" element={<ProfileTeacherView />} />
+          <Route
+            path="/plannings/:planningId"
             element={<CreatePlanningView />}
-          />  
+          />
         </Route>
       </Routes>
     </BrowserRouter>

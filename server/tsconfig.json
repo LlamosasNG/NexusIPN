@@ -2,13 +2,14 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "lib": ["esnext"],
-    "target": "ESNext",
-    "moduleResolution": "NodeNext",
+    "target": "ES2022",
+    "lib": ["ES2022"],
     "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "strict": false,
     "sourceMap": true,
     "esModuleInterop": true,
+    "skipLibCheck": true,
     "declaration": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -27,5 +28,5 @@
   "ts-node": {
     "require": ["tsconfig-paths/register"]
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src"]
 }

@@ -1,69 +1,89 @@
 import {
-    Table,
-    Column,
-    Model,
-    DataType,
-    ForeignKey,
-    BelongsTo,
-    Default,
-    AllowNull
-} from 'sequelize-typescript';
-import User from './User';
-import Subject from './Subject';
-import { PlanningContent } from '@/interfaces/PlanningInterfaces';
+  AllowNull,
+  BelongsTo,
+  Column,
+  DataType,
+  Default,
+  ForeignKey,
+  HasMany,
+  HasOne,
+  Model,
+  Table,
+} from 'sequelize-typescript'
+import GeneralData from './GeneralData'
+import PlagiarismTool from './PlagiarismTool'
+import Reference from './Reference'
+import Subject from './Subject'
+import ThematicUnit from './ThematicUnit'
+import TransversalAxis from './TransversalAxis'
+import User from './User'
 
 export enum PlanningStatus {
-    DRAFT = 'Borrador',
-    SENT = 'Enviada',
-    APPROVED = 'Aprobada',
-    REJECTED = 'Rechazada',
-    LATE = 'Desfasado'
+  DRAFT = 'Borrador',
+  SENT = 'Enviada',
+  APPROVED = 'Aprobada',
+  REJECTED = 'Rechazada',
+  LATE = 'Desfasado',
 }
 
 @Table({
-    tableName: 'plannings',
-    timestamps: true
+  tableName: 'plannings',
+  timestamps: true,
 })
 export default class Planning extends Model {
-    @AllowNull(false)
-    @Column({
-        type: DataType.STRING
-    })
-    period: string; // Ejemplo: "2026-1"
+  @ForeignKey(() => User)
+  @Column({
+    type: DataType.INTEGER,
+  })
+  declare userId: number
 
-    @Default(PlanningStatus.DRAFT)
-    @Column({
-        type: DataType.ENUM(...Object.values(PlanningStatus))
-    })
-    status: PlanningStatus;
+  @BelongsTo(() => User)
+  declare user: User
 
-    // Aquí guardamos la estructura dinámica de la plantilla (Objetivos, Estrategias, etc.)
-    @Column({
-        type: DataType.JSONB
-    })
-    content: PlanningContent;
+  @ForeignKey(() => Subject)
+  @Column({
+    type: DataType.INTEGER,
+  })
+  declare subjectId: number
 
-    @ForeignKey(() => User)
-    @Column
-    userId: number;
+  @BelongsTo(() => Subject)
+  declare subject: Subject
 
-    @BelongsTo(() => User)
-    user: User;
+  @AllowNull(false)
+  @Column({
+    type: DataType.STRING,
+  })
+  declare period: string
 
-    @ForeignKey(() => Subject)
-    @Column
-    subjectId: number;
+  @Default(PlanningStatus.DRAFT)
+  @Column({
+    type: DataType.ENUM(...Object.values(PlanningStatus)),
+  })
+  declare status: PlanningStatus
 
-    @BelongsTo(() => Subject)
-    subject: Subject;
+  @Column({
+    type: DataType.DATE,
+  })
+  declare submissionDate: Date
 
-    @Column({
-        type: DataType.DATE
-    })
-    submissionDate: Date;
+  @Column({
+    type: DataType.TEXT,
+  })
+  declare feedback: string
 
-    @Column({
-        type: DataType.TEXT
-    })
-    feedback: string; // Para la retroalimentación de la academia
+  // --- Relaciones con los modelos hijos (secciones) ---
+  @HasOne(() => GeneralData)
+  declare generalData: GeneralData
+
+  @HasOne(() => TransversalAxis)
+  declare transversalAxis: TransversalAxis
+
+  @HasMany(() => ThematicUnit)
+  declare thematicUnits: ThematicUnit[]
+
+  @HasMany(() => Reference)
+  declare references: Reference[]
+
+  @HasOne(() => PlagiarismTool)
+  declare plagiarismTool: PlagiarismTool
 }

@@ -6,8 +6,8 @@ import { corsConfig } from './config/cors'
 import { db } from './config/db'
 import academyRoutes from './routes/academyRoutes'
 import authRoutes from './routes/authRoutes'
-import subjectRoutes from './routes/subjectRoutes'
 import planningRoutes from './routes/planningRoutes'
+import subjectRoutes from './routes/subjectRoutes'
 
 async function connectDB() {
   try {

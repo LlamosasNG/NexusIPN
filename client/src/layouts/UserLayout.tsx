@@ -17,9 +17,11 @@ import {
   FolderIcon,
   HomeIcon,
   XMarkIcon,
+  UserIcon,
 } from '@heroicons/react/24/solid'
 import { useState } from 'react'
 import { Link, Navigate, Outlet, useNavigate } from 'react-router'
+import { Toaster } from 'sonner'
 
 export default function UserLayout() {
   const { data, isError, isLoading } = useAuth()
@@ -42,7 +44,7 @@ export default function UserLayout() {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         {/* Header Institucional */}
-        <header className="bg-gradient-to-r from-[#7C2855] to-[#5a1d3f] shadow-lg sticky top-0 z-50">
+        <header className="bg-linear-to-r from-[#7C2855] to-[#5a1d3f] shadow-lg sticky top-0 z-50">
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
               {/* Logos y Título */}
@@ -78,7 +80,7 @@ export default function UserLayout() {
           </div>
 
           {/* Línea decorativa dorada */}
-          <div className="h-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
+          <div className="h-1 bg-linear-to-r from-transparent via-[#D4AF37] to-transparent" />
         </header>
 
         {/* Barra de Navegación */}
@@ -129,9 +131,9 @@ export default function UserLayout() {
                       asChild
                       className="flex items-center gap-2 px-4 py-2.5 text-gray-700 hover:text-[#7C2855] hover:bg-[#7C2855]/5 rounded-lg font-medium transition-all duration-200 border-b-2 border-transparent hover:border-[#7C2855]"
                     >
-                      <Link to="/user/materias">
-                        <AcademicCapIcon className="w-5 h-5" />
-                        <span>Materias</span>
+                      <Link to="/my-profile">
+                        <UserIcon className="w-5 h-5" />
+                        <span>Mi Perfil</span>
                       </Link>
                     </NavigationMenuLink>
                   </NavigationMenuItem>
@@ -225,6 +227,7 @@ export default function UserLayout() {
 
         {/* Footer Institucional */}
         <InstitutionalFooter />
+        <Toaster position="top-right" visibleToasts={3} />
       </div>
     )
 }

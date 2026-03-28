@@ -1,4 +1,3 @@
-import { limiter } from '@/config/limiter'
 import { AuthController } from '@/controllers/AuthController'
 import { authenticate } from '@/middleware/auth'
 import { handleInputErrors } from '@/middleware/validation'

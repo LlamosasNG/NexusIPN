@@ -1,26 +1,26 @@
 export const academies = [
   {
-    name: 'Academia de Medicina Tradicional y Herbolaria',
+    name: 'Morfología',
     description:
-      'Academia dedicada al estudio y enseñanza de la medicina tradicional mexicana y el uso terapéutico de plantas medicinales.',
+      'Academia que imparte materias fundamentales como anatomía, fisiología, bioquímica y farmacología.',
   },
   {
-    name: 'Academia de Homeopatía',
-    description:
-      'Academia especializada en la formación de profesionales en medicina homeopática y terapéutica alternativa.',
-  },
-  {
-    name: 'Academia de Acupuntura y Rehabilitación',
+    name: 'Terapeútica Homeopática',
     description:
       'Academia enfocada en técnicas de acupuntura, rehabilitación física y medicina tradicional china.',
   },
   {
-    name: 'Academia de Optometría',
+    name: 'Ambiente y Salud Pública',
     description:
-      'Academia dedicada a la formación de profesionales en salud visual y optometría clínica.',
+      'Academia que imparte materias fundamentales como anatomía, fisiología, bioquímica y farmacología.',
   },
   {
-    name: 'Academia de Ciencias Básicas',
+    name: 'Fisiológicas',
+    description:
+      'Academia que imparte materias fundamentales como anatomía, fisiología, bioquímica y farmacología.',
+  },
+  {
+    name: 'Clínicas',
     description:
       'Academia que imparte materias fundamentales como anatomía, fisiología, bioquímica y farmacología.',
   },

@@ -6,7 +6,7 @@ export function InstitutionalFooter() {
       <div className="container mx-auto px-6 py-4">
         <div className="flex flex-col md:flex-row items-start gap-4">
           {/* Logo IPN */}
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <img
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-Hq1PrurfeSvBp2dvUspELVWSTYjfDN.png"
               alt="Logo IPN"
@@ -99,7 +99,7 @@ export function InstitutionalFooter() {
               to="https://www.instagram.com/ipn_mx/"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 flex items-center justify-center hover:scale-110 transition-transform duration-200"
+              className="w-10 h-10 rounded-full bg-linear-to-br from-purple-600 via-pink-600 to-orange-500 flex items-center justify-center hover:scale-110 transition-transform duration-200"
               aria-label="Instagram"
             >
               <svg
