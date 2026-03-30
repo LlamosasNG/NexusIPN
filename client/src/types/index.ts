@@ -176,3 +176,17 @@ export const SubjectCardSchema = z.object({
   UserSubject: UserSubjectSchema,
 })
 export type SubjectCard = z.infer<typeof SubjectCardSchema>
+
+export const PlanningSchema = z.object({
+  id: z.number(),
+  userId: z.number(),
+  subjectId: z.number(),
+  period: z.string(),
+  status: PlanningStatusSchema,
+  submissionDate: z.string().nullable(),
+  feedback: z.string().nullable(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  subject: SubjectSchema.pick({ id: true, name: true, code: true }),
+})
+export type PlanningItem = z.infer<typeof PlanningSchema>

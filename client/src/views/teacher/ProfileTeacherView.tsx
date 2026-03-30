@@ -1,4 +1,6 @@
+import { getPlannings } from '@/api/PlanningAPI'
 import { useAuth } from '@/hooks/useAuth'
+import type { PlanningItem } from '@/types'
 import {
   AcademicCapIcon,
   BookOpenIcon,
@@ -9,28 +11,36 @@ import {
   FolderIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/solid'
+import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router'
 
 export default function ProfileTeacherView() {
   const { data: user } = useAuth()
 
-  // Datos de ejemplo para planificaciones y recursos (se reemplazarán con datos reales)
-  const planificaciones = [
-    {
-      id: 1,
-      subject: 'Bases doctrinarias de la Homeopatía',
-      period: '2026-1',
-      status: 'Borrador',
-      updatedAt: '2026-03-20',
-    },
-    {
-      id: 2,
-      subject: 'Farmacología Homeopática I',
-      period: '2026-1',
-      status: 'Enviada',
-      updatedAt: '2026-03-18',
-    },
-  ]
+  const { data: planningsData, isLoading: planningsLoading } = useQuery({
+    queryKey: ['plannings'],
+    queryFn: getPlannings,
+    refetchOnWindowFocus: false,
+  })
+
+  const plannings: PlanningItem[] = planningsData || []
+
+  const statusColors: Record<string, string> = {
+    Borrador: 'bg-yellow-100 text-yellow-800',
+    Enviada: 'bg-blue-100 text-blue-800',
+    Aprobada: 'bg-green-100 text-green-800',
+    Rechazada: 'bg-red-100 text-red-800',
+    Desfasado: 'bg-gray-100 text-gray-800',
+  }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('es-MX', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
+  }
 
   const recursos = [
     {
@@ -48,14 +58,6 @@ export default function ProfileTeacherView() {
       createdAt: '2026-03-10',
     },
   ]
-
-  const statusColors: Record<string, string> = {
-    Borrador: 'bg-yellow-100 text-yellow-800',
-    Enviada: 'bg-blue-100 text-blue-800',
-    Aprobada: 'bg-green-100 text-green-800',
-    Rechazada: 'bg-red-100 text-red-800',
-    Desfasado: 'bg-gray-100 text-gray-800',
-  }
 
   if (!user) return null
 
@@ -185,9 +187,14 @@ export default function ProfileTeacherView() {
           </Link>
         </div>
         <div className="p-6">
-          {planificaciones.length > 0 ? (
+          {planningsLoading ? (
+            <div className="text-center py-8">
+              <div className="animate-spin w-8 h-8 border-4 border-[#7C2855] border-t-transparent rounded-full mx-auto" />
+              <p className="text-gray-500 mt-2">Cargando planeaciones...</p>
+            </div>
+          ) : plannings.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {planificaciones.map((plan) => (
+              {plannings.map((plan) => (
                 <Link
                   key={plan.id}
                   to={`/plannings/${plan.id}`}
@@ -204,7 +211,7 @@ export default function ProfileTeacherView() {
                     </span>
                   </div>
                   <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-[#7C2855] transition-colors">
-                    {plan.subject}
+                    {plan.subject?.name || 'Materia'}
                   </h3>
                   <div className="flex items-center gap-4 text-sm text-gray-500">
                     <span className="inline-flex items-center gap-1">
@@ -213,7 +220,7 @@ export default function ProfileTeacherView() {
                     </span>
                     <span className="inline-flex items-center gap-1">
                       <BookOpenIcon className="w-3.5 h-3.5" />
-                      Actualizada: {plan.updatedAt}
+                      Actualizada: {formatDate(plan.updatedAt)}
                     </span>
                   </div>
                 </Link>

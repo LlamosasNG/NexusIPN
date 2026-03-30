@@ -6,12 +6,21 @@ import { PlanningSection2 } from '@/components/planning/PlanningSection2'
 import { PlanningSection3 } from '@/components/planning/PlanningSection3'
 import { PlanningSection4 } from '@/components/planning/PlanningSection4'
 import { PlanningSection5 } from '@/components/planning/PlanningSection5'
+import { getPlanningById } from '@/api/PlanningAPI'
+import { LoadingApp } from '@/components/LoadingApp'
 import { useState } from 'react'
 import { useParams } from 'react-router'
+import { useQuery } from '@tanstack/react-query'
 
 export default function CreatePlanningView() {
   const { planningId } = useParams()
-  console.log(planningId)
+
+  const { data: planning, isLoading } = useQuery({
+    queryKey: ['planning', planningId],
+    queryFn: () => getPlanningById(Number(planningId)),
+    enabled: !!planningId,
+  })
+
   const [currentSection, setCurrentSection] = useState(1)
   const [referencias, setReferencias] = useState([
     {
@@ -63,7 +72,16 @@ export default function CreatePlanningView() {
         <div className="mx-auto rounded-3xl bg-white p-8 shadow-2xl">
           <PlanningFormHeader />
           {/* Render current section */}
-          {currentSection === 1 && <PlanningSection1 />}
+          {isLoading ? (
+            <LoadingApp />
+          ) : (
+            currentSection === 1 && (
+              <PlanningSection1 
+                generalData={planning?.GeneralData} 
+                subject={planning?.subject}
+              />
+            )
+          )}
           {currentSection === 2 && <PlanningSection2 />}
           {currentSection === 3 && <PlanningSection3 />}
           {currentSection === 4 && (

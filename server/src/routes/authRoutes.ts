@@ -1,3 +1,10 @@
+import {
+  authLimiter,
+  confirmAccountLimiter,
+  createAccountLimiter,
+  forgotPasswordLimiter,
+  loginLimiter,
+} from '@/config/limiter'
 import { AuthController } from '@/controllers/AuthController'
 import { authenticate } from '@/middleware/auth'
 import { handleInputErrors } from '@/middleware/validation'
@@ -6,9 +13,9 @@ import { body, param } from 'express-validator'
 
 const router: Router = Router()
 
-//router.use(limiter)
 router.post(
   '/create-account',
+  createAccountLimiter,
   body('name').notEmpty().withMessage('El nombre es obligatorio'),
   body('password')
     .isLength({ min: 8 })
@@ -24,6 +31,7 @@ router.post(
 
 router.post(
   '/confirm-account',
+  confirmAccountLimiter,
   body('token')
     .notEmpty()
     .isLength({ min: 6, max: 6 })
@@ -34,6 +42,7 @@ router.post(
 
 router.post(
   '/login',
+  loginLimiter,
   body('email').isEmail().withMessage('Correo electrónico inválido'),
   body('password').notEmpty().withMessage('La contraseña es obligatoria'),
   handleInputErrors,
@@ -42,6 +51,7 @@ router.post(
 
 router.post(
   '/request-code',
+  authLimiter,
   body('email').isEmail().withMessage('Correo electrónico inválido'),
   handleInputErrors,
   AuthController.requestConfirmationCode
@@ -49,6 +59,7 @@ router.post(
 
 router.post(
   '/forgot-password',
+  forgotPasswordLimiter,
   body('email').isEmail().withMessage('Correo electrónico inválido'),
   handleInputErrors,
   AuthController.forgotPassword
@@ -56,6 +67,7 @@ router.post(
 
 router.post(
   '/validate-token',
+  authLimiter,
   body('token').isLength({ min: 6, max: 6 }).withMessage('Token inválido'),
   handleInputErrors,
   AuthController.validateToken
@@ -63,6 +75,7 @@ router.post(
 
 router.post(
   '/reset-password/:token',
+  authLimiter,
   param('token').isLength({ min: 6, max: 6 }).withMessage('Token inválido'),
   body('password')
     .isLength({ min: 8 })

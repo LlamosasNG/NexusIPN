@@ -1,3 +1,4 @@
+import { readLimiter, writeLimiter } from '@/config/limiter'
 import { SubjectController } from '@/controllers/SubjectController'
 import { authenticate } from '@/middleware/auth'
 import { subjectExists } from '@/middleware/subject'
@@ -8,8 +9,10 @@ import { body, param } from 'express-validator'
 const router: Router = Router()
 
 router.use(authenticate)
+
 router.post(
   '/assign-subjects',
+  writeLimiter,
   body('subjectIds')
     .isArray({ min: 1, max: 5 })
     .withMessage('Debes seleccionar entre 1 y 5 materias'),
@@ -24,13 +27,14 @@ router.post(
   SubjectController.assign
 )
 
-router.get('/my-subjects', SubjectController.getByUser)
+router.get('/my-subjects', readLimiter, SubjectController.getByUser)
 
 router.param('subjectId', subjectExists)
-router.get('/:subjectId', SubjectController.subject)
+router.get('/:subjectId', readLimiter, SubjectController.subject)
 
 router.get(
   '/:academyId',
+  readLimiter,
   param('academyId')
     .isInt()
     .withMessage('El ID de la academia debe ser un número válido'),
@@ -40,6 +44,7 @@ router.get(
 
 router.delete(
   '/:subjectId',
+  writeLimiter,
   param('subjectId')
     .isInt()
     .withMessage('El ID de la materia debe ser un número válido'),

@@ -4,8 +4,74 @@ import { useAuth } from '@/hooks/useAuth'
 import type { GeneralDataFormValues } from '@/types'
 import { Controller, useForm } from 'react-hook-form'
 
-export function PlanningSection1() {
+interface SubjectData {
+  id: number
+  name: string
+  code: string
+  academicUnit: string
+  semester: string
+  areaFormation: string
+  modality: string
+  type: string[]
+  creditsTepic: number
+  weeksPerSemester: number
+  hoursPerSemester: {
+    theory: number
+    practice: number
+    total1: number
+    classroom: number
+    laboratory: number
+    clinic: number
+    other: number
+    total2: number
+  } | null
+  studyPlanNames: string[] | null
+}
+
+interface PlanningSection1Props {
+  generalData?: {
+    id?: number
+    academicUnit?: string
+    program?: string
+    learningUnit?: string
+    semester?: string
+    areaFormation?: string
+    modality?: string
+    unitType?: string[]
+    creditsTepic?: number
+    creditsSatca?: number
+    academy?: string
+    weeksPerSemester?: number
+    sessionsPerSemester?: {
+      classroom?: number
+      laboratory?: number
+      clinic?: number
+      other?: number
+      total?: number
+    }
+    hoursPerSemester?: {
+      theory?: number
+      practice?: number
+      total1?: number
+      classroom?: number
+      laboratory?: number
+      clinic?: number
+      other?: number
+      total2?: number
+    }
+    schoolPeriod?: string
+    groups?: string[]
+    teacherName?: string
+  }
+  subject?: SubjectData
+}
+
+export function PlanningSection1({ generalData, subject }: PlanningSection1Props) {
   const { data: user } = useAuth()
+  
+  const defaultProgram = generalData?.program || 
+    (subject?.studyPlanNames && subject.studyPlanNames.length > 0 ? subject.studyPlanNames[0] : '')
+
   const {
     control,
     register,
@@ -13,8 +79,43 @@ export function PlanningSection1() {
     formState: { errors },
   } = useForm<GeneralDataFormValues>({
     defaultValues: {
-      modality: 'Escolarizada',
-      type: ['Teórica'],
+      academicUnit: generalData?.academicUnit || subject?.academicUnit || '',
+      program: defaultProgram,
+      learningUnit: generalData?.learningUnit || subject?.name || '',
+      semester: generalData?.semester || subject?.semester || '',
+      areaFormation: generalData?.areaFormation || subject?.areaFormation || '',
+      modality: generalData?.modality as GeneralDataFormValues['modality'] || 
+        (subject?.modality as GeneralDataFormValues['modality']) || 'Escolarizada',
+      type: generalData?.unitType as GeneralDataFormValues['type'] || 
+        (subject?.type as GeneralDataFormValues['type']) || ['Teórica'],
+      credits: {
+        tepic: generalData?.creditsTepic || subject?.creditsTepic || 0,
+        satca: generalData?.creditsSatca || Math.round((subject?.creditsTepic || 0) * 0.8421) || 0,
+      },
+      academy: generalData?.academy ? { id: 0, name: generalData.academy } : { id: 0, name: '' },
+      weeksPerSemester: generalData?.weeksPerSemester || subject?.weeksPerSemester || 0,
+      sessionsPerSemester: generalData?.sessionsPerSemester || {
+        classroom: subject?.hoursPerSemester?.classroom || 0,
+        laboratory: subject?.hoursPerSemester?.laboratory || 0,
+        clinic: subject?.hoursPerSemester?.clinic || 0,
+        other: subject?.hoursPerSemester?.other || 0,
+        total: (subject?.hoursPerSemester?.classroom || 0) +
+          (subject?.hoursPerSemester?.laboratory || 0) +
+          (subject?.hoursPerSemester?.clinic || 0) +
+          (subject?.hoursPerSemester?.other || 0),
+      },
+      hoursPerSemester: generalData?.hoursPerSemester || subject?.hoursPerSemester || {
+        theory: 0,
+        practice: 0,
+        total1: 0,
+        classroom: 0,
+        laboratory: 0,
+        clinic: 0,
+        other: 0,
+        total2: 0,
+      },
+      period: generalData?.schoolPeriod || '',
+      groups: generalData?.groups || [],
       user: { name: user?.name },
     },
   })
