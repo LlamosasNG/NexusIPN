@@ -3,7 +3,7 @@ import { SubjectCardSchema } from '@/types'
 import { isAxiosError } from 'axios'
 import { z } from 'zod'
 
-export const getUserSubjects = async () => {
+export async function getUserSubjects() {
   try {
     const { data } = await api('/subjects/my-subjects')
     const response = z.array(SubjectCardSchema).safeParse(data)

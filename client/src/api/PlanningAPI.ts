@@ -20,3 +20,25 @@ export async function createPlanning({ subjectId, period }: PlanningAPIProps) {
     }
   }
 }
+
+export async function getPlannings() {
+  try {
+    const { data } = await api.get('/plannings')
+    return data
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.error)
+    }
+  }
+}
+
+export async function getPlanningById(planningId: number) {
+  try {
+    const { data } = await api.get(`/plannings/${planningId}`)
+    return data
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.error)
+    }
+  }
+}

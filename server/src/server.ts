@@ -20,6 +20,8 @@ async function connectDB() {
 }
 connectDB()
 const app: Express = express()
+
+//app.use(generalLimiter)
 app.use(cors(corsConfig))
 app.use(morgan('dev'))
 app.use(express.json())

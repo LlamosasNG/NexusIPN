@@ -3,7 +3,6 @@ import { getUserSubjects } from '@/api/SubjectAPI'
 import { LoadingApp } from '@/components/LoadingApp'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/useAuth'
-import type { SubjectCard } from '@/types'
 import {
   AcademicCapIcon,
   ArrowLeftIcon,
@@ -20,9 +19,9 @@ export default function ConfirmPlanningView() {
   const { subjectId } = useParams()
   const { data: user } = useAuth()
 
-  const { data: subjects, isLoading } = useQuery<SubjectCard[]>({
+  const { data: subjects, isLoading } = useQuery({
     queryKey: ['user-subjects'],
-    queryFn: () => getUserSubjects(),
+    queryFn: getUserSubjects,
   })
 
   const subject = subjects?.find((s) => s.id === Number(subjectId))

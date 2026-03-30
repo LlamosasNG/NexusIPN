@@ -1,4 +1,5 @@
 import { useAuth } from '@/hooks/useAuth'
+import { MyPlanningsCard } from '@/components/planning/MyPlanningsCard'
 import {
   DocumentTextIcon,
   FolderIcon,
@@ -107,6 +108,11 @@ export default function HomeTeacherView() {
             <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-[#7C2855]/10 to-transparent rounded-bl-full" />
           </Link>
         </div>
+      </div>
+
+      {/* Mis Planeaciones */}
+      <div className="mb-12">
+        <MyPlanningsCard />
       </div>
 
       {/* Sección de Acceso Rápido (Opcional) */}
