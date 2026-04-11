@@ -13,9 +13,7 @@ export class GeneralDataController {
       })
 
       if (!planning) {
-        return res
-          .status(404)
-          .json({ error: 'Planeación no encontrada' })
+        return res.status(404).json({ error: 'Planeación no encontrada' })
       }
 
       // Buscar si ya existen datos generales para esta planeación
@@ -26,7 +24,7 @@ export class GeneralDataController {
       if (existing) {
         // Actualizar
         await existing.update(req.body)
-        return res.json({ message: 'Datos generales actualizados', data: existing })
+        return res.json('Datos generales actualizados')
       }
 
       // Crear
@@ -35,7 +33,7 @@ export class GeneralDataController {
         ...req.body,
       })
 
-      res.status(201).json({ message: 'Datos generales guardados', data: generalData })
+      res.status(201).json('Datos generales guardados')
     } catch (error) {
       console.log(error)
       res.status(500).json({ error: 'Error al guardar los datos generales' })
@@ -51,9 +49,7 @@ export class GeneralDataController {
       })
 
       if (!generalData) {
-        return res
-          .status(404)
-          .json({ error: 'Datos generales no encontrados' })
+        return res.status(404).json({ error: 'Datos generales no encontrados' })
       }
 
       res.json(generalData)

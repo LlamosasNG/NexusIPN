@@ -1,5 +1,10 @@
 import api from '@/lib/axios'
-import type { CreatePlanningData, SubjectCard } from '@/types'
+import {
+  PlanningListSchema,
+  PlanningSubjectDetailsSchema,
+  type CreatePlanningData,
+  type SubjectCard,
+} from '@/types'
 import { isAxiosError } from 'axios'
 
 type PlanningAPIProps = {
@@ -24,7 +29,10 @@ export async function createPlanning({ subjectId, period }: PlanningAPIProps) {
 export async function getPlannings() {
   try {
     const { data } = await api.get('/plannings')
-    return data
+    const response = PlanningListSchema.safeParse(data)
+    if (response.success) {
+      return response.data
+    }
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       throw new Error(error.response.data.error)
@@ -35,7 +43,10 @@ export async function getPlannings() {
 export async function getPlanningById(planningId: number) {
   try {
     const { data } = await api.get(`/plannings/${planningId}`)
-    return data
+    const response = PlanningSubjectDetailsSchema.safeParse(data)
+    if (response.success) {
+      return response.data
+    }
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       throw new Error(error.response.data.error)

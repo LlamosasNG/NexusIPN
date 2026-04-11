@@ -1,5 +1,5 @@
+import type { Request } from 'express'
 import rateLimit from 'express-rate-limit'
-import type { Request, Response } from 'express'
 
 const standardHeaders = true
 const legacyHeaders = false
@@ -17,7 +17,8 @@ const messageAuth = {
 }
 
 const messageStrict = {
-  error: 'Haz alcanzado el límite de peticiones posibles. Intenta en 15 minutos.',
+  error:
+    'Haz alcanzado el límite de peticiones posibles. Intenta en 15 minutos.',
 }
 
 export const generalLimiter = rateLimit({
@@ -68,7 +69,8 @@ export const forgotPasswordLimiter = rateLimit({
   legacyHeaders,
   keyGenerator,
   message: {
-    error: 'Has solicitado demasiados códigos de recuperación. Intenta más tarde.',
+    error:
+      'Has solicitado demasiados códigos de recuperación. Intenta más tarde.',
   },
   skipSuccessfulRequests: true,
 })
@@ -99,7 +101,8 @@ export const writeLimiter = rateLimit({
   legacyHeaders,
   keyGenerator,
   message: {
-    error: 'Has excedido el límite de peticiones de escritura. Intenta más tarde.',
+    error:
+      'Has excedido el límite de peticiones de escritura. Intenta más tarde.',
   },
 })
 

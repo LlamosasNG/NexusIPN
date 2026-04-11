@@ -1,11 +1,6 @@
 import GeneralData from '@/models/GeneralData'
-import PlagiarismTool from '@/models/PlagiarismTool'
 import Planning, { PlanningStatus } from '@/models/Planning'
-import Reference from '@/models/Reference'
-import SessionActivity from '@/models/SessionActivity'
 import Subject from '@/models/Subject'
-import ThematicUnit from '@/models/ThematicUnit'
-import TransversalAxis from '@/models/TransversalAxis'
 import { Request, Response } from 'express'
 
 export class PlanningController {
@@ -39,11 +34,12 @@ export class PlanningController {
         status: PlanningStatus.DRAFT,
       })
 
-      const programName = subject.studyPlans && subject.studyPlans.length > 0
-        ? subject.studyPlans[0].name
-        : subject.studyPlanNames && subject.studyPlanNames.length > 0
-          ? subject.studyPlanNames[0]
-          : 'Plan de estudios'
+      const programName =
+        subject.studyPlans && subject.studyPlans.length > 0
+          ? subject.studyPlans[0].name
+          : subject.studyPlanNames && subject.studyPlanNames.length > 0
+            ? subject.studyPlanNames[0]
+            : 'Plan de estudios'
 
       await GeneralData.create({
         planningId: planning.id,
@@ -63,7 +59,8 @@ export class PlanningController {
           laboratory: subject.hoursPerSemester?.laboratory || 0,
           clinic: subject.hoursPerSemester?.clinic || 0,
           other: subject.hoursPerSemester?.other || 0,
-          total: (subject.hoursPerSemester?.classroom || 0) +
+          total:
+            (subject.hoursPerSemester?.classroom || 0) +
             (subject.hoursPerSemester?.laboratory || 0) +
             (subject.hoursPerSemester?.clinic || 0) +
             (subject.hoursPerSemester?.other || 0),
@@ -94,7 +91,12 @@ export class PlanningController {
     try {
       const plannings = await Planning.findAll({
         where: { userId: req.user.id },
-        include: [Subject],
+        include: [
+          {
+            model: Subject,
+            attributes: ['id', 'name', 'code'],
+          },
+        ],
         order: [['updatedAt', 'DESC']],
       })
       res.json(plannings)
@@ -112,17 +114,8 @@ export class PlanningController {
 
       const planning = await Planning.findOne({
         where: { id: planningId, userId: req.user.id },
-        include: [
-          GeneralData,
-          Subject,
-          TransversalAxis,
-          {
-            model: ThematicUnit,
-            include: [SessionActivity],
-          },
-          Reference,
-          PlagiarismTool,
-        ],
+        include: [Subject],
+        order: [['updatedAt', 'DESC']],
       })
 
       if (!planning) {
