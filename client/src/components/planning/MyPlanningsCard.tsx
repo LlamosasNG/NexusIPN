@@ -1,4 +1,5 @@
 import { getPlannings } from '@/api/PlanningAPI'
+import { LoadingApp } from '@/components/LoadingApp'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -7,14 +8,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { LoadingApp } from '@/components/LoadingApp'
-import { useQuery } from '@tanstack/react-query'
-import { Link } from 'react-router'
 import {
   ArrowRightIcon,
   DocumentTextIcon,
   PlusIcon,
 } from '@heroicons/react/24/solid'
+import { useQuery } from '@tanstack/react-query'
+import { Link } from 'react-router'
 
 const statusColors: Record<string, string> = {
   Borrador: 'bg-yellow-100 text-yellow-800',
@@ -57,9 +57,7 @@ export function MyPlanningsCard() {
             <DocumentTextIcon className="w-6 h-6 text-[#7C2855]" />
             Mis Planeaciones
           </CardTitle>
-          <CardDescription>
-            No tienes planeaciones creadas
-          </CardDescription>
+          <CardDescription>No tienes planeaciones creadas</CardDescription>
         </CardHeader>
         <CardContent>
           <Link
@@ -86,42 +84,44 @@ export function MyPlanningsCard() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
-        {plannings.map((planning: any) => (
-          <div
-            key={planning.id}
-            className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
-          >
-            <div className="flex-1 min-w-0">
-              <h4 className="font-semibold text-gray-900 truncate">
-                {planning.subject?.name || 'Materia'}
-              </h4>
-              <div className="flex items-center gap-3 mt-1">
-                <span className="text-sm text-gray-500">
-                  {planning.subject?.code}
-                </span>
-                <span className="text-sm text-gray-500">
-                  {planning.period}
-                </span>
-                <span
-                  className={`px-2 py-0.5 text-xs font-medium rounded-full ${
-                    statusColors[planning.status] || 'bg-gray-100 text-gray-800'
-                  }`}
-                >
-                  {planning.status}
-                </span>
+        {plannings &&
+          plannings.map((planning) => (
+            <div
+              key={planning.id}
+              className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+            >
+              <div className="flex-1 min-w-0">
+                <h4 className="font-semibold text-gray-900 truncate">
+                  {planning.subject.name}
+                </h4>
+                <div className="flex items-center gap-3 mt-1">
+                  <span className="text-sm text-gray-500">
+                    {planning.subject.code}
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    {planning.period}
+                  </span>
+                  <span
+                    className={`px-2 py-0.5 text-xs font-medium rounded-full ${
+                      statusColors[planning.status] ||
+                      'bg-gray-100 text-gray-800'
+                    }`}
+                  >
+                    {planning.status}
+                  </span>
+                </div>
               </div>
+              <Link to={`/plannings/${planning.id}`}>
+                <Button
+                  variant="outline"
+                  className="ml-4 border-[#7C2855] text-[#7C2855] hover:bg-[#7C2855] hover:text-white"
+                >
+                  Continuar
+                  <ArrowRightIcon className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
             </div>
-            <Link to={`/plannings/${planning.id}`}>
-              <Button
-                variant="outline"
-                className="ml-4 border-[#7C2855] text-[#7C2855] hover:bg-[#7C2855] hover:text-white"
-              >
-                Continuar
-                <ArrowRightIcon className="w-4 h-4 ml-2" />
-              </Button>
-            </Link>
-          </div>
-        ))}
+          ))}
       </CardContent>
     </Card>
   )

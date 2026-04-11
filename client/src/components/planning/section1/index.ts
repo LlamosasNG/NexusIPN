@@ -1,0 +1,5 @@
+export { IdentificationRow } from './IdentificationRow'
+export { SemesterModalityRow } from './SemesterModalityRow'
+export { UnitTypeCreditsRow } from './UnitTypeCreditsRow'
+export { SessionsHoursRow } from './SessionsHoursRow'
+export { TeacherRow } from './TeacherRow'

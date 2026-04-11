@@ -1,12 +1,11 @@
 import api from '@/lib/axios'
-import { SubjectCardSchema } from '@/types'
+import { SubjectCardListSchema } from '@/types'
 import { isAxiosError } from 'axios'
-import { z } from 'zod'
 
 export async function getUserSubjects() {
   try {
     const { data } = await api('/subjects/my-subjects')
-    const response = z.array(SubjectCardSchema).safeParse(data)
+    const response = SubjectCardListSchema.safeParse(data)
     if (response.success) {
       return response.data
     }

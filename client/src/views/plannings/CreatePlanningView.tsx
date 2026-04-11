@@ -1,3 +1,5 @@
+import { getPlanningById } from '@/api/PlanningAPI'
+import { LoadingApp } from '@/components/LoadingApp'
 import PlanningFooter from '@/components/planning/PlanningFooter'
 import { PlanningFormHeader } from '@/components/planning/PlanningFormHeader'
 import { PlanningNavigation } from '@/components/planning/PlanningNavigation'
@@ -6,11 +8,9 @@ import { PlanningSection2 } from '@/components/planning/PlanningSection2'
 import { PlanningSection3 } from '@/components/planning/PlanningSection3'
 import { PlanningSection4 } from '@/components/planning/PlanningSection4'
 import { PlanningSection5 } from '@/components/planning/PlanningSection5'
-import { getPlanningById } from '@/api/PlanningAPI'
-import { LoadingApp } from '@/components/LoadingApp'
+import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useParams } from 'react-router'
-import { useQuery } from '@tanstack/react-query'
 
 export default function CreatePlanningView() {
   const { planningId } = useParams()
@@ -76,10 +76,7 @@ export default function CreatePlanningView() {
             <LoadingApp />
           ) : (
             currentSection === 1 && (
-              <PlanningSection1 
-                generalData={planning?.GeneralData} 
-                subject={planning?.subject}
-              />
+              <PlanningSection1 subject={planning?.subject} />
             )
           )}
           {currentSection === 2 && <PlanningSection2 />}
