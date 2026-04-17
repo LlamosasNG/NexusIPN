@@ -3,6 +3,7 @@ import type {
   Control,
   FieldErrors,
   UseFormRegister,
+  UseFormSetValue,
   UseFormWatch,
 } from 'react-hook-form'
 
@@ -17,4 +18,5 @@ export type Section1ControlProps = Section1FormProps & {
 
 export type Section1WatchProps = Section1FormProps & {
   watch: UseFormWatch<GeneralDataFormValues>
+  setValue: UseFormSetValue<GeneralDataFormValues>
 }

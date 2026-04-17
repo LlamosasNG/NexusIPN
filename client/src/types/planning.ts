@@ -63,7 +63,7 @@ export const PlanningSubjectDetailsSchema = z.object({
     semester: z.string(),
     areaFormation: z.string(),
     modality: z.string(),
-    type: z.array(z.string()).nullable(),
+    type: z.array(z.string()),
     creditsTepic: z.number(),
     weeksPerSemester: z.number(),
     hoursPerSemester: z
@@ -98,17 +98,29 @@ export const modalitiesSchema = z.enum([
   'Mixta',
 ])
 
-export const typesSchema = z.array(
-  z.enum([
-    'Teórica',
-    'Práctica',
-    'Teórico-Práctica',
-    'Clínica',
-    'Obligatoria',
-    'Optativa',
-    'Tópicos Selectos',
-    'Otro',
-  ])
+const unitTypeValues = [
+  'Teórica',
+  'Práctica',
+  'Teórica-Práctica',
+  'Clínica',
+  'Obligatoria',
+  'Optativa',
+  'Tópicos Selectos',
+  'Otro',
+] as const
+
+export const typesSchema = z.preprocess(
+  (val) => {
+    if (!Array.isArray(val)) return val
+    return val.map((v) => {
+      if (typeof v !== 'string') return v
+      const match = unitTypeValues.find(
+        (expected) => expected.toLowerCase() === v.toLowerCase()
+      )
+      return match ?? v
+    })
+  },
+  z.array(z.enum(unitTypeValues))
 )
 
 export const GeneralDataSchema = z.object({
@@ -120,10 +132,8 @@ export const GeneralDataSchema = z.object({
   semester: z.string(),
   modality: modalitiesSchema,
   unitType: typesSchema,
-  credits: z.object({
-    tepic: z.coerce.number(),
-    satca: z.coerce.number(),
-  }),
+  creditsTepic: z.coerce.number(),
+  creditsSatca: z.coerce.number(),
   academy: z.string(),
   weeksPerSemester: z.coerce.number().int(),
   sessionsPerSemester: z.object({
@@ -143,13 +153,15 @@ export const GeneralDataSchema = z.object({
     other: z.coerce.number(),
     total2: z.coerce.number(),
   }),
-  period: z.string(),
-  groups: z.array(z.string()),
-  user: z.object({ name: z.string() }),
+  schoolPeriod: z.string(),
+  groups: z.preprocess(
+    (val) => (Array.isArray(val) ? val.join(', ') : val),
+    z.string()
+  ),
+  teacherName: z.string(),
 })
 export type GeneralData = z.infer<typeof GeneralDataSchema>
 
 /** Formulario de datos generales (sin id, para crear/editar) */
 export const GeneralDataFormSchema = GeneralDataSchema.omit({ id: true })
 export type GeneralDataFormValues = z.infer<typeof GeneralDataFormSchema>
-

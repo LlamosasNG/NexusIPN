@@ -1,12 +1,24 @@
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useEffect } from 'react'
 import type { Section1WatchProps } from './types'
 
 export function SessionsHoursRow({
   register,
   watch,
+  setValue,
   errors,
 }: Section1WatchProps) {
+  // Sync computed sessions total into form state
+  const classroom = Number(watch('sessionsPerSemester.classroom')) || 0
+  const laboratory = Number(watch('sessionsPerSemester.laboratory')) || 0
+  const clinic = Number(watch('sessionsPerSemester.clinic')) || 0
+  const other = Number(watch('sessionsPerSemester.other')) || 0
+  const sessionsTotal = classroom + laboratory + clinic + other
+
+  useEffect(() => {
+    setValue('sessionsPerSemester.total', sessionsTotal)
+  }, [sessionsTotal, setValue])
   return (
     <div className="grid grid-cols-4 gap-4">
       {/* 1.10 Semanas por semestre */}
@@ -58,14 +70,10 @@ export function SessionsHoursRow({
               <td className="border border-dashed border-gray-400 p-0">
                 <Input
                   id="aula"
-                  type="text"
+                  type="number"
                   className="w-full h-full text-center border-none outline-none rounded-none"
                   {...register('sessionsPerSemester.classroom', {
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message:
-                        'El número de sesiones en aula debe ser un número',
-                    },
+                    valueAsNumber: true,
                   })}
                 />
               </td>
@@ -79,14 +87,10 @@ export function SessionsHoursRow({
               <td className="border border-dashed border-gray-400 p-0">
                 <Input
                   id="lab"
-                  type="text"
+                  type="number"
                   className="w-full h-full text-center border-none outline-none rounded-none"
                   {...register('sessionsPerSemester.laboratory', {
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message:
-                        'El número de sesiones en laboratorio debe ser un número',
-                    },
+                    valueAsNumber: true,
                   })}
                 />
               </td>
@@ -100,14 +104,10 @@ export function SessionsHoursRow({
               <td className="border border-dashed border-gray-400 p-0">
                 <Input
                   id="clinic"
-                  type="text"
+                  type="number"
                   className="w-full h-full text-center border-none outline-none rounded-none"
                   {...register('sessionsPerSemester.clinic', {
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message:
-                        'El número de sesiones en clínica debe ser un número',
-                    },
+                    valueAsNumber: true,
                   })}
                 />
               </td>
@@ -121,14 +121,10 @@ export function SessionsHoursRow({
               <td className="border border-dashed border-gray-400 p-0">
                 <Input
                   id="other"
-                  type="text"
+                  type="number"
                   className="w-full h-full text-center border-none outline-none rounded-none"
                   {...register('sessionsPerSemester.other', {
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message:
-                        'El número de sesiones en otro debe ser un número',
-                    },
+                    valueAsNumber: true,
                   })}
                 />
               </td>
@@ -147,14 +143,12 @@ export function SessionsHoursRow({
               <td className="border border-dashed border-gray-400 p-0">
                 <Input
                   id="total"
-                  type="text"
-                  defaultValue={
-                    watch('sessionsPerSemester.classroom') +
-                    watch('sessionsPerSemester.laboratory') +
-                    watch('sessionsPerSemester.clinic') +
-                    watch('sessionsPerSemester.other')
-                  }
-                  className="w-full h-full text-center border-none outline-none rounded-none"
+                  type="number"
+                  readOnly
+                  className="w-full h-full text-center border-none outline-none rounded-none bg-gray-50 cursor-not-allowed"
+                  {...register('sessionsPerSemester.total', {
+                    valueAsNumber: true,
+                  })}
                 />
               </td>
             </tr>
@@ -182,17 +176,14 @@ export function SessionsHoursRow({
                   </Label>
                 </div>
               </td>
-              <td className="border border-dashed border-gray-400 p-0 w-1/4">
+              <td className="border border-dashed border-gray-400 px-1 w-1/4">
                 <Input
                   id="theory"
-                  type="text"
-                  className="w-full h-full text-center border-none outline-none rounded-none"
+                  type="number"
+                  className="w-full h-full text-center border-none outline-none rounded-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   {...register('hoursPerSemester.theory', {
                     required: 'Las horas de teoría son obligatorias',
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message: 'Las horas de teoría deben ser un número',
-                    },
+                    valueAsNumber: true,
                   })}
                 />
               </td>
@@ -203,17 +194,14 @@ export function SessionsHoursRow({
                   </Label>
                 </div>
               </td>
-              <td className="border border-dashed border-gray-400 p-0 w-1/4">
+              <td className="border border-dashed border-gray-400 px-1 w-1/2">
                 <Input
                   id="classroom"
-                  type="text"
-                  className="w-full h-full text-center border-none outline-none rounded-none"
+                  type="number"
+                  className="w-full h-full text-center border-none outline-none rounded-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   {...register('hoursPerSemester.classroom', {
                     required: 'Las horas de aula son obligatorias',
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message: 'Las horas de aula deben ser un número',
-                    },
+                    valueAsNumber: true,
                   })}
                 />
               </td>
@@ -226,17 +214,14 @@ export function SessionsHoursRow({
                   </Label>
                 </div>
               </td>
-              <td className="border border-dashed border-gray-400 p-0">
+              <td className="border border-dashed border-gray-400 px-1">
                 <Input
                   id="practice"
-                  type="text"
-                  className="w-full h-full text-center border-none outline-none rounded-none"
+                  type="number"
+                  className="w-full h-full text-center border-none outline-none rounded-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   {...register('hoursPerSemester.practice', {
                     required: 'Las horas de práctica son obligatorias',
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message: 'Las horas de práctica deben ser un número',
-                    },
+                    valueAsNumber: true,
                   })}
                 />
               </td>
@@ -247,18 +232,14 @@ export function SessionsHoursRow({
                   </Label>
                 </div>
               </td>
-              <td className="border border-dashed border-gray-400 p-0">
+              <td className="border border-dashed border-gray-400 px-1">
                 <Input
                   id="hlab"
-                  type="text"
-                  className="w-full h-full text-center border-none outline-none rounded-none"
+                  type="number"
+                  className="w-full h-full text-center border-none outline-none rounded-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   {...register('hoursPerSemester.laboratory', {
                     required: 'Las horas de laboratorio son obligatorias',
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message:
-                        'Las horas de laboratorio deben ser un número',
-                    },
+                    valueAsNumber: true,
                   })}
                 />
               </td>
@@ -271,17 +252,14 @@ export function SessionsHoursRow({
                   </Label>
                 </div>
               </td>
-              <td className="border border-dashed border-gray-400 p-0">
+              <td className="border border-dashed border-gray-400 px-1">
                 <Input
                   id="h1total"
-                  type="text"
-                  className="w-full h-full text-center border-none outline-none rounded-none font-semibold"
+                  type="number"
+                  className="w-full h-full text-center border-none outline-none rounded-none font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   {...register('hoursPerSemester.total1', {
                     required: 'El total es obligatorio',
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message: 'El total debe ser un número',
-                    },
+                    valueAsNumber: true,
                   })}
                 />
               </td>
@@ -292,17 +270,14 @@ export function SessionsHoursRow({
                   </Label>
                 </div>
               </td>
-              <td className="border border-dashed border-gray-400 p-0">
+              <td className="border border-dashed border-gray-400 px-1">
                 <Input
                   id="hclinic"
-                  type="text"
-                  className="w-full h-full text-center border-none outline-none rounded-none"
+                  type="number"
+                  className="w-full h-full text-center border-none outline-none rounded-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   {...register('hoursPerSemester.clinic', {
                     required: 'Las horas de clínica son obligatorias',
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message: 'Las horas de clínica deben ser un número',
-                    },
+                    valueAsNumber: true,
                   })}
                 />
               </td>
@@ -316,17 +291,14 @@ export function SessionsHoursRow({
                   </Label>
                 </div>
               </td>
-              <td className="border border-dashed border-gray-400 p-0">
+              <td className="border border-dashed border-gray-400 px-1">
                 <Input
                   id="hother"
-                  type="text"
-                  className="w-full h-full text-center border-none outline-none rounded-none"
+                  type="number"
+                  className="w-full h-full text-center border-none outline-none rounded-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   {...register('hoursPerSemester.other', {
                     required: 'Las horas de otros son obligatorias',
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message: 'Las horas de otros deben ser un número',
-                    },
+                    valueAsNumber: true,
                   })}
                 />
               </td>
@@ -341,17 +313,14 @@ export function SessionsHoursRow({
                   <span className="text-xs">(empatar con 3.9)</span>
                 </div>
               </td>
-              <td className="border border-dashed border-gray-400 p-0">
+              <td className="border border-dashed border-gray-400 px-1">
                 <Input
                   id="h2total"
-                  type="text"
-                  className="w-full h-full text-center border-none outline-none rounded-none font-semibold"
+                  type="number"
+                  className="w-full h-full text-center border-none outline-none rounded-none font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   {...register('hoursPerSemester.total2', {
                     required: 'El total de horas es obligatorio',
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message: 'El total de horas debe ser un número',
-                    },
+                    valueAsNumber: true,
                   })}
                 />
               </td>
@@ -372,7 +341,7 @@ export function SessionsHoursRow({
           <Input
             id="period"
             className="border-gray-400 rounded-none border-dashed text-center"
-            {...register('period', {
+            {...register('schoolPeriod', {
               required: 'El periodo es obligatorio',
             })}
           />

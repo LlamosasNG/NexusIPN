@@ -12,11 +12,17 @@ export async function createGeneralData({
   formData,
 }: CreateGeneralData) {
   try {
+    const payload = {
+      ...formData,
+      groups: formData.groups
+        .split(',')
+        .map((g) => g.trim())
+        .filter(Boolean),
+    }
     const { data } = await api.post<string>(
       `/plannings/${planningId}/general-data`,
-      formData
+      payload
     )
-    console.log(data)
     return data
   } catch (error) {
     if (isAxiosError(error) && error.response) {
@@ -32,6 +38,7 @@ export async function getGeneralData(planningId: string) {
     if (response.success) {
       return response.data
     }
+    console.error('GeneralData validation errors:', response.error.issues)
     return null
   } catch (error) {
     if (isAxiosError(error) && error.response) {
