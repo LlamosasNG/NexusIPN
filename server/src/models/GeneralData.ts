@@ -80,7 +80,7 @@ export default class GeneralData extends Model {
 
   @Column({
     type: DataType.FLOAT,
-  })
+  })  
   declare creditsSatca: number
 
   // 1.9 Academia

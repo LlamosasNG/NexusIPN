@@ -22,7 +22,7 @@ export const SubjectSchema = z.object({
   semester: z.string(),
   areaFormation: z.string(),
   modality: z.string(),
-  type: z.array(z.string()).nullable(),
+  type: z.array(z.string()),
   creditsTepic: z.number(),
   weeksPerSemester: z.number(),
   hoursPerSemester: z

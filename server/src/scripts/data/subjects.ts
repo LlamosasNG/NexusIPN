@@ -52,7 +52,7 @@ export const subjectsByAcademy = [
         semester: 'I',
         areaFormation: 'Médico-Biológica',
         modality: 'Escolarizada ',
-        type: ['Teórico-práctico'],
+        type: ['Teórica-práctica'],
         creditsTepic: 7.0,
         weeksPerSemester: 18,
         hoursPerSemester: {
@@ -118,7 +118,7 @@ export const subjectsByAcademy = [
         semester: 'I',
         areaFormation: 'Ciencias Básicas Biomédicas',
         modality: 'Escolarizada',
-        type: ['Teórica y práctica'],
+        type: ['Teórica-práctica'],
         creditsTepic: 12.0,
         weeksPerSemester: 18,
         hoursPerSemester: {
@@ -151,7 +151,7 @@ export const subjectsByAcademy = [
       },
       {
         code: 'M-201',
-        name: 'Anatomía humana II',
+        name: 'Anatomía Humana II',
         academicUnit: 'Escuela Nacional de Medicina y Homeopatía',
         studyPlans: [
           'Médico Cirujano y Homeópata',
@@ -243,7 +243,7 @@ export const subjectsByAcademy = [
       },
       {
         code: 'F-201',
-        name: 'Fisiología humana I',
+        name: 'Fisiología Humana I',
         academicUnit: 'Escuela Nacional de Medicina y Homeopatía',
         studyPlans: [
           'Médico Cirujano y Homeópata',
@@ -288,7 +288,7 @@ export const subjectsByAcademy = [
       },
       {
         code: 'F-202',
-        name: 'Bioquímica médica II',
+        name: 'Bioquímica Médica II',
         academicUnit: 'Escuela Nacional de Medicina y Homeopatía',
         studyPlans: [
           'Médico Cirujano y Homeópata',
@@ -452,7 +452,7 @@ export const subjectsByAcademy = [
       },
       {
         code: 'ASP-202',
-        name: 'Sociología médica',
+        name: 'Sociología Médica',
         academicUnit: 'Escuela Nacional de Medicina y Homeopatía',
         studyPlans: [
           'Médico Cirujano y Homeópata',
@@ -491,7 +491,7 @@ export const subjectsByAcademy = [
       },
       {
         code: 'ASP-103',
-        name: 'Búsqueda electrónica de información',
+        name: 'Búsqueda Electrónica de Información',
         academicUnit: 'Escuela Nacional de Medicina y Homeopatía',
         studyPlans: [
           'Médico Cirujano y Homeópata',
@@ -528,7 +528,7 @@ export const subjectsByAcademy = [
       },
       {
         code: 'ASP-104',
-        name: 'Estrategias de comprensión de lectura y comunicación',
+        name: 'Estrategias de Comprensión de Lectura y Comunicación',
         academicUnit: 'Escuela Nacional de Medicina y Homeopatía',
         studyPlans: [
           'Médico Cirujano y Homeópata',
@@ -564,7 +564,7 @@ export const subjectsByAcademy = [
       },
       {
         code: 'ASP-105',
-        name: 'Análisis de información',
+        name: 'Análisis de Información',
         academicUnit: 'Escuela Nacional de Medicina y Homeopatía',
         studyPlans: [
           'Médico Cirujano y Homeópata',
@@ -630,7 +630,7 @@ export const subjectsByAcademy = [
       },
       {
         code: 'ASP-107',
-        name: 'Cultura de la calidad',
+        name: 'Cultura de la Calidad',
         academicUnit: 'Escuela Nacional de Medicina y Homeopatía',
         studyPlans: [
           'Médico Cirujano y Homeópata',
@@ -706,7 +706,7 @@ export const subjectsByAcademy = [
       },
       {
         code: 'TH-201',
-        name: 'Bases doctrinarias de la Homeopatía',
+        name: 'Bases Doctrinales de la Homeopatía',
         academicUnit: 'Escuela Nacional de Medicina y Homeopatía',
         studyPlans: ['Médico Cirujano y Homeópata'],
         semester: 'II',
@@ -742,7 +742,7 @@ export const subjectsByAcademy = [
       },
       {
         code: 'TH-102',
-        name: 'Historia y filosofía de la medicina',
+        name: 'Historia y Filosofía de la Medicina',
         academicUnit: 'Escuela Nacional de Medicina y Homeopatía',
         studyPlans: ['Médico Cirujano y Partero'],
         semester: 'I',
@@ -783,7 +783,7 @@ export const subjectsByAcademy = [
     subjects: [
       {
         code: 'C-101',
-        name: 'Reanimación cardiopulmonar básica y avanzada',
+        name: 'Reanimación Cardiopulmonar Básica y Avanzada',
         academicUnit: 'Escuela Nacional de Medicina y Homeopatía',
         studyPlans: [
           'Médico Cirujano y Homeópata',
@@ -822,7 +822,7 @@ export const subjectsByAcademy = [
       },
       {
         code: 'C-102',
-        name: 'Atención prehospitalaria I',
+        name: 'Atención Prehospitalaria I',
         academicUnit: 'Escuela Nacional de Medicina y Homeopatía',
         studyPlans: [
           'Médico Cirujano y Homeópata',
@@ -861,7 +861,7 @@ export const subjectsByAcademy = [
       },
       {
         code: 'C-103',
-        name: 'Atención prehospitalaria II',
+        name: 'Atención Prehospitalaria II',
         academicUnit: 'Escuela Nacional de Medicina y Homeopatía',
         studyPlans: [
           'Médico Cirujano y Homeópata',

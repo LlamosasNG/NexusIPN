@@ -2,20 +2,26 @@ import { ArrowRightIcon } from '@heroicons/react/24/outline'
 
 import {
   AcademicCapIcon,
+  BookOpenIcon,
   CheckBadgeIcon,
-  FaceSmileIcon,
+  ClipboardDocumentListIcon,
+  DevicePhoneMobileIcon,
+  FolderOpenIcon,
+  ShieldCheckIcon,
   UserGroupIcon,
+  ChartBarIcon,
 } from '@heroicons/react/24/solid'
 import { Link } from 'react-router'
 
 export default function DashboardView() {
   return (
     <div className="max-w-6xl mx-auto">
+      {/* ── Hero Section ── */}
       <div className="relative mb-12">
         <div className="relative bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
           {/* Elementos decorativos */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#7C2855]/5 to-transparent rounded-full -mr-32 -mt-32" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-[#D4AF37]/5 to-transparent rounded-full -ml-24 -mb-24" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-linear-to-br from-[#7C2855]/5 to-transparent rounded-full -mr-32 -mt-32" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-linear-to-tr from-[#D4AF37]/5 to-transparent rounded-full -ml-24 -mb-24" />
 
           {/* Contenido - Layout horizontal */}
           <div className="relative z-10 p-8 sm:p-12">
@@ -23,7 +29,7 @@ export default function DashboardView() {
               {/* Logo - Lado Izquierdo */}
               <div className="flex justify-center">
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#7C2855] to-[#D4AF37] rounded-2xl blur-2xl opacity-20 group-hover:opacity-30 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-linear-to-r from-[#7C2855] to-[#D4AF37] rounded-2xl blur-2xl opacity-20 group-hover:opacity-30 transition-opacity duration-300" />
                   <div className="relative">
                     <img
                       src="/logo_nexusipn.png"
@@ -36,12 +42,17 @@ export default function DashboardView() {
 
               {/* Información - Lado Derecho */}
               <div className="space-y-6 text-center lg:text-left">
+                {/* Badge */}
+                <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#D4AF37]/10 text-[#7C2855] text-sm font-semibold tracking-wide uppercase">
+                  Portal Docente
+                </span>
+
                 {/* Título */}
                 <div>
-                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-[#7C2855] to-[#5a1d3f] bg-clip-text text-transparent mb-3">
+                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-linear-to-r from-[#7C2855] to-[#5a1d3f] bg-clip-text text-transparent mb-3">
                     Bienvenido a Nexus IPN
                   </h1>
-                  <div className="h-1 bg-gradient-to-r from-[#D4AF37] via-[#D4AF37] to-transparent rounded-full w-32 mx-auto lg:mx-0" />
+                  <div className="h-1 bg-linear-to-r from-[#D4AF37] via-[#D4AF37] to-transparent rounded-full w-32 mx-auto lg:mx-0" />
                 </div>
 
                 {/* Subtítulo */}
@@ -51,34 +62,43 @@ export default function DashboardView() {
 
                 {/* Descripción */}
                 <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
-                  Plataforma diseñada para el{' '}
+                  Plataforma del{' '}
                   <span className="font-semibold text-[#7C2855]">
                     Instituto Politécnico Nacional
                   </span>{' '}
-                  que conecta a estudiantes y docentes, facilitando la
-                  administración de materias, calificaciones y recursos
-                  educativos de manera{' '}
+                  para la gestión de planificaciones didácticas, recursos
+                  educativos y seguimiento académico de manera{' '}
                   <span className="font-semibold text-[#7C2855]">
                     eficiente
                   </span>
-                  ,<span className="font-semibold text-[#7C2855]"> segura</span>{' '}
+                  ,
+                  <span className="font-semibold text-[#7C2855]"> segura</span>{' '}
                   y{' '}
                   <span className="font-semibold text-[#7C2855]">moderna</span>.
                 </p>
 
+                {/* CTA Principal */}
+                <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                  <Link
+                    to="/auth/login"
+                    id="login-cta"
+                    className="group inline-flex items-center gap-3 px-8 py-4 bg-linear-to-r from-[#7C2855] to-[#5a1d3f] text-white font-bold text-lg rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300"
+                  >
+                    <AcademicCapIcon className="w-6 h-6" />
+                    Iniciar Sesión
+                    <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                  </Link>
+                </div>
+
                 {/* Badges informativos */}
                 <div className="flex flex-wrap justify-center lg:justify-start gap-3 pt-2">
                   <span className="inline-flex items-center px-4 py-2 rounded-full bg-[#7C2855]/10 text-[#7C2855] text-sm font-medium">
-                    <FaceSmileIcon className="w-4 h-4 mr-2" />
+                    <CheckBadgeIcon className="w-4 h-4 mr-2" />
                     Seguro y Confiable
                   </span>
                   <span className="inline-flex items-center px-4 py-2 rounded-full bg-[#D4AF37]/10 text-[#7C2855] text-sm font-medium">
                     <UserGroupIcon className="w-4 h-4 mr-2" />
                     Colaborativo
-                  </span>
-                  <span className="inline-flex items-center px-4 py-2 rounded-full bg-[#7C2855]/10 text-[#7C2855] text-sm font-medium">
-                    <CheckBadgeIcon className="w-4 h-4 mr-2" />
-                    Rápido y Eficiente
                   </span>
                 </div>
               </div>
@@ -87,70 +107,37 @@ export default function DashboardView() {
         </div>
       </div>
 
-      {/* Botones de Navegación */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Botón para Estudiantes */}
-        <Link
-          to="/register-code"
-          className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-transparent hover:border-[#7C2855]"
-        >
-          <div className="p-8">
-            <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#7C2855] to-[#5a1d3f] rounded-xl mb-6 group-hover:scale-110 transition-transform duration-300">
-              <UserGroupIcon className="w-10 h-10 text-white" />
+      {/* ── Stats Bar ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-16">
+        {[
+          { label: 'Planificaciones', icon: ClipboardDocumentListIcon, desc: 'Crea y gestiona' },
+          { label: 'Recursos Digitales', icon: FolderOpenIcon, desc: 'Organiza y comparte' },
+          { label: 'Materias Activas', icon: BookOpenIcon, desc: 'Consulta y administra' },
+        ].map((stat) => (
+          <div
+            key={stat.label}
+            className="group flex items-center gap-4 bg-white rounded-2xl shadow-md border border-gray-100 p-6 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+          >
+            <div className="flex items-center justify-center w-12 h-12 bg-linear-to-br from-[#7C2855] to-[#5a1d3f] rounded-xl group-hover:scale-110 transition-transform duration-300">
+              <stat.icon className="w-6 h-6 text-white" />
             </div>
-
-            <h2 className="text-2xl font-bold text-gray-900 mb-3">
-              Eres Estudiante
-            </h2>
-
-            <p className="text-gray-600 leading-relaxed">
-              Accede a tus materias, consulta tus calificaciones y gestiona tus
-              inscripciones.
-            </p>
-
-            <div className="mt-6 flex items-center text-[#7C2855] font-semibold group-hover:translate-x-2 transition-transform duration-300">
-              Acceder
-              <ArrowRightIcon className="w-5 h-5 ml-2" />
+            <div>
+              <p className="text-sm font-semibold text-gray-800">{stat.label}</p>
+              <p className="text-xs text-[#D4AF37] font-medium mt-0.5">
+                {stat.desc}
+              </p>
             </div>
           </div>
-
-          {/* Decorative element */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-bl-full" />
-        </Link>
-
-        {/* Botón para Docentes */}
-        <Link
-          to="/auth/login"
-          className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-transparent hover:border-[#7C2855]"
-        >
-          <div className="p-8">
-            <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#7C2855] to-[#5a1d3f] rounded-xl mb-6 group-hover:scale-110 transition-transform duration-300">
-              <AcademicCapIcon className="w-10 h-10 text-white" />
-            </div>
-
-            <h2 className="text-2xl font-bold text-gray-900 mb-3">
-              Eres Docente
-            </h2>
-
-            <p className="text-gray-600 leading-relaxed">
-              Accede a tus materias, gestiona tus grupos y evaluaciones.
-            </p>
-
-            <div className="mt-6 flex items-center text-[#7C2855] font-semibold group-hover:translate-x-2 transition-transform duration-300">
-              Acceder
-              <ArrowRightIcon className="w-5 h-5 ml-2" />
-            </div>
-          </div>
-
-          {/* Decorative element */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-bl-full" />
-        </Link>
+        ))}
       </div>
 
-      {/* Sección: ¿Qué es NexusIPN? */}
-      <div className="mt-16 bg-gradient-to-br from-[#7C2855] to-[#5a1d3f] rounded-3xl shadow-xl overflow-hidden">
+      {/* ── Sección: ¿Qué es NexusIPN? ── */}
+      <div className="mt-16 bg-linear-to-br from-[#7C2855] to-[#5a1d3f] rounded-3xl shadow-xl overflow-hidden">
         <div className="p-8 sm:p-12">
           <div className="max-w-4xl mx-auto text-center text-white">
+            <p className="text-sm font-semibold tracking-widest text-[#e8c96f] uppercase mb-3">
+              Acerca de la plataforma
+            </p>
             <h2 className="text-3xl sm:text-4xl font-bold mb-6">
               ¿Qué es NexusIPN?
             </h2>
@@ -161,23 +148,20 @@ export default function DashboardView() {
                 <span className="font-semibold">
                   Instituto Politécnico Nacional
                 </span>
-                , diseñada para revolucionar la manera en que docentes y
-                estudiantes gestionan sus actividades académicas.
+                , diseñada para revolucionar la manera en que los docentes
+                gestionan sus actividades académicas.
               </p>
               <p>
                 Nuestro sistema centraliza la{' '}
                 <span className="font-semibold text-[#e8c96f]">
                   gestión de planificaciones didácticas
                 </span>{' '}
-                y
+                y{' '}
                 <span className="font-semibold text-[#e8c96f]">
-                  {' '}
                   recursos digitales
                 </span>
-                , permitiendo a los docentes crear, organizar y compartir
-                contenido educativo de manera eficiente, mientras que los
-                estudiantes acceden a materiales de estudio, consultan sus
-                avances y mantienen una comunicación fluida con sus profesores.
+                , permitiendo crear, organizar y compartir contenido educativo de
+                manera eficiente, optimizando el tiempo y esfuerzo del docente.
               </p>
               <p>
                 Con NexusIPN, transformamos la experiencia educativa en un
@@ -185,39 +169,35 @@ export default function DashboardView() {
                 dispositivo, en cualquier momento.
               </p>
             </div>
+
+            {/* Divider dorado */}
+            <div className="mt-8 flex justify-center">
+              <div className="h-0.5 w-24 bg-linear-to-r from-transparent via-[#D4AF37] to-transparent rounded-full" />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Sección: Características Principales */}
+      {/* ── Sección: Características Principales ── */}
       <div className="mt-16">
         <div className="text-center mb-12">
+          <p className="text-sm font-semibold tracking-widest text-[#D4AF37] uppercase mb-2">
+            Herramientas para el docente
+          </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
             Características Principales
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Descubre las herramientas que hacen de NexusIPN la solución perfecta
-            para la gestión académica
+            para la gestión académica docente
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Característica 1: Planificaciones Didácticas */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 border-t-4 border-[#7C2855]">
-            <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-[#7C2855] to-[#5a1d3f] rounded-xl mb-4">
-              <svg
-                className="w-8 h-8 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
+          <div className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-t-4 border-[#7C2855]">
+            <div className="flex items-center justify-center w-14 h-14 bg-linear-to-br from-[#7C2855] to-[#5a1d3f] rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
+              <ClipboardDocumentListIcon className="w-8 h-8 text-white" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-3">
               Planificaciones Didácticas
@@ -230,21 +210,9 @@ export default function DashboardView() {
           </div>
 
           {/* Característica 2: Recursos Digitales */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 border-t-4 border-[#D4AF37]">
-            <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-[#D4AF37] to-[#e8c96f] rounded-xl mb-4">
-              <svg
-                className="w-8 h-8 text-[#7C2855]"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
-                />
-              </svg>
+          <div className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-t-4 border-[#D4AF37]">
+            <div className="flex items-center justify-center w-14 h-14 bg-linear-to-br from-[#D4AF37] to-[#e8c96f] rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
+              <FolderOpenIcon className="w-8 h-8 text-[#7C2855]" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-3">
               Gestión de Recursos
@@ -257,21 +225,9 @@ export default function DashboardView() {
           </div>
 
           {/* Característica 3: Seguimiento Académico */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 border-t-4 border-[#7C2855]">
-            <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-[#7C2855] to-[#5a1d3f] rounded-xl mb-4">
-              <svg
-                className="w-8 h-8 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                />
-              </svg>
+          <div className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-t-4 border-[#7C2855]">
+            <div className="flex items-center justify-center w-14 h-14 bg-linear-to-br from-[#7C2855] to-[#5a1d3f] rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
+              <ChartBarIcon className="w-8 h-8 text-white" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-3">
               Seguimiento de Progreso
@@ -284,21 +240,9 @@ export default function DashboardView() {
           </div>
 
           {/* Característica 4: Colaboración */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 border-t-4 border-[#D4AF37]">
-            <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-[#D4AF37] to-[#e8c96f] rounded-xl mb-4">
-              <svg
-                className="w-8 h-8 text-[#7C2855]"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
+          <div className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-t-4 border-[#D4AF37]">
+            <div className="flex items-center justify-center w-14 h-14 bg-linear-to-br from-[#D4AF37] to-[#e8c96f] rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
+              <UserGroupIcon className="w-8 h-8 text-[#7C2855]" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-3">
               Colaboración Docente
@@ -310,21 +254,9 @@ export default function DashboardView() {
           </div>
 
           {/* Característica 5: Acceso Multiplataforma */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 border-t-4 border-[#7C2855]">
-            <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-[#7C2855] to-[#5a1d3f] rounded-xl mb-4">
-              <svg
-                className="w-8 h-8 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
-                />
-              </svg>
+          <div className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-t-4 border-[#7C2855]">
+            <div className="flex items-center justify-center w-14 h-14 bg-linear-to-br from-[#7C2855] to-[#5a1d3f] rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
+              <DevicePhoneMobileIcon className="w-8 h-8 text-white" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-3">
               Acceso desde Cualquier Lugar
@@ -337,21 +269,9 @@ export default function DashboardView() {
           </div>
 
           {/* Característica 6: Seguridad */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 border-t-4 border-[#D4AF37]">
-            <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-[#D4AF37] to-[#e8c96f] rounded-xl mb-4">
-              <svg
-                className="w-8 h-8 text-[#7C2855]"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                />
-              </svg>
+          <div className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-t-4 border-[#D4AF37]">
+            <div className="flex items-center justify-center w-14 h-14 bg-linear-to-br from-[#D4AF37] to-[#e8c96f] rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
+              <ShieldCheckIcon className="w-8 h-8 text-[#7C2855]" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-3">
               Seguridad y Privacidad
@@ -362,6 +282,28 @@ export default function DashboardView() {
               información académica.
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* ── CTA Final ── */}
+      <div className="mt-16 mb-8 text-center">
+        <div className="bg-linear-to-r from-[#7C2855]/5 via-[#D4AF37]/5 to-[#7C2855]/5 rounded-3xl p-10 sm:p-14 border border-gray-100">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+            ¿Listo para comenzar?
+          </h2>
+          <p className="text-gray-600 text-lg mb-8 max-w-xl mx-auto">
+            Accede a tu panel docente y comienza a gestionar tus planificaciones
+            y recursos educativos.
+          </p>
+          <Link
+            to="/auth/login"
+            id="login-cta-bottom"
+            className="group inline-flex items-center gap-3 px-10 py-4 bg-linear-to-r from-[#7C2855] to-[#5a1d3f] text-white font-bold text-lg rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300"
+          >
+            <AcademicCapIcon className="w-6 h-6" />
+            Iniciar Sesión como Docente
+            <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+          </Link>
         </div>
       </div>
     </div>

@@ -1,4 +1,3 @@
-import GeneralData from '@/models/GeneralData'
 import Planning, { PlanningStatus } from '@/models/Planning'
 import Subject from '@/models/Subject'
 import { Request, Response } from 'express'
@@ -27,59 +26,12 @@ export class PlanningController {
         return res.status(404).json({ error: 'Materia no encontrada' })
       }
 
-      const planning = await Planning.create({
+      await Planning.create({
         userId,
         subjectId,
         period: req.userSubject.period,
         status: PlanningStatus.DRAFT,
       })
-
-      const programName =
-        subject.studyPlans && subject.studyPlans.length > 0
-          ? subject.studyPlans[0].name
-          : subject.studyPlanNames && subject.studyPlanNames.length > 0
-            ? subject.studyPlanNames[0]
-            : 'Plan de estudios'
-
-      await GeneralData.create({
-        planningId: planning.id,
-        academicUnit: subject.academicUnit,
-        program: programName,
-        learningUnit: subject.name,
-        semester: subject.semester,
-        areaFormation: subject.areaFormation,
-        modality: subject.modality,
-        unitType: subject.type || [],
-        creditsTepic: subject.creditsTepic,
-        creditsSatca: subject.creditsTepic * 0.8421,
-        academy: subject.academy?.name || 'Academia',
-        weeksPerSemester: subject.weeksPerSemester,
-        sessionsPerSemester: {
-          classroom: subject.hoursPerSemester?.classroom || 0,
-          laboratory: subject.hoursPerSemester?.laboratory || 0,
-          clinic: subject.hoursPerSemester?.clinic || 0,
-          other: subject.hoursPerSemester?.other || 0,
-          total:
-            (subject.hoursPerSemester?.classroom || 0) +
-            (subject.hoursPerSemester?.laboratory || 0) +
-            (subject.hoursPerSemester?.clinic || 0) +
-            (subject.hoursPerSemester?.other || 0),
-        },
-        hoursPerSemester: subject.hoursPerSemester || {
-          theory: 0,
-          practice: 0,
-          total1: 0,
-          classroom: 0,
-          laboratory: 0,
-          clinic: 0,
-          other: 0,
-          total2: 0,
-        },
-        schoolPeriod: req.userSubject.period,
-        groups: [],
-        teacherName: req.user.name,
-      })
-
       res.status(201).json('Planeación creada correctamente')
     } catch (error) {
       console.log(error)

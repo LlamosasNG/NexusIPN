@@ -23,6 +23,7 @@ function buildDefaultValues(
   subject: Subject,
   generalData?: GeneralDataFormValues | null,
   userName?: string,
+  academyName?: string
 ): GeneralDataFormValues {
   return {
     academicUnit: generalData?.academicUnit || subject?.academicUnit || '',
@@ -36,14 +37,9 @@ function buildDefaultValues(
       'Escolarizada',
     unitType: (generalData?.unitType as GeneralDataFormValues['unitType']) ||
       (subject?.type as GeneralDataFormValues['unitType']) || ['Teórica'],
-    credits: {
-      tepic: generalData?.credits?.tepic || subject?.creditsTepic || 0,
-      satca:
-        generalData?.credits?.satca ||
-        Math.round((subject?.creditsTepic || 0) * 0.8421) ||
-        0,
-    },
-    academy: generalData?.academy || '',
+    creditsTepic: generalData?.creditsTepic || subject?.creditsTepic || 0,
+    creditsSatca: generalData?.creditsSatca || 0,
+    academy: generalData?.academy || academyName || '',
     weeksPerSemester:
       generalData?.weeksPerSemester || subject?.weeksPerSemester || 0,
     sessionsPerSemester: generalData?.sessionsPerSemester || {
@@ -64,9 +60,9 @@ function buildDefaultValues(
         other: 0,
         total2: 0,
       },
-    period: generalData?.period || '',
-    groups: generalData?.groups || [],
-    user: { name: userName || '' },
+    schoolPeriod: generalData?.schoolPeriod || '',
+    groups: generalData?.groups || '',
+    teacherName: generalData?.teacherName || userName || '',
   }
 }
 
@@ -78,6 +74,7 @@ export function PlanningSection1({ subject }: PlanningSection1Props) {
   const { data: generalData, isLoading } = useQuery({
     queryKey: ['general-data', planningId],
     queryFn: () => getGeneralData(planningId),
+    retry: false
   })
 
   const { mutate } = useMutation({
@@ -96,21 +93,23 @@ export function PlanningSection1({ subject }: PlanningSection1Props) {
     handleSubmit,
     watch,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<GeneralDataFormValues>({
-    defaultValues: buildDefaultValues(subject, null, user?.name),
+    defaultValues: buildDefaultValues(subject, null, user?.name, user?.academy?.name),
   })
 
   // Cuando generalData llega del servidor, actualiza el formulario
   useEffect(() => {
     if (generalData) {
-      reset(buildDefaultValues(subject, generalData, user?.name))
+      reset(buildDefaultValues(subject, generalData, user?.name, user?.academy?.name))
     }
-  }, [generalData, reset, subject, user?.name])
+  }, [generalData, reset, subject, user?.name, user?.academy?.name])
 
   if (isLoading) return <LoadingApp />
 
   const handleSend = (formData: GeneralDataFormValues) => {
+    console.log(formData)
     mutate({ planningId, formData })
   }
 
@@ -142,7 +141,7 @@ export function PlanningSection1({ subject }: PlanningSection1Props) {
         />
 
         {/* Row 4: 1.10-1.14 */}
-        <SessionsHoursRow register={register} watch={watch} errors={errors} />
+        <SessionsHoursRow register={register} watch={watch} setValue={setValue} errors={errors} />
 
         {/* Row 5: 1.15 */}
         <TeacherRow userName={user?.name || ''} />
