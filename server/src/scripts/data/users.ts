@@ -9,57 +9,64 @@
 
 export const users = [
   {
-    name: 'Juan Pérez García',
-    email: 'usuario.demo@example.edu.mx',
-    password: 'ChangeMeDemo-2026!', // Se hasheará en el seed
+    name: "Juan Pérez García",
+    email: "usuario.demo@example.edu.mx",
+    password: "ChangeMeDemo-2026!", // Se hasheará en el seed
     academyId: 2, // Academia de Homeopatía
-    role: 'Docente' as const,
+    role: "Docente" as const,
     confirmed: true,
-    subjectCodes: ['TH-101', 'TH-201', 'TH-102'], // Materias que imparte
+    subjectCodes: ["TH-101", "TH-201", "TH-102"], // Materias que imparte
   },
   {
-    name: 'María López Hernández',
-    email: 'usuario.demo@example.edu.mx',
-    password: 'ChangeMeDemo-2026!',
+    name: "María López Hernández",
+    email: "usuario.demo@example.edu.mx",
+    password: "ChangeMeDemo-2026!",
     academyId: 5, // Academia de Ciencias Básicas
-    role: 'Docente' as const,
+    role: "Docente" as const,
     confirmed: true,
-    subjectCodes: ['M-101', 'M-102', 'M-103', 'M-201'],
+    subjectCodes: ["M-101", "M-102", "M-103", "M-201"],
   },
   {
-    name: 'Carlos Rodríguez Sánchez',
-    email: 'usuario.demo@example.edu.mx',
-    password: 'ChangeMeDemo-2026!',
+    name: "Carlos Rodríguez Sánchez",
+    email: "usuario.demo@example.edu.mx",
+    password: "ChangeMeDemo-2026!",
     academyId: 3, // Academia de Acupuntura y Rehabilitación
-    role: 'Docente' as const,
+    role: "Docente" as const,
     confirmed: true,
-    subjectCodes: ['M-101', 'M-102', 'M-103', 'M-201'],
+    subjectCodes: ["M-101", "M-102", "M-103", "M-201"],
   },
   {
-    name: 'Ana Martínez Torres',
-    email: 'usuario.demo@example.edu.mx',
-    password: 'ChangeMeDemo-2026!',
+    name: "Ana Martínez Torres",
+    email: "usuario.demo@example.edu.mx",
+    password: "ChangeMeDemo-2026!",
     academyId: 4, // Academia de Optometría
-    role: 'Docente' as const,
+    role: "Docente" as const,
     confirmed: true,
-    subjectCodes: ['M-101', 'M-102', 'M-103', 'M-201'],
+    subjectCodes: ["M-101", "M-102", "M-103", "M-201"],
   },
   {
-    name: 'Luis González Ramírez',
-    email: 'usuario.demo@example.edu.mx',
-    password: 'ChangeMeDemo-2026!',
+    name: "Luis González Ramírez",
+    email: "usuario.demo@example.edu.mx",
+    password: "ChangeMeDemo-2026!",
     academyId: 1, // Academia de Medicina Tradicional y Herbolaria
-    role: 'Docente' as const,
+    role: "Docente" as const,
     confirmed: true,
-    subjectCodes: ['M-101', 'M-102', 'M-103', 'M-201'],
+    subjectCodes: ["M-101", "M-102", "M-103", "M-201"],
   },
   {
-    name: 'Admin Sistema',
-    email: 'admin.demo@example.edu.mx',
-    password: 'admin123',
+    name: "Super Admin",
+    email: "super_admin.demo@example.edu.mx",
+    password: "ChangeMeDemo-2026!",
     academyId: null,
-    role: 'Academia' as const,
+    role: "Administrador" as const,
     confirmed: true,
-    subjectCodes: [], // Admin no tiene materias asignadas
   },
-]
+  {
+    name: "Jefe de Departamento",
+    email: "usuario.demo@example.edu.mx",
+    password: "ChangeMeDemo-2026!",
+    academyId: null,
+    role: "Jefe de Departamento" as const,
+    confirmed: true,
+  },
+];
