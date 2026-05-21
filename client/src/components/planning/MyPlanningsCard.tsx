@@ -24,6 +24,11 @@ const statusColors: Record<string, string> = {
   Desfasado: 'bg-gray-100 text-gray-800',
 }
 
+const getPlanningActionLabel = (status: string) =>
+  status === 'Enviada' || status === 'Aprobada' || status === 'Aceptada'
+    ? 'Ver planeación'
+    : 'Continuar'
+
 export function MyPlanningsCard() {
   const { data: plannings, isLoading } = useQuery({
     queryKey: ['plannings'],
@@ -109,6 +114,11 @@ export function MyPlanningsCard() {
                   >
                     {planning.status}
                   </span>
+                  {planning.isLate && (
+                    <span className="rounded-full bg-rose-100 px-2 py-0.5 text-xs font-semibold text-rose-800">
+                      Desfasada
+                    </span>
+                  )}
                 </div>
               </div>
               <Link to={`/plannings/${planning.id}`}>
@@ -116,7 +126,7 @@ export function MyPlanningsCard() {
                   variant="outline"
                   className="ml-4 border-[#7C2855] text-[#7C2855] hover:bg-[#7C2855] hover:text-white"
                 >
-                  Continuar
+                  {getPlanningActionLabel(planning.status)}
                   <ArrowRightIcon className="w-4 h-4 ml-2" />
                 </Button>
               </Link>

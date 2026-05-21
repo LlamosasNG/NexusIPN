@@ -28,6 +28,11 @@ router.param('subjectId', hasAccess)
 router.post('/create/:subjectId', strictLimiter, PlanningController.create)
 router.get('/', readLimiter, PlanningController.getAll)
 router.get(
+  '/submission-deadline/current',
+  readLimiter,
+  PlanningController.getCurrentSubmissionDeadline
+)
+router.get(
   '/:planningId/feedback',
   readLimiter,
   param('planningId')

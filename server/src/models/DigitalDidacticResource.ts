@@ -17,6 +17,7 @@ import {
   BelongsTo,
   Column,
   DataType,
+  Default,
   ForeignKey,
   Model,
   Table,
@@ -101,4 +102,21 @@ export default class DigitalDidacticResource extends Model {
     type: DataType.JSONB,
   })
   declare learningObject: LearningObjectSection | null
+
+  @Unique
+  @Column({
+    type: DataType.STRING,
+  })
+  declare publicSlug: string | null
+
+  @Default(false)
+  @Column({
+    type: DataType.BOOLEAN,
+  })
+  declare isPublished: boolean
+
+  @Column({
+    type: DataType.DATE,
+  })
+  declare publishedAt: Date | null
 }

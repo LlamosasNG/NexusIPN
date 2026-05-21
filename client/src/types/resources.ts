@@ -165,6 +165,9 @@ export interface DigitalBookResource {
   help: HelpSectionFormValues | null
   credits: CreditsSectionFormValues | null
   learningObject: LearningObjectFormValues | null
+  publicSlug: string | null
+  isPublished: boolean
+  publishedAt: string | null
   savedSections: DigitalBookSavedSections
   createdAt: string
   updatedAt: string

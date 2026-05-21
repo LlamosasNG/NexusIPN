@@ -207,7 +207,7 @@ const createPlanningChildren = async ({
   })
 }
 
-async function seedSamplePlannings() {
+export async function seedSamplePlannings({ closeConnection = false } = {}) {
   const transaction = await db.transaction()
 
   try {
@@ -231,6 +231,7 @@ async function seedSamplePlannings() {
 
     let createdCount = 0
     let skippedCount = 0
+    let reservedCount = 0
 
     for (const [teacherIndex, teacher] of teachers.entries()) {
       const activeSubjects = (teacher.subjects as AssignedSubject[])
@@ -238,9 +239,13 @@ async function seedSamplePlannings() {
           const assignment = subject.UserSubject
           return assignment?.active !== false
         })
-        .slice(0, MAX_PLANNINGS_PER_TEACHER)
 
-      for (const [subjectIndex, subject] of activeSubjects.entries()) {
+      const availableSubjects: Array<{
+        subject: AssignedSubject
+        period: string
+      }> = []
+
+      for (const subject of activeSubjects) {
         const assignment = subject.UserSubject
         const period = assignment?.period || currentPeriod
 
@@ -258,6 +263,20 @@ async function seedSamplePlannings() {
           continue
         }
 
+        availableSubjects.push({ subject, period })
+      }
+
+      const subjectsToSeed = availableSubjects.slice(
+        0,
+        Math.min(
+          MAX_PLANNINGS_PER_TEACHER,
+          Math.max(availableSubjects.length - 1, 0)
+        )
+      )
+
+      reservedCount += availableSubjects.length - subjectsToSeed.length
+
+      for (const [subjectIndex, { subject, period }] of subjectsToSeed.entries()) {
         const status =
           statusSequence[(teacherIndex + subjectIndex) % statusSequence.length]
 
@@ -288,13 +307,24 @@ async function seedSamplePlannings() {
 
     console.log(colors.green(`Planeaciones creadas: ${createdCount}`))
     console.log(colors.yellow(`Planeaciones omitidas por duplicado: ${skippedCount}`))
-    await db.close()
+    console.log(colors.cyan(`Materias reservadas sin planeación: ${reservedCount}`))
+
+    if (closeConnection) {
+      await db.close()
+    }
   } catch (error) {
     await transaction.rollback()
     console.error(colors.red('Error generando planeaciones de ejemplo:'), error)
-    await db.close()
-    process.exit(1)
+
+    if (closeConnection) {
+      await db.close()
+      process.exit(1)
+    }
+
+    throw error
   }
 }
 
-seedSamplePlannings()
+if (require.main === module) {
+  seedSamplePlannings({ closeConnection: true })
+}

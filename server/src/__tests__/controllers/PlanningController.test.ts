@@ -32,6 +32,13 @@ jest.mock('@/models/Subject', () => ({
   },
 }))
 
+jest.mock('@/models/PlanningSubmissionDeadline', () => ({
+  __esModule: true,
+  default: {
+    findOne: jest.fn(),
+  },
+}))
+
 jest.mock('@/models/GeneralData', () => ({
   __esModule: true,
   default: {
@@ -43,10 +50,13 @@ import { PlanningController } from '@/controllers/PlanningController'
 import Planning from '@/models/Planning'
 import Subject from '@/models/Subject'
 import GeneralData from '@/models/GeneralData'
+import PlanningSubmissionDeadline from '@/models/PlanningSubmissionDeadline'
 
 const mockPlanning = Planning as jest.Mocked<typeof Planning>
 const mockSubject = Subject as jest.Mocked<typeof Subject>
 const mockGeneralData = GeneralData as jest.Mocked<typeof GeneralData>
+const mockPlanningSubmissionDeadline =
+  PlanningSubmissionDeadline as jest.Mocked<typeof PlanningSubmissionDeadline>
 
 describe('PlanningController', () => {
   let req: Partial<Request>
@@ -195,6 +205,51 @@ describe('PlanningController', () => {
       expect(res.json).toHaveBeenCalledWith({
         error: 'Planeación no encontrada',
       })
+    })
+  })
+
+  // ─── submit ─────────────────────────────────────────────────
+
+  describe('submit', () => {
+    it('debe mantener Enviada y marcar isLate cuando se envía después de la fecha límite', async () => {
+      jest.useFakeTimers().setSystemTime(new Date('2026-08-11T16:30:00.000Z'))
+
+      req.params = { planningId: '10' }
+      const save = jest.fn().mockResolvedValue(undefined)
+      const fakePlanning: any = {
+        id: 10,
+        userId: 1,
+        period: '2026-2',
+        status: 'Borrador',
+        save,
+      }
+      const deadline = new Date('2026-08-10T23:59:59.000Z')
+
+      mockPlanning.findOne.mockResolvedValue(fakePlanning as any)
+      mockPlanningSubmissionDeadline.findOne.mockResolvedValue({
+        period: '2026-2',
+        deadlineAt: deadline,
+      } as any)
+
+      await PlanningController.submit(req as Request, res as Response)
+
+      expect(mockPlanningSubmissionDeadline.findOne).toHaveBeenCalledWith({
+        where: { period: '2026-2' },
+      })
+      expect(fakePlanning.status).toBe('Enviada')
+      expect(fakePlanning.isLate).toBe(true)
+      expect(fakePlanning.lateMarkedAt).toEqual(new Date('2026-08-11T16:30:00.000Z'))
+      expect(fakePlanning.deadlineAtSubmission).toEqual(deadline)
+      expect(save).toHaveBeenCalled()
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          status: 'Enviada',
+          isLate: true,
+          deadlineAtSubmission: deadline,
+        })
+      )
+
+      jest.useRealTimers()
     })
   })
 })

@@ -1,4 +1,9 @@
-import { getDigitalResource, saveDigitalBookSection } from '@/api/DigitalResourceAPI'
+import {
+  getDigitalResource,
+  publishDigitalResource,
+  saveDigitalBookSection,
+  unpublishDigitalResource,
+} from '@/api/DigitalResourceAPI'
 import { getSubjectById, getUserSubjects } from '@/api/SubjectAPI'
 import { LoadingApp } from '@/components/LoadingApp'
 import { ContentSection } from '@/components/resources/ContentSection'
@@ -25,10 +30,10 @@ import {
   RectangleGroupIcon,
   TrophyIcon,
 } from '@heroicons/react/24/solid'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link, useParams } from 'react-router'
+import { Link, useNavigate, useParams } from 'react-router'
 import { toast } from 'sonner'
 
 const supportedResourceTypes: DigitalResourceType[] = [
@@ -176,6 +181,8 @@ const defaultLearningObjectContent: ContentFormValues = {
 
 export default function CreateDigitalBookView() {
   const { subjectId, resourceType } = useParams()
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const selectedResourceType = supportedResourceTypes.includes(
     resourceType as DigitalResourceType
   )
@@ -288,20 +295,32 @@ export default function CreateDigitalBookView() {
     retry: false,
   })
 
-  const { mutate: saveSection, isPending: isSavingSection } = useMutation({
+  const { mutate: saveSection, mutateAsync: saveSectionAsync, isPending: isSavingSection } = useMutation({
     mutationFn: saveDigitalBookSection,
     onSuccess: (response) => {
       if (!response) return
       setSavedSteps(buildSavedSteps(response.data.savedSections))
+      queryClient.setQueryData(
+        ['digital-resource', parsedSubjectId, selectedResourceType],
+        response.data
+      )
+      queryClient.invalidateQueries({ queryKey: ['digital-resources'] })
     },
     onError: (error) => {
       toast.error(error.message)
     },
   })
+  const { mutateAsync: publishResource, isPending: isPublishingResource } = useMutation({
+    mutationFn: publishDigitalResource,
+  })
+  const { mutateAsync: unpublishResource, isPending: isUnpublishingResource } = useMutation({
+    mutationFn: unpublishDigitalResource,
+  })
 
   const subjectCard = userSubjects?.find((subject) => subject.id === parsedSubjectId)
   const academicProgram =
     subjectDetails?.studyPlanNames?.join(', ') || 'Sin programa académico asignado'
+  const isPublished = Boolean(digitalBook?.isPublished)
 
   useEffect(() => {
     if (!digitalBook) return
@@ -378,6 +397,9 @@ export default function CreateDigitalBookView() {
   /* ── Navigation helpers ── */
   const isFirstStep = currentStep === 0
   const isLastStep = currentStep === steps.length - 1
+  const allRequiredSectionsBeforePublish = steps
+    .slice(0, -1)
+    .every((_, index) => savedSteps.has(index))
 
   const goToPrevious = () => {
     if (!isFirstStep) setCurrentStep((prev) => prev - 1)
@@ -391,6 +413,11 @@ export default function CreateDigitalBookView() {
     formData: DigitalBookPayload,
     successMessage: string
   ) => {
+    if (isPublished) {
+      toast.error('Despublica el RDD antes de guardar cambios.')
+      return
+    }
+
     saveSection(
       {
         subjectId: parsedSubjectId,
@@ -488,13 +515,83 @@ export default function CreateDigitalBookView() {
   )
 
   const handlePublish = () => {
-    creditsForm.handleSubmit((data) => {
-      persistSection({ credits: data }, 'Créditos guardados correctamente.')
-      toast.success('¡El RDD ha sido finalizado! Toda la información será procesada y formateada conforme a los lineamientos institucionales del IPN.')
+    if (isPublished) {
+      toast.error('Despublica el RDD antes de publicarlo nuevamente.')
+      return
+    }
+
+    creditsForm.handleSubmit(async (data) => {
+      try {
+        const completeResourcePayload: DigitalBookPayload = {
+          identification: identificationForm.getValues(),
+          pedagogical: pedagogicalForm.getValues(),
+          methodology: methodologyForm.getValues(),
+          content: contentForm.getValues(),
+          learningActivities: learningActivitiesForm.getValues(),
+          evaluation: evaluationForm.getValues(),
+          help: helpForm.getValues(),
+          credits: data,
+        }
+
+        const response = await saveSectionAsync({
+          subjectId: parsedSubjectId,
+          resourceType: selectedResourceType as DigitalResourceType,
+          formData: completeResourcePayload,
+        })
+
+        if (response) {
+          setSavedSteps(buildSavedSteps(response.data.savedSections))
+          queryClient.setQueryData(
+            ['digital-resource', parsedSubjectId, selectedResourceType],
+            response.data
+          )
+        }
+
+        const publishedResource = await publishResource({
+          subjectId: parsedSubjectId,
+          resourceType: selectedResourceType as DigitalResourceType,
+        })
+
+        toast.success('¡El RDD ha sido finalizado!')
+        await queryClient.invalidateQueries({ queryKey: ['digital-resources'] })
+        navigate(
+          publishedResource?.data.publicSlug
+            ? `/r/${publishedResource.data.publicSlug}`
+            : `/resources/view/${parsedSubjectId}/${selectedResourceType}`
+        )
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error.message)
+        }
+      }
     })()
   }
 
+  const handleUnpublish = async () => {
+    try {
+      await unpublishResource({
+        subjectId: parsedSubjectId,
+        resourceType: selectedResourceType as DigitalResourceType,
+      })
+
+      await queryClient.invalidateQueries({
+        queryKey: ['digital-resource', parsedSubjectId, selectedResourceType],
+      })
+      await queryClient.invalidateQueries({ queryKey: ['digital-resources'] })
+      toast.success('RDD despublicado. Ahora puedes guardar cambios y publicarlo de nuevo.')
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message)
+      }
+    }
+  }
+
   const handleSaveSection = () => {
+    if (isPublished) {
+      toast.error('Despublica el RDD antes de guardar cambios.')
+      return
+    }
+
     if (currentStep === 0) return handleSaveIdentification()
     if (currentStep === 1) return handleSavePedagogical()
     if (currentStep === 2) return handleSaveMethodology()
@@ -649,7 +746,7 @@ export default function CreateDigitalBookView() {
         <div className="p-3 rounded-xl bg-[#D4AF37]">
           <activeStep.icon className="w-8 h-8 text-[#7C2855]" />
         </div>
-        <div>
+        <div className="flex-1">
           <h1 className="text-3xl font-bold text-gray-900">{activeStep.title}</h1>
           <p className="text-gray-600 mt-1">
             {activeStep.subtitle} ·{' '}
@@ -658,7 +755,25 @@ export default function CreateDigitalBookView() {
               : 'Tipo no disponible'}
           </p>
         </div>
+        {isPublished && (
+          <Button
+            type="button"
+            onClick={handleUnpublish}
+            disabled={isUnpublishingResource}
+            className="rounded-xl bg-amber-500 font-semibold text-white hover:bg-amber-600"
+          >
+            {isUnpublishingResource ? 'Despublicando...' : 'Despublicar para editar'}
+          </Button>
+        )}
       </div>
+
+      {isPublished && (
+        <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800">
+          Este RDD está publicado. Para evitar cambios parciales en el enlace público,
+          primero despublícalo; después guarda los cambios y publícalo nuevamente.
+          Al republicarlo se generará un enlace público nuevo.
+        </div>
+      )}
 
       {/* ══════════════════════════════════════════════════════════
           Card Content
@@ -755,8 +870,9 @@ export default function CreateDigitalBookView() {
               register={creditsForm.register}
               errors={creditsForm.formState.errors}
               watch={creditsForm.watch}
-              allSectionsSaved={savedSteps.size >= steps.length}
-              isSaving={isSavingSection}
+              allSectionsSaved={allRequiredSectionsBeforePublish}
+              isPublished={isPublished}
+              isSaving={isSavingSection || isPublishingResource}
               onPublish={handlePublish}
             />
           )}
@@ -792,11 +908,11 @@ export default function CreateDigitalBookView() {
             <Button
               type="button"
               onClick={handleSaveSection}
-              disabled={isSaveDisabled || isSavingSection}
+              disabled={isPublished || isSaveDisabled || isSavingSection}
               className={`
                 inline-flex items-center gap-2 px-6 py-2.5 font-semibold rounded-lg transition-all duration-300
                 ${
-                  isSaveDisabled || isSavingSection
+                  isPublished || isSaveDisabled || isSavingSection
                     ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                     : savedSteps.has(currentStep)
                       ? 'bg-[#D4AF37] text-[#7C2855] hover:bg-[#e8c96f] cursor-pointer'

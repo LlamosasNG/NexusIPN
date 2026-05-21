@@ -260,6 +260,28 @@ router.param('subjectId', hasAccess)
 
 router.get('/', readLimiter, DigitalDidacticResourceController.getAllByUser)
 
+router.put(
+  '/:subjectId/:resourceType/publish',
+  planningWriteLimiter,
+  param('subjectId').isInt().withMessage('El ID de la materia debe ser un número válido'),
+  param('resourceType')
+    .isIn(supportedResourceTypes)
+    .withMessage('El tipo de recurso digital no es compatible'),
+  handleInputErrors,
+  DigitalDidacticResourceController.publish
+)
+
+router.put(
+  '/:subjectId/:resourceType/unpublish',
+  planningWriteLimiter,
+  param('subjectId').isInt().withMessage('El ID de la materia debe ser un número válido'),
+  param('resourceType')
+    .isIn(supportedResourceTypes)
+    .withMessage('El tipo de recurso digital no es compatible'),
+  handleInputErrors,
+  DigitalDidacticResourceController.unpublish
+)
+
 router.post(
   '/:subjectId/:resourceType',
   planningWriteLimiter,

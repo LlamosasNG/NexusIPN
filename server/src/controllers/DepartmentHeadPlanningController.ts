@@ -3,6 +3,7 @@ import GeneralData from '@/models/GeneralData'
 import Planning, { PlanningStatus } from '@/models/Planning'
 import PlanningDidacticOrganization from '@/models/PlanningDidacticOrganization'
 import PlanningObservation from '@/models/PlanningObservation'
+import PlanningSubmissionDeadline from '@/models/PlanningSubmissionDeadline'
 import PlagiarismTool from '@/models/PlagiarismTool'
 import Reference from '@/models/Reference'
 import SessionActivity from '@/models/SessionActivity'
@@ -12,6 +13,7 @@ import TransversalAxis from '@/models/TransversalAxis'
 import User from '@/models/User'
 import { Op, OrderItem } from 'sequelize'
 import { Request, Response } from 'express'
+import { normalizeAcademicPeriod } from '@/utils/academicPeriod'
 
 type DepartmentHeadPlanningReviewStatus =
   | 'Pendiente'
@@ -23,8 +25,8 @@ const REVIEW_STATUS_TO_PLANNING_STATUS: Record<
   DepartmentHeadPlanningReviewStatus,
   PlanningStatus[]
 > = {
-  Pendiente: [PlanningStatus.DRAFT, PlanningStatus.LATE],
-  'En revisión': [PlanningStatus.SENT],
+  Pendiente: [PlanningStatus.DRAFT],
+  'En revisión': [PlanningStatus.SENT, PlanningStatus.LATE],
   Validada: [PlanningStatus.APPROVED],
   Rechazada: [PlanningStatus.REJECTED],
 }
@@ -33,13 +35,14 @@ const getReviewStatus = (
   status: PlanningStatus
 ): DepartmentHeadPlanningReviewStatus => {
   if (status === PlanningStatus.SENT) return 'En revisión'
+  if (status === PlanningStatus.LATE) return 'En revisión'
   if (status === PlanningStatus.APPROVED) return 'Validada'
   if (status === PlanningStatus.REJECTED) return 'Rechazada'
   return 'Pendiente'
 }
 
 const canReviewPlanning = (status: PlanningStatus) =>
-  status === PlanningStatus.SENT
+  status === PlanningStatus.SENT || status === PlanningStatus.LATE
 
 const REVIEW_ACTION_TO_STATUS = {
   approve: PlanningStatus.APPROVED,
@@ -114,6 +117,62 @@ const getSortOrder = (
 }
 
 export class DepartmentHeadPlanningController {
+  static getSubmissionDeadline = async (req: Request, res: Response) => {
+    try {
+      const period =
+        typeof req.query.period === 'string'
+          ? normalizeAcademicPeriod(req.query.period)
+          : normalizeAcademicPeriod()
+
+      const deadline = await PlanningSubmissionDeadline.findOne({
+        where: { period },
+      })
+
+      res.json({
+        period,
+        deadlineAt: deadline?.deadlineAt || null,
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({
+        error: 'Hubo un error al obtener la fecha límite de planeaciones',
+      })
+    }
+  }
+
+  static upsertSubmissionDeadline = async (req: Request, res: Response) => {
+    try {
+      const period = normalizeAcademicPeriod(String(req.body.period || ''))
+      const deadlineAt = new Date(String(req.body.deadlineAt || ''))
+
+      const [deadline] = await PlanningSubmissionDeadline.findOrCreate({
+        where: { period },
+        defaults: {
+          period,
+          deadlineAt,
+        },
+      })
+
+      if (deadline.deadlineAt.getTime() !== deadlineAt.getTime()) {
+        deadline.deadlineAt = deadlineAt
+        await deadline.save()
+      }
+
+      res.json({
+        message: 'Fecha límite de planeaciones actualizada correctamente',
+        data: {
+          period: deadline.period,
+          deadlineAt: deadline.deadlineAt,
+        },
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({
+        error: 'Hubo un error al guardar la fecha límite de planeaciones',
+      })
+    }
+  }
+
   static getAll = async (req: Request, res: Response) => {
     try {
       const academyId = req.user.academyId
@@ -282,6 +341,10 @@ export class DepartmentHeadPlanningController {
           status: planning.status,
           reviewStatus: getReviewStatus(planning.status),
           submissionDate: planning.submissionDate,
+          isLate:
+            planning.isLate || planning.status === PlanningStatus.LATE,
+          lateMarkedAt: planning.lateMarkedAt,
+          deadlineAtSubmission: planning.deadlineAtSubmission,
           feedback: planning.feedback,
           createdAt: planning.createdAt,
           updatedAt: planning.updatedAt,
@@ -433,6 +496,10 @@ export class DepartmentHeadPlanningController {
         status: planning.status,
         reviewStatus: getReviewStatus(planning.status),
         submissionDate: planning.submissionDate,
+        isLate:
+          planning.isLate || planning.status === PlanningStatus.LATE,
+        lateMarkedAt: planning.lateMarkedAt,
+        deadlineAtSubmission: planning.deadlineAtSubmission,
         feedback: planning.feedback,
         canReview: canReviewPlanning(planning.status),
         createdAt: planning.createdAt,

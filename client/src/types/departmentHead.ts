@@ -41,6 +41,7 @@ export const DepartmentHeadDashboardSchema = z.object({
     draftPlannings: z.number(),
     pendingPlannings: z.number(),
     approvedPlannings: z.number(),
+    latePlannings: z.number(),
     approvedDigitalResources: z.number(),
     teacherParticipation: z.number(),
     recentActivityCount: z.number(),
@@ -69,6 +70,9 @@ export const DepartmentHeadPlanningListItemSchema = z.object({
   status: z.string(),
   reviewStatus: DepartmentHeadPlanningReviewStatusSchema,
   submissionDate: z.string().nullable(),
+  isLate: z.boolean(),
+  lateMarkedAt: z.string().nullable(),
+  deadlineAtSubmission: z.string().nullable(),
   feedback: z.string().nullable(),
   createdAt: z.string(),
   updatedAt: z.string(),
@@ -127,6 +131,9 @@ export const DepartmentHeadPlanningDetailSchema = z.object({
   status: z.string(),
   reviewStatus: DepartmentHeadPlanningReviewStatusSchema,
   submissionDate: z.string().nullable(),
+  isLate: z.boolean(),
+  lateMarkedAt: z.string().nullable(),
+  deadlineAtSubmission: z.string().nullable(),
   feedback: z.string().nullable(),
   canReview: z.boolean(),
   createdAt: z.string(),
@@ -183,4 +190,18 @@ export type DepartmentHeadPlanningObservation = z.infer<
 >
 export type DepartmentHeadPlanningReviewStatus = z.infer<
   typeof DepartmentHeadPlanningReviewStatusSchema
+>
+
+export const DepartmentHeadPlanningDeadlineSchema = z.object({
+  period: AcademicPeriodSchema,
+  deadlineAt: z.string().nullable(),
+})
+
+export const DepartmentHeadPlanningDeadlineUpdateSchema = z.object({
+  message: z.string(),
+  data: DepartmentHeadPlanningDeadlineSchema,
+})
+
+export type DepartmentHeadPlanningDeadline = z.infer<
+  typeof DepartmentHeadPlanningDeadlineSchema
 >

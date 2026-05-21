@@ -35,6 +35,9 @@ export const PlanningSchema = z.object({
   period: AcademicPeriodSchema,
   status: PlanningStatusSchema,
   submissionDate: z.string().nullable(),
+  isLate: z.boolean().default(false),
+  lateMarkedAt: z.string().nullable().optional(),
+  deadlineAtSubmission: z.string().nullable().optional(),
   feedback: z.string().nullable(),
   createdAt: z.string(),
   updatedAt: z.string(),
@@ -63,6 +66,9 @@ export const PlanningFeedbackSchema = z.object({
   id: z.number(),
   period: AcademicPeriodSchema,
   status: PlanningStatusSchema,
+  isLate: z.boolean().default(false),
+  lateMarkedAt: z.string().nullable().optional(),
+  deadlineAtSubmission: z.string().nullable().optional(),
   feedback: z.string().nullable(),
   updatedAt: z.string(),
   subject: z.object({
@@ -81,6 +87,9 @@ export const PlanningSubjectDetailsSchema = z.object({
   period: AcademicPeriodSchema,
   status: PlanningStatusSchema,
   submissionDate: z.string().nullable(),
+  isLate: z.boolean().default(false),
+  lateMarkedAt: z.string().nullable().optional(),
+  deadlineAtSubmission: z.string().nullable().optional(),
   feedback: z.string().nullable(),
   createdAt: z.string(),
   updatedAt: z.string(),
@@ -121,6 +130,14 @@ export const PlanningSubjectDetailsSchema = z.object({
     updatedAt: z.string(),
   }),
 })
+
+export const PlanningSubmissionDeadlineSchema = z.object({
+  period: AcademicPeriodSchema,
+  deadlineAt: z.string().nullable(),
+})
+export type PlanningSubmissionDeadline = z.infer<
+  typeof PlanningSubmissionDeadlineSchema
+>
 /** Planning Form - General Data */
 export const modalitiesSchema = z.enum([
   'Escolarizada',

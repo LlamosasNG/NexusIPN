@@ -9,6 +9,7 @@ import authRoutes from './routes/authRoutes'
 import departmentHeadRoutes from './routes/departmentHeadRoutes'
 import digitalResourceRoutes from './routes/digitalResourceRoutes'
 import planningRoutes from './routes/planningRoutes'
+import publicResourceRoutes from './routes/publicResourceRoutes'
 import subjectRoutes from './routes/subjectRoutes'
 
 async function connectDB() {
@@ -22,6 +23,7 @@ async function connectDB() {
 }
 connectDB()
 const app: Express = express()
+app.disable('etag')
 
 //app.use(generalLimiter)
 app.use(cors(corsConfig))
@@ -33,5 +35,6 @@ app.use('/api/academies', academyRoutes)
 app.use('/api/subjects', subjectRoutes)
 app.use('/api/plannings', planningRoutes)
 app.use('/api/digital-resources', digitalResourceRoutes)
+app.use('/api/public', publicResourceRoutes)
 
 export default app

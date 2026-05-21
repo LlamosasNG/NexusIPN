@@ -6,6 +6,7 @@ import DigitalDidacticResource from '@/models/DigitalDidacticResource'
 import Subject from '@/models/Subject'
 import User from '@/models/User'
 import { checkPassword } from '@/utils/auth'
+import crypto from 'crypto'
 import { Request, Response } from 'express'
 
 const sectionKeys: Array<keyof DigitalBookSections> = [
@@ -57,6 +58,9 @@ const serializeResource = (resource: DigitalDidacticResource) => ({
   help: resource.help,
   credits: resource.credits,
   learningObject: resource.learningObject,
+  publicSlug: resource.publicSlug,
+  isPublished: resource.isPublished,
+  publishedAt: resource.publishedAt,
   savedSections: {
     identification: Boolean(resource.identification),
     pedagogical: Boolean(resource.pedagogical),
@@ -71,6 +75,30 @@ const serializeResource = (resource: DigitalDidacticResource) => ({
   createdAt: resource.createdAt,
   updatedAt: resource.updatedAt,
 })
+
+const generatePublicSlug = () => crypto.randomBytes(12).toString('hex')
+
+const generateUniquePublicSlug = async () => {
+  let publicSlug = generatePublicSlug()
+  let existingResource = await DigitalDidacticResource.findOne({
+    where: { publicSlug },
+  })
+
+  while (existingResource) {
+    publicSlug = generatePublicSlug()
+    existingResource = await DigitalDidacticResource.findOne({
+      where: { publicSlug },
+    })
+  }
+
+  return publicSlug
+}
+
+const setNoStoreHeaders = (res: Response) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+  res.set('Pragma', 'no-cache')
+  res.set('Expires', '0')
+}
 
 export class DigitalDidacticResourceController {
   static getAllByUser = async (req: Request, res: Response) => {
@@ -88,6 +116,7 @@ export class DigitalDidacticResourceController {
         order: [['updatedAt', 'DESC']],
       })
 
+      setNoStoreHeaders(res)
       res.json(resources.map(serializeResource))
     } catch (error) {
       console.log(error)
@@ -117,9 +146,23 @@ export class DigitalDidacticResourceController {
       })
 
       if (resource) {
-        await resource.update(sectionPayload)
-        await resource.reload()
+        if (resource.isPublished) {
+          return res.status(409).json({
+            error: 'Despublica el RDD antes de realizar cambios',
+          })
+        }
 
+        await resource.update(sectionPayload)
+        await resource.reload({
+          include: [
+            {
+              model: Subject,
+              attributes: ['id', 'name', 'code'],
+            },
+          ],
+        })
+
+        setNoStoreHeaders(res)
         return res.json({
           message: 'Libro digital actualizado correctamente',
           data: serializeResource(resource),
@@ -142,6 +185,7 @@ export class DigitalDidacticResourceController {
         ],
       })
 
+      setNoStoreHeaders(res)
       res.status(201).json({
         message: 'Libro digital guardado correctamente',
         data: serializeResource(resource),
@@ -175,10 +219,140 @@ export class DigitalDidacticResourceController {
         return res.status(404).json({ error: 'Libro digital no encontrado' })
       }
 
+      setNoStoreHeaders(res)
       res.json(serializeResource(resource))
     } catch (error) {
       console.log(error)
       res.status(500).json({ error: 'Error al obtener el libro digital' })
+    }
+  }
+
+  static publish = async (req: Request, res: Response) => {
+    try {
+      const subjectId = Number(req.params.subjectId)
+      const { resourceType } = req.params
+
+      const resource = await DigitalDidacticResource.findOne({
+        where: {
+          subjectId,
+          userId: req.user.id,
+          resourceType,
+        },
+        include: [
+          {
+            model: Subject,
+            attributes: ['id', 'name', 'code'],
+          },
+        ],
+      })
+
+      if (!resource) {
+        return res.status(404).json({ error: 'Libro digital no encontrado' })
+      }
+
+      const publicSlug = await generateUniquePublicSlug()
+
+      await resource.update({
+        publicSlug,
+        isPublished: true,
+        publishedAt: new Date(),
+      })
+
+      await resource.reload({
+        include: [
+          {
+            model: Subject,
+            attributes: ['id', 'name', 'code'],
+          },
+        ],
+      })
+
+      setNoStoreHeaders(res)
+      res.json({
+        message: 'RDD publicado correctamente',
+        data: serializeResource(resource),
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: 'Error al publicar el recurso digital' })
+    }
+  }
+
+  static unpublish = async (req: Request, res: Response) => {
+    try {
+      const subjectId = Number(req.params.subjectId)
+      const { resourceType } = req.params
+
+      const resource = await DigitalDidacticResource.findOne({
+        where: {
+          subjectId,
+          userId: req.user.id,
+          resourceType,
+        },
+        include: [
+          {
+            model: Subject,
+            attributes: ['id', 'name', 'code'],
+          },
+        ],
+      })
+
+      if (!resource) {
+        return res.status(404).json({ error: 'Libro digital no encontrado' })
+      }
+
+      await resource.update({
+        publicSlug: null,
+        isPublished: false,
+        publishedAt: null,
+      })
+
+      await resource.reload({
+        include: [
+          {
+            model: Subject,
+            attributes: ['id', 'name', 'code'],
+          },
+        ],
+      })
+
+      setNoStoreHeaders(res)
+      res.json({
+        message: 'RDD despublicado correctamente',
+        data: serializeResource(resource),
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: 'Error al despublicar el recurso digital' })
+    }
+  }
+
+  static getPublic = async (req: Request, res: Response) => {
+    try {
+      const { publicSlug } = req.params
+
+      const resource = await DigitalDidacticResource.findOne({
+        where: {
+          publicSlug,
+          isPublished: true,
+        },
+        include: [
+          {
+            model: Subject,
+            attributes: ['id', 'name', 'code'],
+          },
+        ],
+      })
+
+      if (!resource) {
+        return res.status(404).json({ error: 'RDD público no encontrado' })
+      }
+
+      setNoStoreHeaders(res)
+      res.json(serializeResource(resource))
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: 'Error al obtener el RDD público' })
     }
   }
 

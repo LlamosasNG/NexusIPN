@@ -1,10 +1,11 @@
 import { db } from '@/config/db'
 import colors from 'colors'
 import { seedAcademies } from './seeds/seedAcademies'
+import { seedSampleDigitalResources } from './seeds/seedSampleDigitalResources'
+import { seedSamplePlannings } from './seeds/seedSamplePlannings'
+import { seedStudyPlans } from './seeds/seedStudyPlans'
 import { seedSubjects } from './seeds/seedSubjects'
 import { seedUsers } from './seeds/seedUsers'
-
-import { seedStudyPlans } from './seeds/seedStudyPlans'
 
 async function runSeeds() {
   try {
@@ -24,6 +25,12 @@ async function runSeeds() {
 
     console.log(colors.cyan.bold('\n3. Seeding Users'))
     await seedUsers()
+
+    console.log(colors.cyan.bold('\n4. Seeding SamplePlannings'))
+    await seedSamplePlannings()
+
+    console.log(colors.cyan.bold('\n4. Seeding SampleDigitalResources'))
+    await seedSampleDigitalResources()
 
     console.log(colors.green.bold('Database seeding completed successfully'))
     process.exit(0)

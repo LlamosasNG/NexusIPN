@@ -191,6 +191,7 @@ interface CreditsSectionProps {
   errors: FieldErrors<CreditsSectionFormValues>
   watch: UseFormWatch<CreditsSectionFormValues>
   allSectionsSaved: boolean
+  isPublished?: boolean
   isSaving: boolean
   onPublish: () => void
 }
@@ -201,6 +202,7 @@ export function CreditsSection({
   errors,
   watch,
   allSectionsSaved,
+  isPublished = false,
   isSaving,
   onPublish,
 }: CreditsSectionProps) {
@@ -208,7 +210,7 @@ export function CreditsSection({
 
   const authors = watch('authors') ?? []
   const hasWordOverflow = authors.some((a) => countWords(a?.semblanzaAutor ?? '') > MAX_WORDS)
-  const canPublish = allSectionsSaved && !hasWordOverflow && !isSaving
+  const canPublish = allSectionsSaved && !isPublished && !hasWordOverflow && !isSaving
 
   return (
     <div className="space-y-8">
@@ -302,6 +304,15 @@ export function CreditsSection({
               <ExclamationTriangleIcon className="w-4 h-4" />
               <p className="text-xs font-semibold">
                 Guarda todas las secciones antes de poder publicar.
+              </p>
+            </div>
+          )}
+
+          {isPublished && (
+            <div className="flex items-center justify-center gap-2 text-amber-600">
+              <ExclamationTriangleIcon className="w-4 h-4" />
+              <p className="text-xs font-semibold">
+                Despublica el RDD antes de publicarlo nuevamente.
               </p>
             </div>
           )}

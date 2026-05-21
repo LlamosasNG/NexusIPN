@@ -71,6 +71,22 @@ export default class Planning extends Model {
   })
   declare submissionDate: Date
 
+  @Default(false)
+  @Column({
+    type: DataType.BOOLEAN,
+  })
+  declare isLate: boolean
+
+  @Column({
+    type: DataType.DATE,
+  })
+  declare lateMarkedAt: Date | null
+
+  @Column({
+    type: DataType.DATE,
+  })
+  declare deadlineAtSubmission: Date | null
+
   @Column({
     type: DataType.TEXT,
   })

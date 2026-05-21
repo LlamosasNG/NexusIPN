@@ -1,4 +1,8 @@
-import { getDepartmentHeadPlannings } from '@/api/DepartmentHeadAPI'
+import {
+  getDepartmentHeadPlanningDeadline,
+  getDepartmentHeadPlannings,
+  updateDepartmentHeadPlanningDeadline,
+} from '@/api/DepartmentHeadAPI'
 import { LoadingApp } from '@/components/LoadingApp'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -9,6 +13,7 @@ import type {
 } from '@/types'
 import {
   ArrowsUpDownIcon,
+  CalendarDaysIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   ClipboardDocumentListIcon,
@@ -16,9 +21,10 @@ import {
   FunnelIcon,
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/solid'
-import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router'
+import { toast } from 'sonner'
 
 const reviewStatusColors: Record<DepartmentHeadPlanningReviewStatus, string> = {
   Pendiente: 'bg-amber-100 text-amber-800',
@@ -40,6 +46,24 @@ const formatDate = (date: string) =>
   new Date(date).toLocaleDateString('es-MX', {
     dateStyle: 'medium',
   })
+
+const getCurrentAcademicPeriod = () => {
+  const date = new Date()
+  const year = date.getFullYear()
+  const month = date.getMonth()
+
+  return month < 6 ? `${year}-2` : `${year + 1}-1`
+}
+
+const toDateTimeLocalValue = (date: string | null) => {
+  if (!date) return ''
+
+  const parsed = new Date(date)
+  const offset = parsed.getTimezoneOffset()
+  const localDate = new Date(parsed.getTime() - offset * 60 * 1000)
+
+  return localDate.toISOString().slice(0, 16)
+}
 
 type PlanningFiltersState = {
   page: number
@@ -71,7 +95,10 @@ function StatusBadge({
 export default function DepartmentHeadPlanningsView() {
   const { data: user, isLoading: isLoadingUser } = useAuth()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const [searchDraft, setSearchDraft] = useState('')
+  const [deadlinePeriod, setDeadlinePeriod] = useState(getCurrentAcademicPeriod())
+  const [deadlineDraft, setDeadlineDraft] = useState('')
   const [filters, setFilters] = useState<PlanningFiltersState>({
     page: 1,
     pageSize: 10,
@@ -96,6 +123,34 @@ export default function DepartmentHeadPlanningsView() {
     enabled: user?.role === 'Jefe de Departamento',
     placeholderData: (previousData) => previousData,
   })
+
+  const { data: deadlineData, isLoading: isLoadingDeadline } = useQuery({
+    queryKey: ['department-head-planning-deadline', deadlinePeriod],
+    queryFn: () => getDepartmentHeadPlanningDeadline(deadlinePeriod),
+    enabled: user?.role === 'Jefe de Departamento',
+  })
+
+  const { mutate: saveDeadline, isPending: isSavingDeadline } = useMutation({
+    mutationFn: updateDepartmentHeadPlanningDeadline,
+    onSuccess: (response) => {
+      toast.success(response?.message || 'Fecha límite actualizada')
+      queryClient.invalidateQueries({
+        queryKey: ['department-head-planning-deadline', deadlinePeriod],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ['planning-submission-deadline-current'],
+      })
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+  })
+
+  useEffect(() => {
+    if (deadlineData) {
+      setDeadlineDraft(toDateTimeLocalValue(deadlineData.deadlineAt))
+    }
+  }, [deadlineData])
 
   const handleFilterChange = (
     key: keyof PlanningFiltersState,
@@ -125,6 +180,20 @@ export default function DepartmentHeadPlanningsView() {
       page: 1,
       search: searchDraft.trim(),
     }))
+  }
+
+  const handleDeadlineSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    if (!deadlineDraft) {
+      toast.error('Selecciona una fecha y hora límite')
+      return
+    }
+
+    saveDeadline({
+      period: deadlinePeriod,
+      deadlineAt: new Date(deadlineDraft).toISOString(),
+    })
   }
 
   const plannings = data?.data || []
@@ -161,6 +230,73 @@ export default function DepartmentHeadPlanningsView() {
             Consulta, filtra y revisa las planeaciones didácticas registradas en tu academia.
           </p>
         </div>
+      </div>
+
+      <div className="rounded-3xl border border-[#7C2855]/15 bg-white p-6 shadow-lg">
+        <div className="mb-5 flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#D4AF37]/15">
+            <CalendarDaysIcon className="h-6 w-6 text-[#7C2855]" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">
+              Fecha límite de envío
+            </h2>
+            <p className="text-sm text-gray-600">
+              Configura la fecha global del periodo. Los envíos posteriores se
+              marcarán como desfasados.
+            </p>
+          </div>
+        </div>
+
+        <form
+          onSubmit={handleDeadlineSubmit}
+          className="grid grid-cols-1 gap-4 lg:grid-cols-12"
+        >
+          <div className="lg:col-span-3">
+            <label className="mb-2 block text-sm font-semibold text-gray-700">
+              Periodo
+            </label>
+            <select
+              value={deadlinePeriod}
+              onChange={(event) => setDeadlinePeriod(event.target.value)}
+              className="h-11 w-full rounded-xl border border-gray-300 bg-white px-3 text-sm text-gray-700"
+            >
+              {Array.from(
+                new Set([
+                  getCurrentAcademicPeriod(),
+                  ...(filterOptions?.periods || []),
+                ])
+              ).map((period) => (
+                <option key={period} value={period}>
+                  {period}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="lg:col-span-5">
+            <label className="mb-2 block text-sm font-semibold text-gray-700">
+              Fecha y hora límite
+            </label>
+            <Input
+              type="datetime-local"
+              value={deadlineDraft}
+              onChange={(event) => setDeadlineDraft(event.target.value)}
+              className="h-11 rounded-xl"
+              disabled={isLoadingDeadline}
+            />
+          </div>
+
+          <div className="flex items-end lg:col-span-4">
+            <Button
+              type="submit"
+              className="h-11 rounded-xl bg-[#7C2855] px-5"
+              disabled={isSavingDeadline || isLoadingDeadline}
+            >
+              {isSavingDeadline ? 'Guardando...' : 'Guardar fecha límite'}
+            </Button>
+          </div>
+        </form>
       </div>
 
       <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-lg">
@@ -450,7 +586,7 @@ export default function DepartmentHeadPlanningsView() {
                 </thead>
                 <tbody className="divide-y divide-gray-100 bg-white">
                   {plannings.map((planning: DepartmentHeadPlanningListItem) => {
-                    const canViewPlanning = ['Enviada', 'Aprobada', 'Rechazada'].includes(
+                    const canViewPlanning = ['Enviada', 'Aprobada', 'Rechazada', 'Desfasado'].includes(
                       planning.status
                     )
 
@@ -481,6 +617,11 @@ export default function DepartmentHeadPlanningsView() {
                         <td className="px-6 py-4">
                           <div className="space-y-2">
                             <StatusBadge status={planning.reviewStatus} />
+                            {planning.isLate && (
+                              <span className="inline-flex rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-800">
+                                Desfasada
+                              </span>
+                            )}
                             <p className="text-xs text-gray-500">
                               Estado interno: {planning.status}
                             </p>

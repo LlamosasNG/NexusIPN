@@ -2,6 +2,7 @@ import { db } from '@/config/db'
 import DidacticOrganization from '@/models/PlanningDidacticOrganization'
 import GeneralData from '@/models/GeneralData'
 import Planning, { PlanningStatus } from '@/models/Planning'
+import PlanningSubmissionDeadline from '@/models/PlanningSubmissionDeadline'
 import PlanningObservation from '@/models/PlanningObservation'
 import PlagiarismTool from '@/models/PlagiarismTool'
 import Reference from '@/models/Reference'
@@ -12,6 +13,7 @@ import User from '@/models/User'
 import { checkPassword } from '@/utils/auth'
 import { Request, Response } from 'express'
 import SessionActivity from '@/models/SessionActivity'
+import { getCurrentAcademicPeriod } from '@/utils/academicPeriod'
 
 export class PlanningController {
   static create = async (req: Request, res: Response) => {
@@ -78,6 +80,25 @@ export class PlanningController {
     }
   }
 
+  static getCurrentSubmissionDeadline = async (_req: Request, res: Response) => {
+    try {
+      const period = getCurrentAcademicPeriod()
+      const deadline = await PlanningSubmissionDeadline.findOne({
+        where: { period },
+      })
+
+      res.json({
+        period,
+        deadlineAt: deadline?.deadlineAt || null,
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({
+        error: 'Hubo un error al obtener la fecha límite de planeaciones',
+      })
+    }
+  }
+
   static getById = async (req: Request, res: Response) => {
     try {
       const { planningId } = req.params
@@ -132,6 +153,9 @@ export class PlanningController {
         id: planning.id,
         period: planning.period,
         status: planning.status,
+        isLate: planning.isLate || planning.status === PlanningStatus.LATE,
+        lateMarkedAt: planning.lateMarkedAt,
+        deadlineAtSubmission: planning.deadlineAtSubmission,
         feedback: planning.feedback,
         updatedAt: planning.updatedAt,
         subject: planning.subject,
@@ -244,14 +268,26 @@ export class PlanningController {
         })
       }
 
+      const now = new Date()
+      const deadline = await PlanningSubmissionDeadline.findOne({
+        where: { period: planning.period },
+      })
+      const isLate = deadline ? now.getTime() > deadline.deadlineAt.getTime() : false
+
       planning.status = PlanningStatus.SENT
-      planning.submissionDate = new Date()
+      planning.submissionDate = now
+      planning.isLate = isLate
+      planning.lateMarkedAt = isLate ? now : null
+      planning.deadlineAtSubmission = deadline?.deadlineAt || null
       await planning.save()
 
       res.json({
         message: 'Planeación enviada correctamente',
         status: planning.status,
         submissionDate: planning.submissionDate,
+        isLate: planning.isLate,
+        lateMarkedAt: planning.lateMarkedAt,
+        deadlineAtSubmission: planning.deadlineAtSubmission,
       })
     } catch (error) {
       console.log(error)

@@ -19,6 +19,27 @@ router.get(
 )
 
 router.get(
+  '/planning-deadlines',
+  readLimiter,
+  query('period').optional({ checkFalsy: true }).matches(/^\d{4}-[12]$/),
+  handleInputErrors,
+  DepartmentHeadPlanningController.getSubmissionDeadline
+)
+
+router.put(
+  '/planning-deadlines',
+  planningWriteLimiter,
+  body('period')
+    .matches(/^\d{4}-[12]$/)
+    .withMessage('El período debe tener el formato YYYY-S'),
+  body('deadlineAt')
+    .isISO8601()
+    .withMessage('La fecha límite debe ser una fecha válida'),
+  handleInputErrors,
+  DepartmentHeadPlanningController.upsertSubmissionDeadline
+)
+
+router.get(
   '/plannings',
   readLimiter,
   query('page').optional({ checkFalsy: true }).isInt({ min: 1 }),

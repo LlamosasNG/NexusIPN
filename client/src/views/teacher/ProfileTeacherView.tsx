@@ -3,6 +3,10 @@ import { getPlannings } from '@/api/PlanningAPI'
 import { useAuth } from '@/hooks/useAuth'
 import type { DigitalBookResource, PlanningItem } from '@/types'
 import {
+  getDigitalResourceTitle,
+  getDigitalResourceTypeLabel,
+} from '@/utils/digitalResource'
+import {
   AcademicCapIcon,
   BuildingLibraryIcon,
   CalendarDaysIcon,
@@ -27,6 +31,7 @@ export default function ProfileTeacherView() {
     queryKey: ['digital-resources'],
     queryFn: getMyDigitalResources,
     refetchOnWindowFocus: false,
+    staleTime: 0,
   })
 
   const plannings: PlanningItem[] = planningsData || []
@@ -47,18 +52,6 @@ export default function ProfileTeacherView() {
       month: 'short',
       day: 'numeric',
     })
-  }
-
-  const getResourceTitle = (resource: DigitalBookResource) =>
-    resource.learningObject?.precisionTema ||
-    resource.identification?.title ||
-    'Recurso digital sin título'
-
-  const getResourceTypeLabel = (resourceType: DigitalBookResource['resourceType']) => {
-    if (resourceType === 'digital-book') return 'Libro Digital'
-    if (resourceType === 'interactive-digital-book') return 'Libro Digital Interactivo'
-    if (resourceType === 'learning-object') return 'Objeto de Aprendizaje'
-    return resourceType
   }
 
   if (!user) return null
@@ -212,11 +205,18 @@ export default function ProfileTeacherView() {
                     <div className="p-2 bg-[#7C2855]/10 rounded-lg group-hover:bg-[#7C2855]/20 transition-colors">
                       <DocumentTextIcon className="w-5 h-5 text-[#7C2855]" />
                     </div>
-                    <span
-                      className={`px-2.5 py-1 text-xs font-semibold rounded-full ${statusColors[plan.status] || 'bg-gray-100 text-gray-800'}`}
-                    >
-                      {plan.status}
-                    </span>
+                    <div className="flex flex-wrap justify-end gap-2">
+                      <span
+                        className={`px-2.5 py-1 text-xs font-semibold rounded-full ${statusColors[plan.status] || 'bg-gray-100 text-gray-800'}`}
+                      >
+                        {plan.status}
+                      </span>
+                      {plan.isLate && (
+                        <span className="rounded-full bg-rose-100 px-2.5 py-1 text-xs font-semibold text-rose-800">
+                          Desfasada
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-[#7C2855] transition-colors">
                     {plan.subject?.name || 'Materia'}
@@ -276,11 +276,11 @@ export default function ProfileTeacherView() {
                       <FolderIcon className="w-5 h-5 text-[#D4AF37]" />
                     </div>
                     <span className="px-2.5 py-1 bg-purple-100 text-purple-800 text-xs font-semibold rounded-full">
-                      {getResourceTypeLabel(resource.resourceType)}
+                      {getDigitalResourceTypeLabel(resource.resourceType)}
                     </span>
                   </div>
                   <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-[#D4AF37] transition-colors">
-                    {getResourceTitle(resource)}
+                    {getDigitalResourceTitle(resource)}
                   </h3>
                   <p className="text-sm text-gray-600 mb-2">
                     {resource.subject?.name || 'Materia no disponible'}

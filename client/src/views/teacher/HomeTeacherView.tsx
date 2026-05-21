@@ -1,11 +1,69 @@
+import { getCurrentPlanningSubmissionDeadline } from '@/api/PlanningAPI'
 import { useAuth } from '@/hooks/useAuth'
 import { MyPlanningsCard } from '@/components/planning/MyPlanningsCard'
+import { MyResourcesCard } from '@/components/resources/MyResourcesCard'
 import {
+  CalendarDaysIcon,
   DocumentTextIcon,
   FolderIcon,
   PlusIcon,
 } from '@heroicons/react/24/solid'
+import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router'
+
+const formatDeadline = (date: string | null) => {
+  if (!date) return 'Sin fecha configurada'
+
+  return new Date(date).toLocaleString('es-MX', {
+    dateStyle: 'full',
+    timeStyle: 'short',
+  })
+}
+
+function PlanningDeadlineCard() {
+  const { data } = useQuery({
+    queryKey: ['planning-submission-deadline-current'],
+    queryFn: getCurrentPlanningSubmissionDeadline,
+  })
+
+  const deadlineAt = data?.deadlineAt || null
+  const isOverdue = deadlineAt ? new Date().getTime() > new Date(deadlineAt).getTime() : false
+
+  return (
+    <div className="mb-10 overflow-hidden rounded-3xl border border-[#7C2855]/15 bg-white shadow-lg">
+      <div className="flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-start gap-4">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#7C2855]/10">
+            <CalendarDaysIcon className="h-8 w-8 text-[#7C2855]" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold tracking-wide text-[#7C2855] uppercase">
+              Fecha límite de envío
+            </p>
+            <h2 className="mt-1 text-2xl font-bold text-gray-900">
+              {formatDeadline(deadlineAt)}
+            </h2>
+            <p className="mt-2 text-sm text-gray-600">
+              Periodo {data?.period || 'actual'}. Las planeaciones enviadas después
+              de esta fecha se marcarán como desfasadas.
+            </p>
+          </div>
+        </div>
+        <span
+          className={`inline-flex rounded-full px-4 py-2 text-sm font-bold ${
+            !deadlineAt
+              ? 'bg-gray-100 text-gray-700'
+              : isOverdue
+                ? 'bg-rose-100 text-rose-800'
+                : 'bg-emerald-100 text-emerald-800'
+          }`}
+        >
+          {!deadlineAt ? 'Sin configurar' : isOverdue ? 'Fuera de plazo' : 'Dentro del plazo'}
+        </span>
+      </div>
+    </div>
+  )
+}
 
 export default function HomeTeacherView() {
   const { data } = useAuth()
@@ -34,6 +92,8 @@ export default function HomeTeacherView() {
           <div className="h-1 bg-linear-to-r fr om-transparent via-[#D4AF37] to-transparent" />
         </div>
       </div>
+
+      <PlanningDeadlineCard />
 
       {/* Sección de Acciones Principales */}
       <div className="mb-12">
@@ -113,6 +173,11 @@ export default function HomeTeacherView() {
       {/* Mis Planeaciones */}
       <div className="mb-12">
         <MyPlanningsCard />
+      </div>
+
+      {/* Mis RDDs */}
+      <div className="mb-12">
+        <MyResourcesCard />
       </div>
 
       {/* Sección de Acceso Rápido (Opcional) */}

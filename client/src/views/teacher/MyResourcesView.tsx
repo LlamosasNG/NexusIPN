@@ -14,6 +14,10 @@ import {
 import { LoadingApp } from '@/components/LoadingApp'
 import type { DigitalBookResource } from '@/types'
 import {
+  getDigitalResourceTitle,
+  getDigitalResourceTypeLabel,
+} from '@/utils/digitalResource'
+import {
   ArrowRightIcon,
   BookOpenIcon,
   CalendarDaysIcon,
@@ -35,18 +39,6 @@ const formatDate = (dateString: string) => {
   })
 }
 
-const getResourceTitle = (resource: DigitalBookResource) =>
-  resource.learningObject?.precisionTema ||
-  resource.identification?.title ||
-  'Recurso digital sin título'
-
-const getResourceTypeLabel = (resourceType: DigitalBookResource['resourceType']) => {
-  if (resourceType === 'digital-book') return 'Libro Digital'
-  if (resourceType === 'interactive-digital-book') return 'Libro Digital Interactivo'
-  if (resourceType === 'learning-object') return 'Objeto de Aprendizaje'
-  return resourceType
-}
-
 export default function MyResourcesView() {
   const queryClient = useQueryClient()
   const [resourceToDelete, setResourceToDelete] = useState<DigitalBookResource | null>(null)
@@ -56,6 +48,7 @@ export default function MyResourcesView() {
     queryKey: ['digital-resources'],
     queryFn: getMyDigitalResources,
     refetchOnWindowFocus: false,
+    staleTime: 0,
   })
 
   const { mutate: removeResource, isPending: isDeleting } = useMutation({
@@ -161,18 +154,18 @@ export default function MyResourcesView() {
                       type="button"
                       onClick={() => handleOpenDeleteModal(resource)}
                       className="inline-flex items-center justify-center rounded-xl border border-red-200 bg-red-50 p-2 text-red-600 transition-colors hover:bg-red-100 hover:text-red-700"
-                      aria-label={`Eliminar recurso ${getResourceTitle(resource)}`}
+                      aria-label={`Eliminar recurso ${getDigitalResourceTitle(resource)}`}
                     >
                       <TrashIcon className="w-5 h-5" />
                     </button>
                   </div>
                   <span className="px-3 py-1 bg-[#7C2855]/10 text-[#7C2855] text-xs font-semibold rounded-full">
-                    {getResourceTypeLabel(resource.resourceType)}
+                    {getDigitalResourceTypeLabel(resource.resourceType)}
                   </span>
                 </div>
 
                 <h2 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#7C2855] transition-colors">
-                  {getResourceTitle(resource)}
+                  {getDigitalResourceTitle(resource)}
                 </h2>
 
                 <div className="space-y-2 text-sm text-gray-600">
@@ -190,13 +183,26 @@ export default function MyResourcesView() {
                   <p className="text-xs text-gray-500">
                     Código: {resource.subject?.code || 'N/D'}
                   </p>
-                  <Link
-                    to={`/resources/create/${resource.subjectId}/${resource.resourceType}`}
-                    className="inline-flex items-center gap-2 text-[#7C2855] font-semibold hover:text-[#5a1d3f] transition-colors"
-                  >
-                    Continuar edición
-                    <ArrowRightIcon className="w-4 h-4" />
-                  </Link>
+                  <div className="flex flex-wrap items-center justify-end gap-3">
+                    <Link
+                      to={
+                        resource.publicSlug
+                          ? `/r/${resource.publicSlug}`
+                          : `/resources/view/${resource.subjectId}/${resource.resourceType}`
+                      }
+                      className="inline-flex items-center gap-2 font-semibold text-[#D4AF37] transition-colors hover:text-[#b8962e]"
+                    >
+                      {resource.publicSlug ? 'Ver público' : 'Ver recurso'}
+                      <BookOpenIcon className="w-4 h-4" />
+                    </Link>
+                    <Link
+                      to={`/resources/create/${resource.subjectId}/${resource.resourceType}`}
+                      className="inline-flex items-center gap-2 text-[#7C2855] font-semibold hover:text-[#5a1d3f] transition-colors"
+                    >
+                      Continuar edición
+                      <ArrowRightIcon className="w-4 h-4" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -237,7 +243,9 @@ export default function MyResourcesView() {
             <DialogDescription className="mt-2 text-sm text-gray-600">
               Esta acción eliminará el recurso digital{' '}
               <strong>
-                {resourceToDelete ? getResourceTitle(resourceToDelete) : 'seleccionado'}
+                {resourceToDelete
+                  ? getDigitalResourceTitle(resourceToDelete)
+                  : 'seleccionado'}
               </strong>
               . Para continuar, ingresa tu contraseña.
             </DialogDescription>

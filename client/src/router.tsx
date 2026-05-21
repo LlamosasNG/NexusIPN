@@ -19,6 +19,7 @@ import DepartmentHeadPlanningViewerView from './views/departmentHead/DepartmentH
 import ConfirmPlanningView from './views/plannings/ConfirmPlanningView'
 import CreatePlanningView from './views/plannings/CreatePlanningView'
 import CreateDigitalBookView from './views/resources/CreateDigitalBookView'
+import DigitalResourceReaderView from './views/resources/DigitalResourceReaderView'
 import SelectResourceTypeView from './views/resources/SelectResourceTypeView'
 import RegisterCodeView from './views/students/RegisterCodeView'
 import SelectSubjectView from './views/subjects/SelectSubjectView'
@@ -48,6 +49,10 @@ export default function Router() {
           <Route path="/" element={<DashboardView />} />
           <Route path="/register-code" element={<RegisterCodeView />} />
         </Route>
+        <Route
+          path="/r/:publicSlug"
+          element={<DigitalResourceReaderView />}
+        />
         <Route element={<UserLayout />}>
           <Route path="/my-home" element={<RoleHomeView />} />
           <Route
@@ -76,6 +81,10 @@ export default function Router() {
           <Route
             path="/resources/create/:subjectId/:resourceType"
             element={<CreateDigitalBookView />}
+          />
+          <Route
+            path="/resources/view/:subjectId/:resourceType"
+            element={<DigitalResourceReaderView />}
           />
           <Route path="/my-profile" element={<ProfileTeacherView />} />
           <Route

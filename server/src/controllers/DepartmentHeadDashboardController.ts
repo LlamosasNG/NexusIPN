@@ -17,6 +17,9 @@ const isResourceComplete = (resource: DigitalDidacticResource) =>
       resource.credits
   )
 
+const isLatePlanning = (planning: Planning) =>
+  planning.isLate || planning.status === PlanningStatus.LATE
+
 export class DepartmentHeadDashboardController {
   static getMetrics = async (req: Request, res: Response) => {
     try {
@@ -124,7 +127,9 @@ export class DepartmentHeadDashboardController {
           title: planning.subject?.name || `Planeación ${planning.id}`,
           subjectName: planning.subject?.name || 'Materia no disponible',
           teacherName: planning.user?.name || 'Docente no disponible',
-          status: planning.status,
+          status: isLatePlanning(planning)
+            ? `${planning.status} · Desfasada`
+            : planning.status,
           updatedAt: planning.updatedAt,
         })),
         ...digitalResources.map((resource) => ({
@@ -165,6 +170,7 @@ export class DepartmentHeadDashboardController {
           approvedPlannings: plannings.filter(
             (planning) => planning.status === PlanningStatus.APPROVED
           ).length,
+          latePlannings: plannings.filter(isLatePlanning).length,
           approvedDigitalResources: approvedDigitalResources.length,
           teacherParticipation,
           recentActivityCount: recentActivity.length,

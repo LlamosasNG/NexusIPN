@@ -1,8 +1,11 @@
 import api from '@/lib/axios'
 import {
   DepartmentHeadDashboardSchema,
+  DepartmentHeadPlanningDeadlineSchema,
+  DepartmentHeadPlanningDeadlineUpdateSchema,
   DepartmentHeadPlanningDetailSchema,
   DepartmentHeadPlanningListResponseSchema,
+  type DepartmentHeadPlanningDeadline,
   type DepartmentHeadPlanningReviewStatus,
 } from '@/types'
 import { isAxiosError } from 'axios'
@@ -18,6 +21,48 @@ export async function getDepartmentHeadDashboard() {
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       throw new Error(error.response.data.error)
+    }
+  }
+}
+
+export async function getDepartmentHeadPlanningDeadline(period?: string) {
+  try {
+    const { data } = await api.get('/department-head/planning-deadlines', {
+      params: period ? { period } : undefined,
+    })
+    const response = DepartmentHeadPlanningDeadlineSchema.safeParse(data)
+
+    if (response.success) {
+      return response.data
+    }
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.error)
+    }
+  }
+}
+
+export async function updateDepartmentHeadPlanningDeadline({
+  period,
+  deadlineAt,
+}: DepartmentHeadPlanningDeadline) {
+  try {
+    const { data } = await api.put('/department-head/planning-deadlines', {
+      period,
+      deadlineAt,
+    })
+    const response = DepartmentHeadPlanningDeadlineUpdateSchema.safeParse(data)
+
+    if (response.success) {
+      return response.data
+    }
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(
+        error.response.data.error ||
+          error.response.data.errors?.[0]?.msg ||
+          'No fue posible actualizar la fecha límite'
+      )
     }
   }
 }

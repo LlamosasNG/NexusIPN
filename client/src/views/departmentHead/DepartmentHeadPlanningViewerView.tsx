@@ -105,7 +105,21 @@ function PlanningMeta({ planning }: { planning: DepartmentHeadPlanningDetail }) 
         label="Fecha de envío"
         value={formatDateTime(planning.submissionDate)}
       />
-      <ReadOnlyField label="Estado de revisión" value={planning.reviewStatus} />
+      <div className="rounded-2xl border border-gray-200 bg-white p-4">
+        <p className="text-xs font-semibold tracking-wide text-gray-500 uppercase">
+          Estado de revisión
+        </p>
+        <div className="mt-2 flex flex-wrap gap-2">
+          <span className="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-800">
+            {planning.reviewStatus}
+          </span>
+          {planning.isLate && (
+            <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-800">
+              Desfasada
+            </span>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

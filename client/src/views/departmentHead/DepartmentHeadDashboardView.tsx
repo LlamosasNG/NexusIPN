@@ -51,6 +51,12 @@ const metricCards = [
     accent: 'from-emerald-600 to-emerald-400',
   },
   {
+    key: 'latePlannings',
+    title: 'Planeaciones desfasadas',
+    icon: ClockIcon,
+    accent: 'from-rose-600 to-red-400',
+  },
+  {
     key: 'approvedDigitalResources',
     title: 'Recursos didácticos aprobados',
     icon: FolderOpenIcon,

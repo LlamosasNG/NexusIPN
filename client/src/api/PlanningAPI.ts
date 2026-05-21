@@ -3,6 +3,7 @@ import {
   PlanningListSchema,
   PlanningFeedbackSchema,
   PlanningSubjectDetailsSchema,
+  PlanningSubmissionDeadlineSchema,
   type CreatePlanningData,
   type SubjectCard,
 } from '@/types'
@@ -65,6 +66,21 @@ export async function getPlanningFeedback(planningId: number) {
   try {
     const { data } = await api.get(`/plannings/${planningId}/feedback`)
     const response = PlanningFeedbackSchema.safeParse(data)
+
+    if (response.success) {
+      return response.data
+    }
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.error)
+    }
+  }
+}
+
+export async function getCurrentPlanningSubmissionDeadline() {
+  try {
+    const { data } = await api.get('/plannings/submission-deadline/current')
+    const response = PlanningSubmissionDeadlineSchema.safeParse(data)
 
     if (response.success) {
       return response.data

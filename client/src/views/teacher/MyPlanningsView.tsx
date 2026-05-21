@@ -202,11 +202,18 @@ export default function MyPlanningsView() {
                       <TrashIcon className="w-5 h-5" />
                     </button>
                   </div>
-                  <span
-                    className={`px-3 py-1 text-xs font-semibold rounded-full ${statusColors[plan.status] || 'bg-gray-100 text-gray-800'}`}
-                  >
-                    {plan.status}
-                  </span>
+                  <div className="flex flex-wrap justify-end gap-2">
+                    <span
+                      className={`px-3 py-1 text-xs font-semibold rounded-full ${statusColors[plan.status] || 'bg-gray-100 text-gray-800'}`}
+                    >
+                      {plan.status}
+                    </span>
+                    {plan.isLate && (
+                      <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-800">
+                        Desfasada
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 <h2 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#7C2855] transition-colors">

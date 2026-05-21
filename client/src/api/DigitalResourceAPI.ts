@@ -26,7 +26,13 @@ export async function getDigitalResource({
 }: DigitalResourceParams) {
   try {
     const { data } = await api.get<DigitalBookResource>(
-      `/digital-resources/${subjectId}/${resourceType}`
+      `/digital-resources/${subjectId}/${resourceType}`,
+      {
+        headers: {
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
+        },
+      }
     )
     return data
   } catch (error) {
@@ -38,9 +44,34 @@ export async function getDigitalResource({
   }
 }
 
+export async function getPublicDigitalResource(publicSlug: string) {
+  try {
+    const { data } = await api.get<DigitalBookResource>(
+      `/public/resources/${publicSlug}`,
+      {
+        headers: {
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
+        },
+      }
+    )
+    return data
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.error)
+    }
+    return null
+  }
+}
+
 export async function getMyDigitalResources() {
   try {
-    const { data } = await api.get<DigitalBookResource[]>('/digital-resources')
+    const { data } = await api.get<DigitalBookResource[]>('/digital-resources', {
+      headers: {
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
+      },
+    })
     return data
   } catch (error) {
     if (isAxiosError(error) && error.response) {
@@ -59,6 +90,38 @@ export async function saveDigitalBookSection({
     const { data } = await api.post<SaveDigitalBookSectionResponse>(
       `/digital-resources/${subjectId}/${resourceType}`,
       formData
+    )
+    return data
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.error)
+    }
+  }
+}
+
+export async function publishDigitalResource({
+  subjectId,
+  resourceType,
+}: DigitalResourceParams) {
+  try {
+    const { data } = await api.put<SaveDigitalBookSectionResponse>(
+      `/digital-resources/${subjectId}/${resourceType}/publish`
+    )
+    return data
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.error)
+    }
+  }
+}
+
+export async function unpublishDigitalResource({
+  subjectId,
+  resourceType,
+}: DigitalResourceParams) {
+  try {
+    const { data } = await api.put<SaveDigitalBookSectionResponse>(
+      `/digital-resources/${subjectId}/${resourceType}/unpublish`
     )
     return data
   } catch (error) {
