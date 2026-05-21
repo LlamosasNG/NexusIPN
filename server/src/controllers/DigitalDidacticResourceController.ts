@@ -17,6 +17,7 @@ const sectionKeys: Array<keyof DigitalBookSections> = [
   'evaluation',
   'help',
   'credits',
+  'learningObject',
 ]
 
 const buildSectionPayload = (payload: DigitalBookUpsertPayload) => {
@@ -55,6 +56,7 @@ const serializeResource = (resource: DigitalDidacticResource) => ({
   evaluation: resource.evaluation,
   help: resource.help,
   credits: resource.credits,
+  learningObject: resource.learningObject,
   savedSections: {
     identification: Boolean(resource.identification),
     pedagogical: Boolean(resource.pedagogical),
@@ -64,6 +66,7 @@ const serializeResource = (resource: DigitalDidacticResource) => ({
     evaluation: Boolean(resource.evaluation),
     help: Boolean(resource.help),
     credits: Boolean(resource.credits),
+    learningObject: Boolean(resource.learningObject),
   },
   createdAt: resource.createdAt,
   updatedAt: resource.updatedAt,

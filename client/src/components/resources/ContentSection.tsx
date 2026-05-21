@@ -358,12 +358,14 @@ interface ContentSectionProps {
   errors: FieldErrors<ContentFormValues>
   watch: UseFormWatch<ContentFormValues>
   setValue: UseFormSetValue<ContentFormValues>
+  mode?: 'book' | 'learning-object'
 }
 
 export function ContentSection({
   errors,
   watch,
   setValue,
+  mode = 'book',
 }: ContentSectionProps) {
   const unidades = watch('unidades')
 
@@ -391,10 +393,14 @@ export function ContentSection({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-bold text-gray-900">
-            Estructura de contenidos
+            {mode === 'learning-object'
+              ? 'Contenido breve para dos temas específicos'
+              : 'Estructura de contenidos'}
           </h2>
           <p className="text-xs text-gray-500 mt-0.5">
-            Organiza el contenido por unidades, temas y subtemas.
+            {mode === 'learning-object'
+              ? 'Explica sólo lo necesario para resolver el objetivo puntual del OA. Usa los temas consecutivos definidos para microaprendizaje.'
+              : 'Organiza el contenido por unidades, temas y subtemas.'}
           </p>
         </div>
       </div>

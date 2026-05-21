@@ -6,6 +6,8 @@ export interface IdentificationFormValues {
   coverImage: string
   interactiveDescription: string
   title: string
+  preciseTopic: string
+  academicProgramContexts: string
   thematicUnits: string[]
 }
 
@@ -68,6 +70,11 @@ export interface ActivityValues {
   puntajeProgramado: number
   numeroIntentos: number
   mecanismoRetroalimentacion: string
+  preguntas: AutomatedQuestionValues[]
+}
+
+export interface AutomatedQuestionValues {
+  texto: string
 }
 
 export interface LearningActivitiesFormValues {
@@ -111,6 +118,22 @@ export interface CreditsSectionFormValues {
   authors: AuthorItem[]
 }
 
+export interface LearningObjectFormValues {
+  precisionTema: string
+  temaConsecutivoUno: string
+  temaConsecutivoDos: string
+  objetivoAprendizaje: string
+  competenciaEspecifica: string
+  contextoAplicacion: string
+  microcontenido: string
+  ejemploAplicado: string
+  actividadFocalizada: string
+  evidencia: string
+  criterioLogro: string
+  tiempoEstimado: string
+  reutilizacion: string
+}
+
 export interface DigitalBookSavedSections {
   identification: boolean
   pedagogical: boolean
@@ -120,6 +143,7 @@ export interface DigitalBookSavedSections {
   evaluation: boolean
   help: boolean
   credits: boolean
+  learningObject?: boolean
 }
 
 export interface DigitalBookResource {
@@ -140,6 +164,7 @@ export interface DigitalBookResource {
   evaluation: EvaluationFormValues | null
   help: HelpSectionFormValues | null
   credits: CreditsSectionFormValues | null
+  learningObject: LearningObjectFormValues | null
   savedSections: DigitalBookSavedSections
   createdAt: string
   updatedAt: string
@@ -154,6 +179,10 @@ export interface DigitalBookPayload {
   evaluation?: EvaluationFormValues
   help?: HelpSectionFormValues
   credits?: CreditsSectionFormValues
+  learningObject?: LearningObjectFormValues
 }
 
-export type DigitalResourceType = 'digital-book' | 'interactive-digital-book'
+export type DigitalResourceType =
+  | 'digital-book'
+  | 'interactive-digital-book'
+  | 'learning-object'

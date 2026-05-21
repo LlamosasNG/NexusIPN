@@ -50,11 +50,14 @@ export default function ProfileTeacherView() {
   }
 
   const getResourceTitle = (resource: DigitalBookResource) =>
-    resource.identification?.title || 'Libro digital sin título'
+    resource.learningObject?.precisionTema ||
+    resource.identification?.title ||
+    'Recurso digital sin título'
 
   const getResourceTypeLabel = (resourceType: DigitalBookResource['resourceType']) => {
     if (resourceType === 'digital-book') return 'Libro Digital'
     if (resourceType === 'interactive-digital-book') return 'Libro Digital Interactivo'
+    if (resourceType === 'learning-object') return 'Objeto de Aprendizaje'
     return resourceType
   }
 

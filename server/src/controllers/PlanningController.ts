@@ -2,6 +2,7 @@ import { db } from '@/config/db'
 import DidacticOrganization from '@/models/PlanningDidacticOrganization'
 import GeneralData from '@/models/GeneralData'
 import Planning, { PlanningStatus } from '@/models/Planning'
+import PlanningObservation from '@/models/PlanningObservation'
 import PlagiarismTool from '@/models/PlagiarismTool'
 import Reference from '@/models/Reference'
 import Subject from '@/models/Subject'
@@ -98,6 +99,62 @@ export class PlanningController {
     }
   }
 
+  static getFeedback = async (req: Request, res: Response) => {
+    try {
+      const { planningId } = req.params
+
+      const planning = await Planning.findOne({
+        where: { id: planningId, userId: req.user.id },
+        include: [
+          {
+            model: Subject,
+            attributes: ['id', 'name', 'code'],
+          },
+        ],
+      })
+
+      if (!planning) {
+        return res.status(404).json({ error: 'Planeación no encontrada' })
+      }
+
+      const observations = await PlanningObservation.findAll({
+        where: { planningId: planning.id },
+        include: [
+          {
+            model: User,
+            attributes: ['id', 'name', 'role'],
+          },
+        ],
+        order: [['createdAt', 'ASC']],
+      })
+
+      res.json({
+        id: planning.id,
+        period: planning.period,
+        status: planning.status,
+        feedback: planning.feedback,
+        updatedAt: planning.updatedAt,
+        subject: planning.subject,
+        observations: observations.map((observation) => ({
+          id: observation.id,
+          section: observation.section,
+          message: observation.message,
+          createdAt: observation.createdAt,
+          author: {
+            id: observation.user.id,
+            name: observation.user.name,
+            role: observation.user.role,
+          },
+        })),
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({
+        error: 'Hubo un error al obtener la retroalimentación',
+      })
+    }
+  }
+
   static delete = async (req: Request, res: Response) => {
     const transaction = await db.transaction()
 
@@ -155,6 +212,7 @@ export class PlanningController {
         DidacticOrganization.destroy({ where: { planningId }, transaction }),
         Reference.destroy({ where: { planningId }, transaction }),
         PlagiarismTool.destroy({ where: { planningId }, transaction }),
+        PlanningObservation.destroy({ where: { planningId }, transaction }),
       ])
 
       await planning.destroy({ transaction })

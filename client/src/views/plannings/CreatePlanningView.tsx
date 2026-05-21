@@ -66,6 +66,8 @@ export default function CreatePlanningView() {
 
   const currentFormId =
     currentSection <= 3 ? `planning-section-form-${currentSection}` : undefined
+  const isPlanningLocked =
+    planning?.status === 'Enviada' || planning?.status === 'Aprobada'
 
   useEffect(() => {
     if (!referencesData) return
@@ -108,6 +110,11 @@ export default function CreatePlanningView() {
 
   const handleSave = async () => {
     if (!planningId) return
+
+    if (isPlanningLocked) {
+      toast.info('Esta planeación está en modo sólo lectura y no puede modificarse.')
+      return
+    }
 
     try {
       if (currentSection === 4) {
@@ -155,6 +162,11 @@ export default function CreatePlanningView() {
 
   const handleSubmitPlanning = async () => {
     if (!planningId) return
+
+    if (isPlanningLocked) {
+      toast.info('Esta planeación está en modo sólo lectura y no puede modificarse.')
+      return
+    }
 
     try {
       setIsSubmittingPlanning(true)
@@ -271,45 +283,56 @@ export default function CreatePlanningView() {
         {/* Main Form Container */}
         <div className="mx-auto rounded-3xl bg-white p-8 shadow-2xl">
           <PlanningFormHeader />
+          {isPlanningLocked && (
+            <div className="mb-6 rounded-2xl border border-sky-200 bg-sky-50 px-5 py-4 text-sm text-sky-800">
+              Esta planeación se encuentra {planning.status.toLowerCase()} y está
+              disponible únicamente para consulta.
+            </div>
+          )}
           {/* Render current section */}
-          {isLoading ? (
-            <LoadingApp />
-          ) : (
-            currentSection === 1 && (
-              <PlanningSection1
-                subject={planning?.subject ?? undefined}
-                formId={currentFormId}
-                showSaveButton={false}
+          <div
+            className={isPlanningLocked ? 'pointer-events-none select-none opacity-75' : ''}
+            aria-readonly={isPlanningLocked}
+          >
+            {isLoading ? (
+              <LoadingApp />
+            ) : (
+              currentSection === 1 && (
+                <PlanningSection1
+                  subject={planning?.subject ?? undefined}
+                  formId={currentFormId}
+                  showSaveButton={false}
+                />
+              )
+            )}
+            {currentSection === 2 && (
+              <PlanningSection2 formId={currentFormId} showSaveButton={false} />
+            )}
+            {currentSection === 3 && (
+              <PlanningSection3 formId={currentFormId} showSaveButton={false} />
+            )}
+            {currentSection === 4 && (
+              <PlanningSection4
+                referencias={referencias}
+                onAgregar={agregarReferencia}
+                onEliminar={eliminarReferencia}
+                onTextoChange={actualizarTextoReferencia}
+                onUnidadToggle={toggleUnidadReferencia}
+                onTipoToggle={toggleTipoReferencia}
               />
-            )
-          )}
-          {currentSection === 2 && (
-            <PlanningSection2 formId={currentFormId} showSaveButton={false} />
-          )}
-          {currentSection === 3 && (
-            <PlanningSection3 formId={currentFormId} showSaveButton={false} />
-          )}
-          {currentSection === 4 && (
-            <PlanningSection4
-              referencias={referencias}
-              onAgregar={agregarReferencia}
-              onEliminar={eliminarReferencia}
-              onTextoChange={actualizarTextoReferencia}
-              onUnidadToggle={toggleUnidadReferencia}
-              onTipoToggle={toggleTipoReferencia}
-            />
-          )}
-          {currentSection === 5 && (
-            <PlanningSection5
-              herramientaPlagio={herramientaPlagio}
-              onChange={setHerramientaPlagio}
-              canSubmitPlanning={planning?.status === 'Borrador'}
-              isSubmitDialogOpen={isSubmitDialogOpen}
-              isSubmittingPlanning={isSubmittingPlanning}
-              onSubmitDialogChange={setIsSubmitDialogOpen}
-              onConfirmSubmit={handleSubmitPlanning}
-            />
-          )}
+            )}
+            {currentSection === 5 && (
+              <PlanningSection5
+                herramientaPlagio={herramientaPlagio}
+                onChange={setHerramientaPlagio}
+                canSubmitPlanning={planning?.status === 'Borrador'}
+                isSubmitDialogOpen={isSubmitDialogOpen}
+                isSubmittingPlanning={isSubmittingPlanning}
+                onSubmitDialogChange={setIsSubmitDialogOpen}
+                onConfirmSubmit={handleSubmitPlanning}
+              />
+            )}
+          </div>
           <PlanningFooter currentPage={currentSection} totalPages={5} />
         </div>
 
@@ -320,6 +343,7 @@ export default function CreatePlanningView() {
           onSave={handleSave}
           onGoToSection={handleGoToSection}
           saveFormId={currentFormId}
+          isReadOnly={isPlanningLocked}
         />
       </div>
     </div>

@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import type { ActivityValues, LearningActivitiesFormValues } from '@/types'
@@ -19,6 +19,7 @@ const emptyActivity = (): ActivityValues => ({
   puntajeProgramado: 0,
   numeroIntentos: 1,
   mecanismoRetroalimentacion: '',
+  preguntas: [],
 })
 
 /* ─── Field label ─── */
@@ -180,6 +181,108 @@ function AutomatedFields({ index, register, errors }: AutomatedFieldsProps) {
   )
 }
 
+interface AutomatedQuestionsProps {
+  index: number
+  register: UseFormRegister<LearningActivitiesFormValues>
+  watch: UseFormWatch<LearningActivitiesFormValues>
+  setValue: UseFormSetValue<LearningActivitiesFormValues>
+  errors: FieldErrors<LearningActivitiesFormValues>
+}
+function AutomatedQuestions({
+  index,
+  register,
+  watch,
+  setValue,
+  errors,
+}: AutomatedQuestionsProps) {
+  const questions = watch(`activities.${index}.preguntas`) ?? []
+  const questionErrors = errors.activities?.[index]?.preguntas
+
+  const addQuestion = () => {
+    setValue(
+      `activities.${index}.preguntas`,
+      [...questions, { texto: '' }],
+      { shouldDirty: true, shouldTouch: true }
+    )
+  }
+
+  const removeQuestion = (questionIndex: number) => {
+    setValue(
+      `activities.${index}.preguntas`,
+      questions.filter((_, currentIndex) => currentIndex !== questionIndex),
+      { shouldDirty: true, shouldTouch: true }
+    )
+  }
+
+  return (
+    <div className="mt-4 rounded-xl border border-cyan-200 bg-cyan-50/60 p-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-widest text-cyan-800">
+            Preguntas de la actividad
+          </p>
+          <p className="mt-1 text-xs text-cyan-700">
+            Agrega reactivos para esta actividad automatizada.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={addQuestion}
+          className="inline-flex items-center justify-center gap-2 rounded-lg border border-cyan-300 bg-white px-3 py-2 text-sm font-semibold text-cyan-800 transition-colors hover:bg-cyan-100"
+        >
+          <PlusIcon className="h-4 w-4" />
+          Agregar pregunta
+        </button>
+      </div>
+
+      {questions.length > 0 ? (
+        <div className="space-y-3">
+          {questions.map((_, questionIndex) => (
+            <div
+              key={questionIndex}
+              className="rounded-xl border border-cyan-100 bg-white p-3"
+            >
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <FieldLabel required>Pregunta {questionIndex + 1}</FieldLabel>
+                <button
+                  type="button"
+                  onClick={() => removeQuestion(questionIndex)}
+                  className="text-gray-300 transition-colors hover:text-red-400"
+                  aria-label={`Eliminar pregunta ${questionIndex + 1}`}
+                >
+                  <TrashIcon className="h-4 w-4" />
+                </button>
+              </div>
+              <Textarea
+                rows={2}
+                placeholder="Redacta la pregunta para el estudiante..."
+                className={`bg-gray-50 text-sm resize-none ${
+                  questionErrors?.[questionIndex]?.texto
+                    ? 'border-red-400'
+                    : 'border-gray-200 focus-visible:border-cyan-600 focus-visible:ring-cyan-600/20'
+                }`}
+                {...register(
+                  `activities.${index}.preguntas.${questionIndex}.texto`,
+                  { required: 'La pregunta es obligatoria.' }
+                )}
+              />
+              {questionErrors?.[questionIndex]?.texto && (
+                <p className="mt-1 text-[11px] text-red-500">
+                  {questionErrors[questionIndex]?.texto?.message}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="rounded-lg border border-dashed border-cyan-200 bg-white/70 px-3 py-2 text-xs text-cyan-700">
+          Aún no has agregado preguntas a esta actividad automatizada.
+        </p>
+      )}
+    </div>
+  )
+}
+
 /* ─── Activity card ─── */
 interface ActivityCardProps {
   index: number
@@ -188,12 +291,28 @@ interface ActivityCardProps {
   setValue: UseFormSetValue<LearningActivitiesFormValues>
   errors: FieldErrors<LearningActivitiesFormValues>
   onRemove: () => void
+  showInteractiveOptions: boolean
 }
-function ActivityCard({ index, register, watch, setValue, errors, onRemove }: ActivityCardProps) {
+function ActivityCard({
+  index,
+  register,
+  watch,
+  setValue,
+  errors,
+  onRemove,
+  showInteractiveOptions,
+}: ActivityCardProps) {
   const errs = errors.activities?.[index]
   const modalidad = watch(`activities.${index}.modalidad`)
   const esAutomatizada = watch(`activities.${index}.esAutomatizada`)
   const espacioComunicacion = watch(`activities.${index}.espacioComunicacion`)
+  const handleAutomatedChange = (value: boolean) => {
+    setValue(`activities.${index}.esAutomatizada`, value)
+
+    if (!value) {
+      setValue(`activities.${index}.preguntas`, [])
+    }
+  }
 
   return (
     <div className="rounded-2xl border-2 border-gray-200 bg-white shadow-sm overflow-hidden">
@@ -311,23 +430,33 @@ function ActivityCard({ index, register, watch, setValue, errors, onRemove }: Ac
           </div>
         </div>
 
-        {/* Toggles */}
-        <div className="space-y-3 pt-1">
-          <Toggle
-            checked={!!espacioComunicacion}
-            onChange={(v) => setValue(`activities.${index}.espacioComunicacion`, v)}
-            label="Habilitar espacio de comunicación (foro/chat) para los participantes en esta actividad"
-          />
-          <Toggle
-            checked={!!esAutomatizada}
-            onChange={(v) => setValue(`activities.${index}.esAutomatizada`, v)}
-            label="Es una actividad o ejercicio automatizado (ej. cuestionario)"
-          />
-        </div>
+        {showInteractiveOptions && (
+          <div className="space-y-3 pt-1">
+            <Toggle
+              checked={!!espacioComunicacion}
+              onChange={(v) => setValue(`activities.${index}.espacioComunicacion`, v)}
+              label="Habilitar espacio de comunicación (foro/chat) para los participantes en esta actividad"
+            />
+            <Toggle
+              checked={!!esAutomatizada}
+              onChange={handleAutomatedChange}
+              label="Es una actividad o ejercicio automatizado (ej. cuestionario)"
+            />
+          </div>
+        )}
 
         {/* Conditional: automated block */}
-        {esAutomatizada && (
-          <AutomatedFields index={index} register={register} errors={errors} />
+        {showInteractiveOptions && esAutomatizada && (
+          <>
+            <AutomatedFields index={index} register={register} errors={errors} />
+            <AutomatedQuestions
+              index={index}
+              register={register}
+              watch={watch}
+              setValue={setValue}
+              errors={errors}
+            />
+          </>
         )}
       </div>
     </div>
@@ -341,6 +470,7 @@ interface LearningActivitiesSectionProps {
   errors: FieldErrors<LearningActivitiesFormValues>
   watch: UseFormWatch<LearningActivitiesFormValues>
   setValue: UseFormSetValue<LearningActivitiesFormValues>
+  showInteractiveOptions?: boolean
 }
 
 export function LearningActivitiesSection({
@@ -349,11 +479,30 @@ export function LearningActivitiesSection({
   errors,
   watch,
   setValue,
+  showInteractiveOptions = true,
 }: LearningActivitiesSectionProps) {
   const { fields, append, remove } = useFieldArray({ control, name: 'activities' })
 
   const activities = watch('activities') ?? []
   const total = activities.reduce((sum, a) => sum + (Number(a?.porcentaje) || 0), 0)
+
+  useEffect(() => {
+    if (showInteractiveOptions) return
+
+    activities.forEach((activity, index) => {
+      if (activity?.espacioComunicacion) {
+        setValue(`activities.${index}.espacioComunicacion`, false)
+      }
+
+      if (activity?.esAutomatizada) {
+        setValue(`activities.${index}.esAutomatizada`, false)
+      }
+
+      if (activity?.preguntas?.length) {
+        setValue(`activities.${index}.preguntas`, [])
+      }
+    })
+  }, [activities, setValue, showInteractiveOptions])
 
   return (
     <div className="space-y-6">
@@ -372,6 +521,7 @@ export function LearningActivitiesSection({
               setValue={setValue}
               errors={errors}
               onRemove={() => remove(index)}
+              showInteractiveOptions={showInteractiveOptions}
             />
           ))}
         </div>

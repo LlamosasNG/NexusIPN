@@ -1,9 +1,14 @@
-export type DigitalResourceType = 'digital-book' | 'interactive-digital-book'
+export type DigitalResourceType =
+  | 'digital-book'
+  | 'interactive-digital-book'
+  | 'learning-object'
 
 export interface IdentificationSection {
   coverImage: string
   interactiveDescription: string
   title: string
+  preciseTopic: string
+  academicProgramContexts: string
   thematicUnits: string[]
 }
 
@@ -66,6 +71,11 @@ export interface LearningActivitySectionItem {
   puntajeProgramado: number
   numeroIntentos: number
   mecanismoRetroalimentacion: string
+  preguntas: AutomatedQuestionSectionItem[]
+}
+
+export interface AutomatedQuestionSectionItem {
+  texto: string
 }
 
 export interface LearningActivitiesSection {
@@ -109,6 +119,22 @@ export interface CreditsSection {
   authors: AuthorSectionItem[]
 }
 
+export interface LearningObjectSection {
+  precisionTema: string
+  temaConsecutivoUno: string
+  temaConsecutivoDos: string
+  objetivoAprendizaje: string
+  competenciaEspecifica: string
+  contextoAplicacion: string
+  microcontenido: string
+  ejemploAplicado: string
+  actividadFocalizada: string
+  evidencia: string
+  criterioLogro: string
+  tiempoEstimado: string
+  reutilizacion: string
+}
+
 export interface DigitalBookSections {
   identification: IdentificationSection
   pedagogical: PedagogicalSection
@@ -118,6 +144,7 @@ export interface DigitalBookSections {
   evaluation: EvaluationSection
   help: HelpSection
   credits: CreditsSection
+  learningObject: LearningObjectSection
 }
 
 export type DigitalBookUpsertPayload = Partial<DigitalBookSections>

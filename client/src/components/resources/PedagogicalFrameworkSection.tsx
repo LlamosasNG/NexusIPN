@@ -149,6 +149,7 @@ interface PedagogicalFrameworkSectionProps {
   errors: FieldErrors<PedagogicalFormValues>
   watch: UseFormWatch<PedagogicalFormValues>
   setValue: UseFormSetValue<PedagogicalFormValues>
+  isLearningObjectResource?: boolean
   thematicUnits: string[]
 }
 
@@ -157,94 +158,97 @@ export function PedagogicalFrameworkSection({
   errors,
   watch,
   setValue,
+  isLearningObjectResource = false,
   thematicUnits,
 }: PedagogicalFrameworkSectionProps) {
   return (
     <div className="space-y-8">
-      {/* ── 1. Bienvenida al RDD ── */}
-      <section>
-        <div className="flex items-center gap-3 mb-4">
-          <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-linear-to-br from-[#7C2855] to-[#5a1d3f]">
-            <HandRaisedIcon className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h2 className="text-lg font-bold text-gray-900">Bienvenida al RDD</h2>
-            <p className="text-xs text-gray-500 mt-0.5">
-              Incluye una bienvenida al RDD en la cual menciona su propósito y su relevancia e
-              impacto dentro de su proceso formativo.
-            </p>
-          </div>
-        </div>
-        <div className="bg-gray-50 rounded-xl border border-gray-100 p-5">
-          <Textarea
-            id="pedagogical-welcome"
-            placeholder="Describe la bienvenida del RDD, su propósito y la relevancia dentro del proceso formativo del estudiante..."
-            rows={3}
-            className={`bg-white text-sm resize-none ${
-              errors.welcome
-                ? 'border-red-400 focus-visible:border-red-400'
-                : 'border-gray-200 focus-visible:border-[#7C2855] focus-visible:ring-[#7C2855]/20'
-            }`}
-            {...register('welcome', { required: 'El campo "Bienvenida al RDD" es obligatorio.' })}
-          />
-          {errors.welcome && (
-            <p className="text-xs text-red-500 mt-2">{errors.welcome.message}</p>
-          )}
-        </div>
-      </section>
+      {!isLearningObjectResource && (
+        <>
+          {/* ── 1. Bienvenida al RDD ── */}
+          <section>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-linear-to-br from-[#7C2855] to-[#5a1d3f]">
+                <HandRaisedIcon className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">Bienvenida al RDD</h2>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Incluye una bienvenida al RDD en la cual menciona su propósito y su relevancia e
+                  impacto dentro de su proceso formativo.
+                </p>
+              </div>
+            </div>
+            <div className="bg-gray-50 rounded-xl border border-gray-100 p-5">
+              <Textarea
+                id="pedagogical-welcome"
+                placeholder="Describe la bienvenida del RDD, su propósito y la relevancia dentro del proceso formativo del estudiante..."
+                rows={3}
+                className={`bg-white text-sm resize-none ${
+                  errors.welcome
+                    ? 'border-red-400 focus-visible:border-red-400'
+                    : 'border-gray-200 focus-visible:border-[#7C2855] focus-visible:ring-[#7C2855]/20'
+                }`}
+                {...register('welcome', { required: 'El campo "Bienvenida al RDD" es obligatorio.' })}
+              />
+              {errors.welcome && (
+                <p className="text-xs text-red-500 mt-2">{errors.welcome.message}</p>
+              )}
+            </div>
+          </section>
 
-      <Divider />
+          <Divider />
 
-      {/* ── 2. Competencias generales y específicas ── */}
-      <section>
-        <div className="flex items-center gap-3 mb-4">
-          <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-linear-to-br from-[#D4AF37] to-[#e8c96f]">
-            <AcademicCapIcon className="w-5 h-5 text-[#7C2855]" />
-          </div>
-          <div>
-            <h2 className="text-lg font-bold text-gray-900">
-              Competencias generales y específicas
-            </h2>
-            <p className="text-xs text-gray-500 mt-0.5">
-              Presenta las competencias generales y específicas de la unidad de aprendizaje que
-              aborda el RDD.
-            </p>
-          </div>
-        </div>
-        <div className="bg-gray-50 rounded-xl border border-gray-100 p-5 space-y-5">
-          {/* Generales */}
-          <div>
-            <SubLabel>Competencias generales</SubLabel>
-            <NumberedListField
-              fieldName="generalCompetencies"
-              placeholder="Escribe una competencia general y presiona Enter o Agregar"
-              emptyMessage="Aún no has agregado competencias generales."
-              watch={watch}
-              setValue={setValue}
-              error={errors.generalCompetencies?.message}
-            />
-          </div>
+          {/* ── 2. Competencias generales y específicas ── */}
+          <section>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-linear-to-br from-[#D4AF37] to-[#e8c96f]">
+                <AcademicCapIcon className="w-5 h-5 text-[#7C2855]" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">
+                  Competencias generales y específicas
+                </h2>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Presenta las competencias generales y específicas de la unidad de aprendizaje que
+                  aborda el RDD.
+                </p>
+              </div>
+            </div>
+            <div className="bg-gray-50 rounded-xl border border-gray-100 p-5 space-y-5">
+              <div>
+                <SubLabel>Competencias generales</SubLabel>
+                <NumberedListField
+                  fieldName="generalCompetencies"
+                  placeholder="Escribe una competencia general y presiona Enter o Agregar"
+                  emptyMessage="Aún no has agregado competencias generales."
+                  watch={watch}
+                  setValue={setValue}
+                  error={errors.generalCompetencies?.message}
+                />
+              </div>
 
-          <div className="h-px bg-gray-200" />
+              <div className="h-px bg-gray-200" />
 
-          {/* Específicas */}
-          <div>
-            <SubLabel>Competencias específicas</SubLabel>
-            <NumberedListField
-              fieldName="specificCompetencies"
-              placeholder="Escribe una competencia específica y presiona Enter o Agregar"
-              emptyMessage="Aún no has agregado competencias específicas."
-              watch={watch}
-              setValue={setValue}
-              error={errors.specificCompetencies?.message}
-            />
-          </div>
-        </div>
-      </section>
+              <div>
+                <SubLabel>Competencias específicas</SubLabel>
+                <NumberedListField
+                  fieldName="specificCompetencies"
+                  placeholder="Escribe una competencia específica y presiona Enter o Agregar"
+                  emptyMessage="Aún no has agregado competencias específicas."
+                  watch={watch}
+                  setValue={setValue}
+                  error={errors.specificCompetencies?.message}
+                />
+              </div>
+            </div>
+          </section>
 
-      <Divider />
+          <Divider />
+        </>
+      )}
 
-      {/* ── 3. Actividad diagnóstica ── */}
+      {/* ── Actividad diagnóstica ── */}
       <section>
         <div className="flex items-center gap-3 mb-4">
           <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-linear-to-br from-[#7C2855] to-[#5a1d3f]">

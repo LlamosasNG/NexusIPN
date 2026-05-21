@@ -12,7 +12,11 @@ import { body, param } from 'express-validator'
 
 const router: Router = Router()
 
-const supportedResourceTypes = ['digital-book', 'interactive-digital-book']
+const supportedResourceTypes = [
+  'digital-book',
+  'interactive-digital-book',
+  'learning-object',
+]
 
 const isObjectRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -178,6 +182,26 @@ const validateCredits = (value: unknown) => {
   )
 }
 
+const validateLearningObject = (value: unknown) => {
+  if (!isObjectRecord(value)) return false
+
+  return (
+    isString(value.precisionTema) &&
+    isString(value.temaConsecutivoUno) &&
+    isString(value.temaConsecutivoDos) &&
+    isString(value.objetivoAprendizaje) &&
+    isString(value.competenciaEspecifica) &&
+    isString(value.contextoAplicacion) &&
+    isString(value.microcontenido) &&
+    isString(value.ejemploAplicado) &&
+    isString(value.actividadFocalizada) &&
+    isString(value.evidencia) &&
+    isString(value.criterioLogro) &&
+    isString(value.tiempoEstimado) &&
+    isString(value.reutilizacion)
+  )
+}
+
 const validateDigitalBookPayload = (
   value: unknown,
   resourceType?: DigitalResourceType
@@ -202,6 +226,7 @@ const validateDigitalBookPayload = (
     'evaluation',
     'help',
     'credits',
+    'learningObject',
   ])
 
   for (const key of Object.keys(payload)) {
@@ -219,7 +244,8 @@ const validateDigitalBookPayload = (
     (payload.learningActivities && !validateLearningActivities(payload.learningActivities)) ||
     (payload.evaluation && !validateEvaluation(payload.evaluation)) ||
     (payload.help && !validateHelp(payload.help)) ||
-    (payload.credits && !validateCredits(payload.credits))
+    (payload.credits && !validateCredits(payload.credits)) ||
+    (payload.learningObject && !validateLearningObject(payload.learningObject))
   ) {
     throw new Error('El contenido de una o más secciones del libro digital es inválido')
   }

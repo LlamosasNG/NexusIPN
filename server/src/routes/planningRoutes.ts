@@ -6,6 +6,7 @@ import { ReferenceController } from '@/controllers/ReferenceController'
 import { ThematicUnitController } from '@/controllers/ThematicUnitController'
 import { TransversalAxisController } from '@/controllers/TransversalAxisController'
 import { authenticate } from '@/middleware/auth'
+import { ensureEditablePlanning } from '@/middleware/planning'
 import { hasAccess, subjectExists } from '@/middleware/subject'
 import { handleInputErrors } from '@/middleware/validation'
 import { Router } from 'express'
@@ -26,6 +27,15 @@ router.param('subjectId', hasAccess)
 
 router.post('/create/:subjectId', strictLimiter, PlanningController.create)
 router.get('/', readLimiter, PlanningController.getAll)
+router.get(
+  '/:planningId/feedback',
+  readLimiter,
+  param('planningId')
+    .isInt()
+    .withMessage('El ID de la planeación debe ser un número válido'),
+  handleInputErrors,
+  PlanningController.getFeedback
+)
 router.get('/:planningId', readLimiter, PlanningController.getById)
 router.put(
   '/:planningId/submit',
@@ -47,17 +57,20 @@ router.delete(
     .notEmpty()
     .withMessage('La contraseña es obligatoria'),
   handleInputErrors,
+  ensureEditablePlanning,
   PlanningController.delete
 )
 
 router.post(
   '/:planningId/general-data',
   planningWriteLimiter,
+  ensureEditablePlanning,
   GeneralDataController.createOrUpdate
 )
 router.put(
   '/:planningId/general-data',
   planningWriteLimiter,
+  ensureEditablePlanning,
   GeneralDataController.createOrUpdate
 )
 router.get(
@@ -69,11 +82,13 @@ router.get(
 router.post(
   '/:planningId/transversal-axes',
   planningWriteLimiter,
+  ensureEditablePlanning,
   TransversalAxisController.createOrUpdate
 )
 router.put(
   '/:planningId/transversal-axes',
   planningWriteLimiter,
+  ensureEditablePlanning,
   TransversalAxisController.createOrUpdate
 )
 router.get(
@@ -85,11 +100,13 @@ router.get(
 router.post(
   '/:planningId/didactic-organization',
   planningWriteLimiter,
+  ensureEditablePlanning,
   DidacticOrganizationController.createOrUpdate
 )
 router.put(
   '/:planningId/didactic-organization',
   planningWriteLimiter,
+  ensureEditablePlanning,
   DidacticOrganizationController.createOrUpdate
 )
 router.get(
@@ -101,6 +118,7 @@ router.get(
 router.post(
   '/:planningId/thematic-units',
   planningWriteLimiter,
+  ensureEditablePlanning,
   ThematicUnitController.create
 )
 router.get(
@@ -116,16 +134,19 @@ router.get(
 router.put(
   '/:planningId/thematic-units/:id',
   planningWriteLimiter,
+  ensureEditablePlanning,
   ThematicUnitController.update
 )
 router.delete(
   '/:planningId/thematic-units/:id',
   writeLimiter,
+  ensureEditablePlanning,
   ThematicUnitController.delete
 )
 router.put(
   '/:planningId/thematic-units/reorder',
   planningWriteLimiter,
+  ensureEditablePlanning,
   ThematicUnitController.reorder
 )
 router.get(
@@ -137,22 +158,26 @@ router.get(
 router.post(
   '/:planningId/thematic-units/:unitId/sessions',
   planningWriteLimiter,
+  ensureEditablePlanning,
   ThematicUnitController.createSession
 )
 router.put(
   '/:planningId/thematic-units/:unitId/sessions/:sessionId',
   planningWriteLimiter,
+  ensureEditablePlanning,
   ThematicUnitController.updateSession
 )
 router.delete(
   '/:planningId/thematic-units/:unitId/sessions/:sessionId',
   writeLimiter,
+  ensureEditablePlanning,
   ThematicUnitController.deleteSession
 )
 
 router.post(
   '/:planningId/references',
   planningWriteLimiter,
+  ensureEditablePlanning,
   ReferenceController.create
 )
 router.get(
@@ -163,27 +188,32 @@ router.get(
 router.put(
   '/:planningId/references/sync',
   planningWriteLimiter,
+  ensureEditablePlanning,
   ReferenceController.sync
 )
 router.put(
   '/:planningId/references/:id',
   planningWriteLimiter,
+  ensureEditablePlanning,
   ReferenceController.update
 )
 router.delete(
   '/:planningId/references/:id',
   writeLimiter,
+  ensureEditablePlanning,
   ReferenceController.delete
 )
 
 router.post(
   '/:planningId/plagiarism-tool',
   planningWriteLimiter,
+  ensureEditablePlanning,
   PlagiarismToolController.createOrUpdate
 )
 router.put(
   '/:planningId/plagiarism-tool',
   planningWriteLimiter,
+  ensureEditablePlanning,
   PlagiarismToolController.createOrUpdate
 )
 router.get(

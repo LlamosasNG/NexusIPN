@@ -1,4 +1,8 @@
-import { deletePlanning, getPlannings } from '@/api/PlanningAPI'
+import {
+  deletePlanning,
+  getPlanningFeedback,
+  getPlannings,
+} from '@/api/PlanningAPI'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -14,6 +18,7 @@ import {
   ArrowRightIcon,
   BookOpenIcon,
   CalendarDaysIcon,
+  ChatBubbleLeftRightIcon,
   DocumentTextIcon,
   PlusIcon,
   TrashIcon,
@@ -43,12 +48,25 @@ const formatDate = (dateString: string) => {
 export default function MyPlanningsView() {
   const queryClient = useQueryClient()
   const [planningToDelete, setPlanningToDelete] = useState<PlanningItem | null>(null)
+  const [planningToReview, setPlanningToReview] = useState<PlanningItem | null>(null)
   const [password, setPassword] = useState('')
 
   const { data: planningsData, isLoading } = useQuery({
     queryKey: ['plannings'],
     queryFn: getPlannings,
     refetchOnWindowFocus: false,
+  })
+
+  const {
+    data: feedbackData,
+    isLoading: isLoadingFeedback,
+    isError: isFeedbackError,
+    error: feedbackError,
+  } = useQuery({
+    queryKey: ['planning-feedback', planningToReview?.id],
+    queryFn: () => getPlanningFeedback(planningToReview!.id),
+    enabled: Boolean(planningToReview),
+    retry: false,
   })
 
   const { mutate: removePlanning, isPending: isDeleting } = useMutation({
@@ -68,10 +86,21 @@ export default function MyPlanningsView() {
   })
 
   const plannings: PlanningItem[] = planningsData || []
+  const specificFeedbackObservations =
+    feedbackData?.observations.filter((observation) => observation.section > 0) ||
+    []
 
   const handleOpenDeleteModal = (planning: PlanningItem) => {
     setPlanningToDelete(planning)
     setPassword('')
+  }
+
+  const handleOpenFeedbackModal = (planning: PlanningItem) => {
+    setPlanningToReview(planning)
+  }
+
+  const handleCloseFeedbackModal = () => {
+    setPlanningToReview(null)
   }
 
   const handleCloseDeleteModal = () => {
@@ -93,6 +122,12 @@ export default function MyPlanningsView() {
       password,
     })
   }
+
+  const formatFeedbackDateTime = (dateString: string) =>
+    new Date(dateString).toLocaleString('es-MX', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    })
 
   if (isLoading) {
     return (
@@ -155,8 +190,14 @@ export default function MyPlanningsView() {
                     <button
                       type="button"
                       onClick={() => handleOpenDeleteModal(plan)}
-                      className="inline-flex items-center justify-center rounded-xl border border-red-200 bg-red-50 p-2 text-red-600 transition-colors hover:bg-red-100 hover:text-red-700"
+                      disabled={plan.status === 'Enviada' || plan.status === 'Aprobada'}
+                      className="inline-flex items-center justify-center rounded-xl border border-red-200 bg-red-50 p-2 text-red-600 transition-colors hover:bg-red-100 hover:text-red-700 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-100 disabled:text-gray-400"
                       aria-label={`Eliminar planeación ${plan.subject?.name || plan.id}`}
+                      title={
+                        plan.status === 'Enviada' || plan.status === 'Aprobada'
+                          ? 'No puedes eliminar una planeación enviada o aprobada'
+                          : 'Eliminar planeación'
+                      }
                     >
                       <TrashIcon className="w-5 h-5" />
                     </button>
@@ -183,17 +224,31 @@ export default function MyPlanningsView() {
                   </p>
                 </div>
 
-                <div className="mt-5 flex items-center justify-between">
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <p className="text-xs text-gray-500">
                     Periodo: {plan.period}
                   </p>
-                  <Link
-                    to={`/plannings/${plan.id}`}
-                    className="inline-flex items-center gap-2 text-[#7C2855] font-semibold hover:text-[#5a1d3f] transition-colors"
-                  >
-                    Continuar edición
-                    <ArrowRightIcon className="w-4 h-4" />
-                  </Link>
+                  <div className="flex flex-wrap items-center gap-3">
+                    {plan.status !== 'Borrador' && (
+                      <button
+                        type="button"
+                        onClick={() => handleOpenFeedbackModal(plan)}
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-sky-700 transition-colors hover:text-sky-900"
+                      >
+                        <ChatBubbleLeftRightIcon className="w-4 h-4" />
+                        Ver retroalimentación
+                      </button>
+                    )}
+                    <Link
+                      to={`/plannings/${plan.id}`}
+                      className="inline-flex items-center gap-2 text-[#7C2855] font-semibold hover:text-[#5a1d3f] transition-colors"
+                    >
+                      {plan.status === 'Enviada' || plan.status === 'Aprobada'
+                        ? 'Ver planeación'
+                        : 'Continuar edición'}
+                      <ArrowRightIcon className="w-4 h-4" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -278,6 +333,107 @@ export default function MyPlanningsView() {
               className="bg-red-600 text-white hover:bg-red-700"
             >
               {isDeleting ? 'Eliminando...' : 'Eliminar planeación'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={Boolean(planningToReview)}
+        onOpenChange={(open) => {
+          if (!open) handleCloseFeedbackModal()
+        }}
+      >
+        <DialogContent className="max-w-2xl rounded-2xl border-0 p-0 shadow-2xl data-[state=open]:slide-in-from-top-2 data-[state=open]:duration-300">
+          <DialogHeader className="border-b border-gray-200 px-6 py-5">
+            <DialogTitle className="text-xl font-bold text-gray-900">
+              Retroalimentación de la planeación
+            </DialogTitle>
+            <DialogDescription className="mt-2 text-sm text-gray-600">
+              Consulta las observaciones del Jefe de Departamento sin modificar
+              el formato de tu planeación didáctica.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="max-h-[65vh] space-y-5 overflow-y-auto px-6 py-5">
+            {isLoadingFeedback ? (
+              <LoadingApp />
+            ) : isFeedbackError ? (
+              <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+                {feedbackError instanceof Error
+                  ? feedbackError.message
+                  : 'No fue posible cargar la retroalimentación.'}
+              </div>
+            ) : feedbackData ? (
+              <>
+                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
+                  <p className="text-sm font-bold text-gray-900">
+                    {feedbackData.subject.name}
+                  </p>
+                  <p className="mt-1 text-sm text-gray-600">
+                    Código: {feedbackData.subject.code} · Periodo:{' '}
+                    {feedbackData.period} · Estado: {feedbackData.status}
+                  </p>
+                </div>
+
+                {feedbackData.feedback && (
+                  <div className="rounded-2xl border border-[#7C2855]/20 bg-[#7C2855]/5 p-4">
+                    <p className="text-sm font-bold text-[#7C2855]">
+                      Retroalimentación general
+                    </p>
+                    <p className="mt-2 whitespace-pre-line text-sm leading-6 text-gray-700">
+                      {feedbackData.feedback}
+                    </p>
+                  </div>
+                )}
+
+                {specificFeedbackObservations.length > 0 ? (
+                  <div className="space-y-3">
+                    <p className="text-sm font-bold text-gray-900">
+                      Observaciones específicas
+                    </p>
+                    {specificFeedbackObservations.map((observation) => (
+                      <div
+                        key={observation.id}
+                        className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
+                      >
+                        <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                          <div>
+                            <p className="text-sm font-bold text-gray-900">
+                              Sección {observation.section}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {observation.author.name} ·{' '}
+                              {formatFeedbackDateTime(observation.createdAt)}
+                            </p>
+                          </div>
+                          <span className="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-800">
+                            {observation.author.role}
+                          </span>
+                        </div>
+                        <p className="whitespace-pre-line text-sm leading-6 text-gray-700">
+                          {observation.message}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="rounded-xl bg-gray-50 px-4 py-3 text-sm text-gray-600">
+                    Aún no hay observaciones específicas registradas para esta
+                    planeación.
+                  </div>
+                )}
+              </>
+            ) : null}
+          </div>
+
+          <DialogFooter className="border-t border-gray-200 px-6 py-4 sm:justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleCloseFeedbackModal}
+            >
+              Cerrar
             </Button>
           </DialogFooter>
         </DialogContent>

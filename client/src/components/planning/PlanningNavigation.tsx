@@ -8,6 +8,7 @@ type Props = {
   onSave: () => void
   onGoToSection: (section: number) => void
   saveFormId?: string
+  isReadOnly?: boolean
 }
 
 export function PlanningNavigation({
@@ -17,6 +18,7 @@ export function PlanningNavigation({
   onSave,
   onGoToSection,
   saveFormId,
+  isReadOnly = false,
 }: Props) {
   const sections = [
     { id: 1, label: 'Datos' },
@@ -64,10 +66,11 @@ export function PlanningNavigation({
             type={saveFormId ? 'submit' : 'button'}
             form={saveFormId}
             onClick={saveFormId ? undefined : onSave}
+            disabled={isReadOnly}
             className="flex items-center gap-2 rounded-2xl bg-[#D4AF37] px-5 py-6 font-semibold text-[#7C2855] shadow-lg transition-all duration-300 hover:bg-[#e8c96f]"
           >
             <Save className="h-5 w-5" />
-            Guardar sección
+            {isReadOnly ? 'Sólo lectura' : 'Guardar sección'}
           </Button>
 
           <Button

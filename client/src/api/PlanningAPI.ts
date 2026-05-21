@@ -1,6 +1,7 @@
 import api from '@/lib/axios'
 import {
   PlanningListSchema,
+  PlanningFeedbackSchema,
   PlanningSubjectDetailsSchema,
   type CreatePlanningData,
   type SubjectCard,
@@ -50,6 +51,21 @@ export async function getPlanningById(planningId: number) {
   try {
     const { data } = await api.get(`/plannings/${planningId}`)
     const response = PlanningSubjectDetailsSchema.safeParse(data)
+    if (response.success) {
+      return response.data
+    }
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.error)
+    }
+  }
+}
+
+export async function getPlanningFeedback(planningId: number) {
+  try {
+    const { data } = await api.get(`/plannings/${planningId}/feedback`)
+    const response = PlanningFeedbackSchema.safeParse(data)
+
     if (response.success) {
       return response.data
     }

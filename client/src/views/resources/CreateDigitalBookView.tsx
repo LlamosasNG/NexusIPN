@@ -10,7 +10,7 @@ import { LearningActivitiesSection } from '@/components/resources/LearningActivi
 import { MethodologySection } from '@/components/resources/MethodologySection'
 import { PedagogicalFrameworkSection } from '@/components/resources/PedagogicalFrameworkSection'
 import { Button } from '@/components/ui/button'
-import type { ContentFormValues, CreditsSectionFormValues, DigitalResourceType, EvaluationFormValues, HelpSectionFormValues, IdentificationFormValues, LearningActivitiesFormValues, MethodologyFormValues, PedagogicalFormValues } from '@/types'
+import type { ContentFormValues, CreditsSectionFormValues, DigitalBookPayload, DigitalResourceType, EvaluationFormValues, HelpSectionFormValues, IdentificationFormValues, LearningActivitiesFormValues, MethodologyFormValues, PedagogicalFormValues } from '@/types'
 import {
   AcademicCapIcon,
   ArrowLeftIcon,
@@ -34,11 +34,22 @@ import { toast } from 'sonner'
 const supportedResourceTypes: DigitalResourceType[] = [
   'digital-book',
   'interactive-digital-book',
+  'learning-object',
 ]
 
 const resourceTypeLabels: Record<DigitalResourceType, string> = {
   'digital-book': 'Libro Digital',
   'interactive-digital-book': 'Libro Digital Interactivo',
+  'learning-object': 'Objeto de Aprendizaje',
+}
+
+const defaultIdentificationValues: IdentificationFormValues = {
+  coverImage: '',
+  interactiveDescription: '',
+  title: '',
+  preciseTopic: '',
+  academicProgramContexts: '',
+  thematicUnits: [],
 }
 
 const stepIndexBySection = {
@@ -50,11 +61,14 @@ const stepIndexBySection = {
   evaluation: 5,
   help: 6,
   credits: 7,
+  learningObject: 2,
 } as const
 
 type SavedSectionMap = Record<keyof typeof stepIndexBySection, boolean>
 
-const buildSavedSteps = (savedSections?: Partial<SavedSectionMap>) => {
+const buildSavedSteps = (
+  savedSections?: Partial<SavedSectionMap>
+) => {
   const nextSteps = new Set<number>()
 
   if (!savedSections) return nextSteps
@@ -132,6 +146,34 @@ const steps: StepDefinition[] = [
   },
 ]
 
+const defaultLearningObjectContent: ContentFormValues = {
+  unidades: [
+    {
+      id: 'learning-object-unit',
+      nombreUnidad: 'Objeto de Aprendizaje',
+      objetivoUnidad: '',
+      temas: [
+        {
+          id: 'learning-object-topic-1',
+          tituloTema: '',
+          contenidoInicio: '',
+          contenidoDesarrollo: '',
+          contenidoConclusion: '',
+          subtemas: [],
+        },
+        {
+          id: 'learning-object-topic-2',
+          tituloTema: '',
+          contenidoInicio: '',
+          contenidoDesarrollo: '',
+          contenidoConclusion: '',
+          subtemas: [],
+        },
+      ],
+    },
+  ],
+}
+
 export default function CreateDigitalBookView() {
   const { subjectId, resourceType } = useParams()
   const selectedResourceType = supportedResourceTypes.includes(
@@ -140,6 +182,7 @@ export default function CreateDigitalBookView() {
     ? (resourceType as DigitalResourceType)
     : null
   const isInteractiveResource = selectedResourceType === 'interactive-digital-book'
+  const isLearningObjectResource = selectedResourceType === 'learning-object'
 
   /* ── Stepper state ── */
   const [currentStep, setCurrentStep] = useState(0)
@@ -147,12 +190,7 @@ export default function CreateDigitalBookView() {
 
   /* ── Form: Step 1 — Identification ── */
   const identificationForm = useForm<IdentificationFormValues>({
-    defaultValues: {
-      coverImage: '',
-      interactiveDescription: '',
-      title: '',
-      thematicUnits: [],
-    },
+    defaultValues: defaultIdentificationValues,
   })
 
   /* ── Form: Step 2 — Pedagogical Framework ── */
@@ -268,18 +306,11 @@ export default function CreateDigitalBookView() {
   useEffect(() => {
     if (!digitalBook) return
 
-    identificationForm.reset({
-      coverImage: '',
-      interactiveDescription: '',
-      title: '',
-      thematicUnits: [],
-      ...(digitalBook.identification ?? {
-        coverImage: '',
-        interactiveDescription: '',
-        title: '',
-        thematicUnits: [],
-      }),
-    })
+    identificationForm.reset(
+      digitalBook.identification
+        ? { ...defaultIdentificationValues, ...digitalBook.identification }
+        : defaultIdentificationValues
+    )
     pedagogicalForm.reset(
       digitalBook.pedagogical ?? {
         welcome: '',
@@ -302,9 +333,8 @@ export default function CreateDigitalBookView() {
       }
     )
     contentForm.reset(
-      digitalBook.content ?? {
-        unidades: [],
-      }
+      digitalBook.content ??
+        (isLearningObjectResource ? defaultLearningObjectContent : { unidades: [] })
     )
     learningActivitiesForm.reset(
       digitalBook.learningActivities ?? {
@@ -339,6 +369,7 @@ export default function CreateDigitalBookView() {
     evaluationForm,
     helpForm,
     identificationForm,
+    isLearningObjectResource,
     learningActivitiesForm,
     methodologyForm,
     pedagogicalForm,
@@ -357,15 +388,7 @@ export default function CreateDigitalBookView() {
   }
 
   const persistSection = (
-    formData:
-      | { identification: IdentificationFormValues }
-      | { pedagogical: PedagogicalFormValues }
-      | { methodology: MethodologyFormValues }
-      | { content: ContentFormValues }
-      | { learningActivities: LearningActivitiesFormValues }
-      | { evaluation: EvaluationFormValues }
-      | { help: HelpSectionFormValues }
-      | { credits: CreditsSectionFormValues },
+    formData: DigitalBookPayload,
     successMessage: string
   ) => {
     saveSection(
@@ -520,8 +543,9 @@ export default function CreateDigitalBookView() {
           Tipo de RDD en construcción
         </h2>
         <p className="text-gray-600 mb-6">
-          Por ahora solo está disponible el flujo para <strong>Libro Digital</strong> y{' '}
-          <strong>Libro Digital Interactivo</strong>.
+          Por ahora solo está disponible el flujo para <strong>Libro Digital</strong>,{' '}
+          <strong>Libro Digital Interactivo</strong> y{' '}
+          <strong>Objeto de Aprendizaje</strong>.
         </p>
         <Link
           to={`/resources/create/${subjectId}`}
@@ -655,6 +679,8 @@ export default function CreateDigitalBookView() {
               setValue={identificationForm.setValue}
               errors={identificationForm.formState.errors}
               isInteractiveResource={isInteractiveResource}
+              isLearningObjectResource={isLearningObjectResource}
+              resourceTypeLabel={isLearningObjectResource ? 'Objeto de Aprendizaje' : undefined}
             />
           )}
 
@@ -665,6 +691,7 @@ export default function CreateDigitalBookView() {
               errors={pedagogicalForm.formState.errors}
               watch={pedagogicalForm.watch}
               setValue={pedagogicalForm.setValue}
+              isLearningObjectResource={isLearningObjectResource}
               thematicUnits={identificationForm.watch('thematicUnits')}
             />
           )}
@@ -676,6 +703,7 @@ export default function CreateDigitalBookView() {
               errors={methodologyForm.formState.errors}
               watch={methodologyForm.watch}
               setValue={methodologyForm.setValue}
+              isLearningObjectResource={isLearningObjectResource}
             />
           )}
 
@@ -685,6 +713,7 @@ export default function CreateDigitalBookView() {
               errors={contentForm.formState.errors}
               watch={contentForm.watch}
               setValue={contentForm.setValue}
+              mode={isLearningObjectResource ? 'learning-object' : 'book'}
             />
           )}
 
@@ -696,6 +725,7 @@ export default function CreateDigitalBookView() {
               errors={learningActivitiesForm.formState.errors}
               watch={learningActivitiesForm.watch}
               setValue={learningActivitiesForm.setValue}
+              showInteractiveOptions={isInteractiveResource}
             />
           )}
 

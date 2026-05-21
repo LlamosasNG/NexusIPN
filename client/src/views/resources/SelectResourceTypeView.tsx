@@ -60,7 +60,8 @@ export default function SelectResourceTypeView() {
   )
   const isImplementedType =
     selectedType === 'digital-book' ||
-    selectedType === 'interactive-digital-book'
+    selectedType === 'interactive-digital-book' ||
+    selectedType === 'learning-object'
 
   if (isLoading) {
     return (

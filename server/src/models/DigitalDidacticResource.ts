@@ -6,6 +6,7 @@ import type {
   HelpSection,
   IdentificationSection,
   LearningActivitiesSection,
+  LearningObjectSection,
   MethodologySection,
   PedagogicalSection,
 } from '@/interfaces/DigitalResourceInterfaces'
@@ -95,4 +96,9 @@ export default class DigitalDidacticResource extends Model {
     type: DataType.JSONB,
   })
   declare credits: CreditsSection | null
+
+  @Column({
+    type: DataType.JSONB,
+  })
+  declare learningObject: LearningObjectSection | null
 }

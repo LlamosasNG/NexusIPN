@@ -270,9 +270,16 @@ interface MethodologySectionProps {
   errors: FieldErrors<MethodologyFormValues>
   watch: UseFormWatch<MethodologyFormValues>
   setValue: UseFormSetValue<MethodologyFormValues>
+  isLearningObjectResource?: boolean
 }
 
-export function MethodologySection({ register, errors, watch, setValue }: MethodologySectionProps) {
+export function MethodologySection({
+  register,
+  errors,
+  watch,
+  setValue,
+  isLearningObjectResource = false,
+}: MethodologySectionProps) {
   return (
     <div className="space-y-8">
       {/* ── 1. Utilización del RDD ── */}
@@ -301,92 +308,92 @@ export function MethodologySection({ register, errors, watch, setValue }: Method
 
       <Divider />
 
-      {/* ── 2. Periodo de trabajo y horas sugeridas ── */}
-      <section>
-        <SectionHeader
-          icon={ClockIcon}
-          iconVariant="dorado"
-          title="Periodo de trabajo y horas sugeridas"
-          subtitle="Establece el periodo de tiempo total, las horas por semana sugeridas y la forma de trabajo con el asesor."
-        />
-        <div className="bg-gray-50 rounded-xl border border-gray-100 p-5 space-y-5">
-
-          {/* ── Periodo total ── */}
-          <div>
-            <SubLabel>Periodo total de trabajo</SubLabel>
-            <Input
-              id="methodology-totalPeriod"
-              placeholder="Ej. Semestre 2025-1, del 4 de agosto al 5 de diciembre"
-              className={`bg-white h-10 text-sm ${
-                errors.totalPeriod
-                  ? 'border-red-400 focus-visible:border-red-400'
-                  : 'border-gray-200 focus-visible:border-[#7C2855] focus-visible:ring-[#7C2855]/20'
-              }`}
-              {...register('totalPeriod', {
-                required: 'El campo "Periodo total de trabajo" es obligatorio.',
-              })}
+      {!isLearningObjectResource && (
+        <>
+          {/* ── 2. Periodo de trabajo y horas sugeridas ── */}
+          <section>
+            <SectionHeader
+              icon={ClockIcon}
+              iconVariant="dorado"
+              title="Periodo de trabajo y horas sugeridas"
+              subtitle="Establece el periodo de tiempo total, las horas por semana sugeridas y la forma de trabajo con el asesor."
             />
-            {errors.totalPeriod && (
-              <p className="text-xs text-red-500 mt-1.5">{errors.totalPeriod.message}</p>
-            )}
-          </div>
+            <div className="bg-gray-50 rounded-xl border border-gray-100 p-5 space-y-5">
+              <div>
+                <SubLabel>Periodo total de trabajo</SubLabel>
+                <Input
+                  id="methodology-totalPeriod"
+                  placeholder="Ej. Semestre 2025-1, del 4 de agosto al 5 de diciembre"
+                  className={`bg-white h-10 text-sm ${
+                    errors.totalPeriod
+                      ? 'border-red-400 focus-visible:border-red-400'
+                      : 'border-gray-200 focus-visible:border-[#7C2855] focus-visible:ring-[#7C2855]/20'
+                  }`}
+                  {...register('totalPeriod', {
+                    required: 'El campo "Periodo total de trabajo" es obligatorio.',
+                  })}
+                />
+                {errors.totalPeriod && (
+                  <p className="text-xs text-red-500 mt-1.5">{errors.totalPeriod.message}</p>
+                )}
+              </div>
 
-          {/* ── Sub-divider ── */}
-          <div className="h-px bg-gray-200" />
+              <div className="h-px bg-gray-200" />
 
-          {/* ── Horas por semana ── */}
-          <div>
-            <SubLabel>Horas por semana sugeridas</SubLabel>
-            <Input
-              id="methodology-weeklyHours"
-              type="number"
-              min={1}
-              max={40}
-              placeholder="Ej. 4"
-              className={`bg-white h-10 text-sm w-40 ${
-                errors.weeklyHours
-                  ? 'border-red-400 focus-visible:border-red-400'
-                  : 'border-gray-200 focus-visible:border-[#7C2855] focus-visible:ring-[#7C2855]/20'
-              }`}
-              {...register('weeklyHours', {
-                required: 'El campo "Horas por semana sugeridas" es obligatorio.',
-                min: { value: 1, message: 'El mínimo es 1 hora por semana.' },
-              })}
-            />
-            {errors.weeklyHours && (
-              <p className="text-xs text-red-500 mt-1.5">{errors.weeklyHours.message}</p>
-            )}
-          </div>
+              <div>
+                <SubLabel>Horas por semana sugeridas</SubLabel>
+                <Input
+                  id="methodology-weeklyHours"
+                  type="number"
+                  min={1}
+                  max={40}
+                  placeholder="Ej. 4"
+                  className={`bg-white h-10 text-sm w-40 ${
+                    errors.weeklyHours
+                      ? 'border-red-400 focus-visible:border-red-400'
+                      : 'border-gray-200 focus-visible:border-[#7C2855] focus-visible:ring-[#7C2855]/20'
+                  }`}
+                  {...register('weeklyHours', {
+                    required: 'El campo "Horas por semana sugeridas" es obligatorio.',
+                    min: { value: 1, message: 'El mínimo es 1 hora por semana.' },
+                  })}
+                />
+                {errors.weeklyHours && (
+                  <p className="text-xs text-red-500 mt-1.5">{errors.weeklyHours.message}</p>
+                )}
+              </div>
 
-          {/* ── Sub-divider ── */}
-          <div className="h-px bg-gray-200" />
+              <div className="h-px bg-gray-200" />
 
-          {/* ── Forma de trabajo con el asesor ── */}
-          <div>
-            <SubLabel>Forma de trabajo con el asesor</SubLabel>
-            <Textarea
-              id="methodology-advisorWorkMethod"
-              placeholder="Describe la dinámica de trabajo con el asesor (frecuencia de reuniones, modalidad presencial/virtual, canales de comunicación, etc.)..."
-              rows={3}
-              className={`bg-white text-sm resize-none ${
-                errors.advisorWorkMethod
-                  ? 'border-red-400 focus-visible:border-red-400'
-                  : 'border-gray-200 focus-visible:border-[#7C2855] focus-visible:ring-[#7C2855]/20'
-              }`}
-              {...register('advisorWorkMethod', {
-                required: 'El campo "Forma de trabajo con el asesor" es obligatorio.',
-              })}
-            />
-            {errors.advisorWorkMethod && (
-              <p className="text-xs text-red-500 mt-1.5">{errors.advisorWorkMethod.message}</p>
-            )}
-          </div>
-        </div>
-      </section>
+              <div>
+                <SubLabel>Forma de trabajo con el asesor</SubLabel>
+                <Textarea
+                  id="methodology-advisorWorkMethod"
+                  placeholder="Describe la dinámica de trabajo con el asesor (frecuencia de reuniones, modalidad presencial/virtual, canales de comunicación, etc.)..."
+                  rows={3}
+                  className={`bg-white text-sm resize-none ${
+                    errors.advisorWorkMethod
+                      ? 'border-red-400 focus-visible:border-red-400'
+                      : 'border-gray-200 focus-visible:border-[#7C2855] focus-visible:ring-[#7C2855]/20'
+                  }`}
+                  {...register('advisorWorkMethod', {
+                    required: 'El campo "Forma de trabajo con el asesor" es obligatorio.',
+                  })}
+                />
+                {errors.advisorWorkMethod && (
+                  <p className="text-xs text-red-500 mt-1.5">
+                    {errors.advisorWorkMethod.message}
+                  </p>
+                )}
+              </div>
+            </div>
+          </section>
 
-      <Divider />
+          <Divider />
+        </>
+      )}
 
-      {/* ── 3. Estrategias de aprendizaje ── */}
+      {/* ── 2. Estrategias de aprendizaje ── */}
       <section>
         <SectionHeader
           icon={PuzzlePieceIcon}
@@ -405,7 +412,7 @@ export function MethodologySection({ register, errors, watch, setValue }: Method
 
       <Divider />
 
-      {/* ── 4. Competencias y objetivos ── */}
+      {/* ── 3. Competencias y objetivos ── */}
       <section>
         <SectionHeader
           icon={TrophyIcon}
@@ -469,35 +476,42 @@ export function MethodologySection({ register, errors, watch, setValue }: Method
         </div>
       </section>
 
-      <Divider />
+      {!isLearningObjectResource && (
+        <>
+          <Divider />
 
-      {/* ── 5. Figuras de acompañamiento ── */}
-      <section>
-        <SectionHeader
-          icon={UserGroupIcon}
-          iconVariant="guinda"
-          title="Figuras de acompañamiento"
-          subtitle="Presenta las figuras de acompañamiento en el trabajo con el RDD."
-        />
-        <div className="bg-gray-50 rounded-xl border border-gray-100 p-5">
-          <Textarea
-            id="methodology-accompanimentFigures"
-            placeholder="Describe los roles de acompañamiento (asesor, tutor, pares, etc.) y cómo participarán en el proceso de aprendizaje del estudiante..."
-            rows={3}
-            className={`bg-white text-sm resize-none ${
-              errors.accompanimentFigures
-                ? 'border-red-400 focus-visible:border-red-400'
-                : 'border-gray-200 focus-visible:border-[#7C2855] focus-visible:ring-[#7C2855]/20'
-            }`}
-            {...register('accompanimentFigures', {
-              required: 'El campo "Figuras de acompañamiento" es obligatorio.',
-            })}
-          />
-          {errors.accompanimentFigures && (
-            <p className="text-xs text-red-500 mt-2">{errors.accompanimentFigures.message}</p>
-          )}
-        </div>
-      </section>
+          {/* ── 5. Figuras de acompañamiento ── */}
+          <section>
+            <SectionHeader
+              icon={UserGroupIcon}
+              iconVariant="guinda"
+              title="Figuras de acompañamiento"
+              subtitle="Presenta las figuras de acompañamiento en el trabajo con el RDD."
+            />
+            <div className="bg-gray-50 rounded-xl border border-gray-100 p-5">
+              <Textarea
+                id="methodology-accompanimentFigures"
+                placeholder="Describe los roles de acompañamiento (asesor, tutor, pares, etc.) y cómo participarán en el proceso de aprendizaje del estudiante..."
+                rows={3}
+                className={`bg-white text-sm resize-none ${
+                  errors.accompanimentFigures
+                    ? 'border-red-400 focus-visible:border-red-400'
+                    : 'border-gray-200 focus-visible:border-[#7C2855] focus-visible:ring-[#7C2855]/20'
+                }`}
+                {...register('accompanimentFigures', {
+                  required: 'El campo "Figuras de acompañamiento" es obligatorio.',
+                })}
+              />
+              {errors.accompanimentFigures && (
+                <p className="text-xs text-red-500 mt-2">
+                  {errors.accompanimentFigures.message}
+                </p>
+              )}
+            </div>
+          </section>
+        </>
+      )}
+
     </div>
   )
 }

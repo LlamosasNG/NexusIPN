@@ -47,6 +47,33 @@ export const PlanningSchema = z.object({
 export const PlanningListSchema = z.array(PlanningSchema)
 export type PlanningItem = z.infer<typeof PlanningSchema>
 
+export const PlanningFeedbackObservationSchema = z.object({
+  id: z.number(),
+  section: z.number(),
+  message: z.string(),
+  createdAt: z.string(),
+  author: z.object({
+    id: z.number(),
+    name: z.string(),
+    role: z.string(),
+  }),
+})
+
+export const PlanningFeedbackSchema = z.object({
+  id: z.number(),
+  period: AcademicPeriodSchema,
+  status: PlanningStatusSchema,
+  feedback: z.string().nullable(),
+  updatedAt: z.string(),
+  subject: z.object({
+    id: z.number(),
+    name: z.string(),
+    code: z.string(),
+  }),
+  observations: z.array(PlanningFeedbackObservationSchema),
+})
+export type PlanningFeedback = z.infer<typeof PlanningFeedbackSchema>
+
 export const PlanningSubjectDetailsSchema = z.object({
   id: z.number(),
   userId: z.number(),

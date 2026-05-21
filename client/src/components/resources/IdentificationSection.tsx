@@ -127,6 +127,8 @@ interface IdentificationSectionProps {
   setValue: UseFormSetValue<IdentificationFormValues>
   errors: FieldErrors<IdentificationFormValues>
   isInteractiveResource?: boolean
+  isLearningObjectResource?: boolean
+  resourceTypeLabel?: string
 }
 
 export function IdentificationSection({
@@ -139,6 +141,8 @@ export function IdentificationSection({
   setValue,
   errors,
   isInteractiveResource = false,
+  isLearningObjectResource = false,
+  resourceTypeLabel,
 }: IdentificationSectionProps) {
   const coverImage = watch('coverImage')
   const [coverImageError, setCoverImageError] = useState('')
@@ -229,7 +233,8 @@ export function IdentificationSection({
             <BookOpenIcon className="w-4 h-4" />
           )}
           Tipo de RDD:{' '}
-          {isInteractiveResource ? 'Libro Digital Interactivo' : 'Libro Digital'}
+          {resourceTypeLabel ||
+            (isInteractiveResource ? 'Libro Digital Interactivo' : 'Libro Digital')}
         </span>
       </div>
 
@@ -272,6 +277,89 @@ export function IdentificationSection({
           </div>
         </div>
       </section>
+
+      {isLearningObjectResource && (
+        <>
+          {/* ── Divider ── */}
+          <div className="flex items-center gap-4">
+            <div className="flex-1 h-px bg-gray-200" />
+            <div className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
+            <div className="flex-1 h-px bg-gray-200" />
+          </div>
+
+          {/* ── Learning Object Identification ── */}
+          <section>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center justify-center w-9 h-9 bg-linear-to-br from-[#7C2855] to-[#5a1d3f] rounded-lg">
+                <DocumentTextIcon className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">
+                  Datos específicos del OA
+                </h2>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Delimita el alcance puntual del Objeto de Aprendizaje.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid gap-4 rounded-xl border border-gray-100 bg-gray-50 p-5 md:grid-cols-2">
+              <div>
+                <label
+                  htmlFor="oa-precise-topic"
+                  className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[#7C2855]"
+                >
+                  Precisa el tema que aborda
+                </label>
+                <Input
+                  id="oa-precise-topic"
+                  placeholder="Ej. Identificación de signos clínicos iniciales en una infección respiratoria aguda"
+                  className={`bg-white h-11 ${
+                    errors.preciseTopic
+                      ? 'border-red-400 focus-visible:border-red-400'
+                      : 'border-gray-200 focus-visible:border-[#7C2855] focus-visible:ring-[#7C2855]/20'
+                  }`}
+                  {...register('preciseTopic', {
+                    required: 'Precisa el tema que aborda el OA.',
+                  })}
+                />
+                {errors.preciseTopic && (
+                  <p className="text-xs text-red-500 mt-2">
+                    {errors.preciseTopic.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label
+                  htmlFor="oa-academic-program-contexts"
+                  className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[#7C2855]"
+                >
+                  Identifica en diferentes contextos de los programas académicos OA
+                </label>
+                <Input
+                  id="oa-academic-program-contexts"
+                  placeholder="Ej. Consulta externa, laboratorio clínico, práctica comunitaria o simulación clínica"
+                  className={`bg-white h-11 ${
+                    errors.academicProgramContexts
+                      ? 'border-red-400 focus-visible:border-red-400'
+                      : 'border-gray-200 focus-visible:border-[#7C2855] focus-visible:ring-[#7C2855]/20'
+                  }`}
+                  {...register('academicProgramContexts', {
+                    required:
+                      'Identifica los contextos de programas académicos donde aplica el OA.',
+                  })}
+                />
+                {errors.academicProgramContexts && (
+                  <p className="text-xs text-red-500 mt-2">
+                    {errors.academicProgramContexts.message}
+                  </p>
+                )}
+              </div>
+            </div>
+          </section>
+        </>
+      )}
 
       {/* ── Divider ── */}
       <div className="flex items-center gap-4">
