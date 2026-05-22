@@ -5,6 +5,7 @@ import {
 import { LoadingApp } from '@/components/LoadingApp'
 import { Button } from '@/components/ui/button'
 import type {
+  ActivityValues,
   ContentFormValues,
   DigitalBookResource,
   DigitalResourceType,
@@ -18,7 +19,7 @@ import {
   SparklesIcon,
 } from '@heroicons/react/24/solid'
 import { useQuery } from '@tanstack/react-query'
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Link, useParams } from 'react-router'
 
 const supportedResourceTypes: DigitalResourceType[] = [
@@ -178,6 +179,112 @@ function ContentUnit({ unit }: { unit: ContentFormValues['unidades'][number] }) 
   )
 }
 
+function InteractiveQuiz({
+  activity,
+  activityIndex,
+}: {
+  activity: ActivityValues
+  activityIndex: number
+}) {
+  const questions = activity.preguntas?.filter((question) => question.texto.trim()) ?? []
+  const [answers, setAnswers] = useState<Record<number, string>>({})
+  const [isSubmitted, setIsSubmitted] = useState(false)
+
+  if (questions.length === 0) {
+    return (
+      <div className="mt-4 rounded-2xl border border-[#eadfc9] bg-[#fffdf7] p-4">
+        <p className="text-sm font-bold text-stone-500">
+          Actividad automatizada
+        </p>
+        <p className="mt-1 text-sm">
+          {activity.numeroIntentos} intentos · {activity.puntajeProgramado} puntos
+        </p>
+      </div>
+    )
+  }
+
+  const answeredCount = questions.filter((_, index) => answers[index]?.trim()).length
+  const canSubmit = answeredCount === questions.length
+
+  return (
+    <div className="mt-5 overflow-hidden rounded-3xl border border-[#7C2855]/20 bg-[#fffdf7] shadow-inner">
+      <div className="bg-linear-to-r from-[#7C2855] to-[#5a1d3f] px-5 py-4 text-white">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-[#f7df91]">
+              Cuestionario interactivo
+            </p>
+            <h4 className="mt-1 font-serif text-2xl font-black">
+              Actividad {activityIndex + 1}
+            </h4>
+          </div>
+          <div className="rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-bold">
+            {questions.length} preguntas · {activity.puntajeProgramado} puntos
+          </div>
+        </div>
+        <p className="mt-3 text-sm leading-6 text-white/80">
+          Responde las preguntas en pantalla. Tus respuestas no se guardan en esta versión.
+        </p>
+      </div>
+
+      <div className="space-y-4 p-5">
+        {questions.map((question, questionIndex) => (
+          <label
+            key={`${question.texto}-${questionIndex}`}
+            className="block rounded-2xl border border-[#eadfc9] bg-[#f7f1e4] p-4"
+          >
+            <span className="text-xs font-black uppercase tracking-[0.2em] text-[#7C2855]">
+              Pregunta {questionIndex + 1}
+            </span>
+            <span className="mt-2 block font-serif text-lg font-bold leading-7 text-[#2d241a]">
+              {question.texto}
+            </span>
+            <textarea
+              value={answers[questionIndex] ?? ''}
+              onChange={(event) => {
+                setAnswers((current) => ({
+                  ...current,
+                  [questionIndex]: event.target.value,
+                }))
+                setIsSubmitted(false)
+              }}
+              rows={3}
+              placeholder="Escribe tu respuesta..."
+              className="mt-3 w-full resize-none rounded-2xl border border-[#d8c8aa] bg-[#fffdf7] px-4 py-3 text-sm leading-6 outline-none transition focus:border-[#7C2855] focus:ring-2 focus:ring-[#7C2855]/15"
+            />
+          </label>
+        ))}
+
+        <div className="flex flex-col gap-3 border-t border-[#eadfc9] pt-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm font-semibold text-[#51463a]">
+            {answeredCount} de {questions.length} respuestas completadas
+          </p>
+          <Button
+            type="button"
+            onClick={() => setIsSubmitted(true)}
+            disabled={!canSubmit}
+            className="rounded-xl bg-[#7C2855] text-white hover:bg-[#5a1d3f]"
+          >
+            Enviar respuestas
+          </Button>
+        </div>
+
+        {isSubmitted && (
+          <div className="rounded-2xl border border-[#D4AF37]/40 bg-[#D4AF37]/12 p-4">
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#7C2855]">
+              Retroalimentación
+            </p>
+            <p className="mt-2 whitespace-pre-line text-sm leading-7 text-[#51463a]">
+              {activity.mecanismoRetroalimentacion ||
+                'Tus respuestas fueron registradas localmente para esta consulta. Revisa tus argumentos y compáralos con el contenido del recurso.'}
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 function ReaderCover({ resource }: { resource: DigitalBookResource }) {
   const isInteractive = resource.resourceType === 'interactive-digital-book'
   const title = getDigitalResourceTitle(resource)
@@ -241,6 +348,8 @@ function ReaderCover({ resource }: { resource: DigitalBookResource }) {
 }
 
 function DigitalBookReader({ resource }: { resource: DigitalBookResource }) {
+  const isInteractive = resource.resourceType === 'interactive-digital-book'
+
   return (
     <div className="mx-auto max-w-7xl space-y-8">
       <ReaderCover resource={resource} />
@@ -324,15 +433,19 @@ function DigitalBookReader({ resource }: { resource: DigitalBookResource }) {
               <ProseBlock title="Instrucciones" children={activity.instrucciones} />
               <ProseBlock title="Evidencia esperada" children={activity.evidenciaEsperada} />
               {activity.esAutomatizada && (
-                <div className="mt-4 rounded-2xl border border-[#eadfc9] bg-[#fffdf7] p-4">
-                  <p className="text-sm font-bold text-stone-500">
-                    Actividad automatizada
-                  </p>
-                  <p className="mt-1 text-sm">
-                    {activity.numeroIntentos} intentos · {activity.puntajeProgramado}{' '}
-                    puntos
-                  </p>
-                </div>
+                isInteractive ? (
+                  <InteractiveQuiz activity={activity} activityIndex={index} />
+                ) : (
+                  <div className="mt-4 rounded-2xl border border-[#eadfc9] bg-[#fffdf7] p-4">
+                    <p className="text-sm font-bold text-stone-500">
+                      Actividad automatizada
+                    </p>
+                    <p className="mt-1 text-sm">
+                      {activity.numeroIntentos} intentos · {activity.puntajeProgramado}{' '}
+                      puntos
+                    </p>
+                  </div>
+                )
               )}
             </article>
           ))}
@@ -485,7 +598,8 @@ export default function DigitalResourceReaderView() {
   }
 
   return (
-    <div className="min-h-screen bg-[#efe5d2] px-4 py-8 [background-image:radial-gradient(circle_at_12%_10%,rgba(124,40,85,0.10),transparent_26%),radial-gradient(circle_at_88%_0%,rgba(212,175,55,0.22),transparent_24%),linear-gradient(90deg,rgba(60,42,28,0.035)_1px,transparent_1px)] [background-size:auto,auto,28px_28px]">
+    <div className="min-h-screen bg-white p-4 md:p-6">
+      <div className="min-h-[calc(100vh-2rem)] rounded-[2rem] bg-[#efe5d2] px-4 py-8 shadow-inner [background-image:radial-gradient(circle_at_12%_10%,rgba(124,40,85,0.10),transparent_26%),radial-gradient(circle_at_88%_0%,rgba(212,175,55,0.22),transparent_24%),linear-gradient(90deg,rgba(60,42,28,0.035)_1px,transparent_1px)] [background-size:auto,auto,28px_28px] md:min-h-[calc(100vh-3rem)] md:rounded-[3rem]">
       <div className="mx-auto mb-6 flex max-w-7xl flex-wrap items-center justify-between gap-3">
         {!isPublicReader && (
           <>
@@ -518,6 +632,7 @@ export default function DigitalResourceReaderView() {
       ) : (
         <DigitalBookReader resource={resource} />
       )}
+      </div>
     </div>
   )
 }

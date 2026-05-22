@@ -54,8 +54,8 @@ export const users = [
     subjectCodes: ['M-101', 'M-102', 'M-103', 'M-201'],
   },
   {
-    name: 'Super Admin',
-    email: 'super_admin.demo@example.edu.mx',
+    name: 'Administrador',
+    email: 'admin.demo@example.edu.mx',
     password: 'ChangeMeDemo-2026!',
     academyId: null,
     role: 'Administrador' as const,

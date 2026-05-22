@@ -16,18 +16,25 @@ import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router'
 import { toast } from 'sonner'
 
+type LoginFormWithTerms = LoginFormValues & {
+  termsAccepted: boolean
+}
+
 export default function LoginView() {
   const navigate = useNavigate()
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
-  } = useForm<LoginFormValues>({
+  } = useForm<LoginFormWithTerms>({
     defaultValues: {
       email: '',
       password: '',
+      termsAccepted: false,
     },
   })
+  const termsAccepted = watch('termsAccepted')
 
   const { mutate } = useMutation({
     mutationFn: login,
@@ -39,8 +46,8 @@ export default function LoginView() {
     },
   })
 
-  const onSubmit = (formData: LoginFormValues) => {
-    mutate(formData)
+  const onSubmit = ({ email, password }: LoginFormWithTerms) => {
+    mutate({ email, password })
   }
 
   return (
@@ -103,18 +110,50 @@ export default function LoginView() {
               </p>
             )}
           </div>
+
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+            <label
+              htmlFor="termsAccepted"
+              className="flex items-start gap-3 text-sm leading-5 text-gray-700"
+            >
+              <input
+                id="termsAccepted"
+                type="checkbox"
+                className="mt-1 h-4 w-4 shrink-0 rounded border-gray-300 accent-[#7C2855]"
+                {...register('termsAccepted', {
+                  required:
+                    'Debes aceptar los Términos y Condiciones para ingresar.',
+                })}
+              />
+              <span>
+                Acepto los{' '}
+                <Link
+                  to="/auth/terms"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-[#7C2855] underline underline-offset-2"
+                >
+                  Términos y Condiciones
+                </Link>{' '}
+                para el uso de la plataforma.
+              </span>
+            </label>
+            {errors.termsAccepted && (
+              <p className="mt-2 text-xs text-red-500">
+                {errors.termsAccepted.message}
+              </p>
+            )}
+          </div>
         </CardContent>
 
         <CardFooter className="flex flex-col gap-4">
-          <Button type="submit" className="w-full mt-5" disabled={isSubmitting}>
+          <Button
+            type="submit"
+            className="w-full mt-5"
+            disabled={isSubmitting || !termsAccepted}
+          >
             {isSubmitting ? 'Ingresando...' : 'Ingresar'}
           </Button>
-          <div className="mt-4 text-center text-sm">
-            ¿No tienes una cuenta?{' '}
-            <Link to="/auth/register" className="underline">
-              Regístrate
-            </Link>
-          </div>
         </CardFooter>
       </form>
     </Card>
