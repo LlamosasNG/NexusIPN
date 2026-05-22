@@ -4,77 +4,115 @@ import UserSubject from '@/models/UserSubject'
 import { getCurrentAcademicPeriod } from '@/utils/academicPeriod'
 import { hashPassword } from '@/utils/auth'
 import colors from 'colors'
-import { users } from '../data/users'
+import { loadSeedUsers } from './loadSeedUsers'
 
-export async function seedUsers() {
+type SeedUsersOptions = {
+  requirePrivateUsers?: boolean
+  updateExistingPasswords?: boolean
+}
+
+export async function seedUsers({
+  requirePrivateUsers = false,
+  updateExistingPasswords = false,
+}: SeedUsersOptions = {}) {
   try {
-    const count = await User.count()
-    if (count === 0) {
-      // Hash passwords before creating users
-      const usersWithHashedPasswords = await Promise.all(
-        users.map(async (user) => ({
-          name: user.name,
-          email: user.email,
+    const { users, source } = loadSeedUsers({ requirePrivateUsers })
+
+    const subjects = await Subject.findAll()
+    const subjectMap = new Map(
+      subjects.map((subject) => [
+        subject.code,
+        {
+          id: subject.id,
+          academyId: subject.academyId,
+        },
+      ])
+    )
+
+    const academicPeriod = getCurrentAcademicPeriod()
+    let createdCount = 0
+    let updatedCount = 0
+    let assignmentCount = 0
+
+    for (const user of users) {
+      const existingUser = await User.findOne({
+        where: { email: user.email },
+      })
+
+      const userPayload = {
+        name: user.name,
+        email: user.email,
+        academyId: user.academyId,
+        role: user.role,
+        confirmed: user.confirmed,
+      }
+
+      let userId: number
+
+      if (existingUser) {
+        const updates: Record<string, unknown> = {
+          ...userPayload,
+        }
+
+        if (updateExistingPasswords) {
+          updates.password = await hashPassword(user.password)
+        }
+
+        await existingUser.update(updates)
+        userId = existingUser.id
+        updatedCount++
+      } else {
+        const createdUser = await User.create({
+          ...userPayload,
           password: await hashPassword(user.password),
-          academyId: user.academyId,
-          role: user.role,
-          confirmed: user.confirmed,
-        }))
-      )
+        })
+        userId = createdUser.id
+        createdCount++
+      }
 
-      // Create users
-      const createdUsers = await User.bulkCreate(usersWithHashedPasswords)
+      if (user.subjectCodes && user.subjectCodes.length > 0) {
+        for (const code of user.subjectCodes) {
+          const subject = subjectMap.get(code)
 
-      // Get all subjects to map codes to IDs
-      const subjects = await Subject.findAll()
-      const subjectMap = new Map(
-        subjects.map((subject) => [
-          subject.code,
-          {
-            id: subject.id,
-            academyId: subject.academyId,
-          },
-        ])
-      )
+          if (!subject) {
+            throw new Error(`La materia ${code} no existe en el catálogo`)
+          }
 
-      // Assign subjects to users
-      const userSubjects = []
-      const academicPeriod = getCurrentAcademicPeriod()
-      for (let i = 0; i < users.length; i++) {
-        const user = users[i]
-        const createdUser = createdUsers[i]
+          if (subject.academyId !== user.academyId) {
+            throw new Error(
+              `La materia ${code} no pertenece a la academia configurada para uno de los usuarios`
+            )
+          }
 
-        if (user.subjectCodes && user.subjectCodes.length > 0) {
-          for (const code of user.subjectCodes) {
-            const subject = subjectMap.get(code)
+          const [userSubject, created] = await UserSubject.findOrCreate({
+            where: {
+              userId,
+              subjectId: subject.id,
+              period: academicPeriod,
+            },
+            defaults: {
+              userId,
+              subjectId: subject.id,
+              period: academicPeriod,
+              active: true,
+            },
+          })
 
-            if (subject && subject.academyId !== user.academyId) {
-              throw new Error(
-                `La materia ${code} no pertenece a la academia del usuario ${user.email}`
-              )
-            }
-
-            if (subject) {
-              userSubjects.push({
-                userId: createdUser.id,
-                subjectId: subject.id,
-                period: academicPeriod,
-                active: true,
-              })
-            }
+          if (created) {
+            assignmentCount++
+          } else if (!userSubject.active) {
+            userSubject.active = true
+            await userSubject.save()
           }
         }
       }
-
-      // Create user-subject associations
-      if (userSubjects.length > 0) {
-        await UserSubject.bulkCreate(userSubjects)
-      }
-
-      console.log(colors.green('Loading Users...'))
-    } else {
-      console.log(colors.yellow('Users already exist, skipping'))
     }
+
+    console.log(
+      colors.green(
+        `Users loaded from ${source}: ${createdCount} created, ${updatedCount} updated, ${assignmentCount} subject assignments created`
+      )
+    )
   } catch (error) {
     console.error(colors.red('Error loading users:'), error)
     throw error

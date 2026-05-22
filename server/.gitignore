@@ -3,3 +3,6 @@ node_modules/
 package-lock.json
 .DS_Store
 dist/
+src/scripts/data/users.local.ts
+src/scripts/data/users.seed.json
+src/scripts/data/*.private.*

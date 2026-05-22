@@ -1,0 +1,22 @@
+{
+  "users": [
+    {
+      "name": "Docente Real",
+      "email": "docente@dominio.edu.mx",
+      "password": "ContraseñaTemporalSegura-2026!",
+      "academyId": 1,
+      "role": "Docente",
+      "confirmed": true,
+      "subjectCodes": ["M-101", "M-102"]
+    },
+    {
+      "name": "Jefe de Departamento",
+      "email": "jefe@dominio.edu.mx",
+      "password": "ContraseñaTemporalSegura-2026!",
+      "academyId": 1,
+      "role": "Jefe de Departamento",
+      "confirmed": true,
+      "subjectCodes": []
+    }
+  ]
+}

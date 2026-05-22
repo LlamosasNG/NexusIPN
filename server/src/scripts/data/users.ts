@@ -1,19 +1,28 @@
-/**
- * Códigos de materias
- * Morfología (academyId 1): M-101, M-102, M-103, M-201
- * Terapeútica Homeopática (academyId 2): TH-101, TH-201, TH-102
- * Ambiente y Salud Pública (academyId 3): ASP-101, ASP-102, ASP-201, ASP-202, ASP-103, ASP-104, ASP-105, ASP-106, ASP-107
- * Fisiológicas (academyId 4): F-101, F-201, F-202
- * Clínicas (academyId 5): C-101, C-102, C-103
- */
+export type SeedUserRole =
+  | 'Docente'
+  | 'Jefe de Departamento'
+  | 'Academia'
+  | 'Administrador'
 
-export const users = [
+export type SeedUser = {
+  name: string
+  email: string
+  password: string
+  academyId: number | null
+  role: SeedUserRole
+  confirmed: boolean
+  subjectCodes?: string[]
+}
+
+// Datos ficticios para desarrollo. Los usuarios reales deben cargarse desde
+// SEED_USERS_FILE o SEED_USERS_JSON_BASE64, no desde archivos versionados.
+export const users: SeedUser[] = [
   {
     name: 'Docente Demo Morfología',
     email: 'docente.morfologia.demo@example.edu.mx',
     password: 'ChangeMeDemo-2026!',
-    academyId: 1, // Academia de Morfología
-    role: 'Docente' as const,
+    academyId: 1,
+    role: 'Docente',
     confirmed: true,
     subjectCodes: ['M-101', 'M-102', 'M-103', 'M-201'],
   },
@@ -21,60 +30,60 @@ export const users = [
     name: 'Docente Demo Terapéutica',
     email: 'docente.terapeutica.demo@example.edu.mx',
     password: 'ChangeMeDemo-2026!',
-    academyId: 2, // Academia de Terapeútica Homeopática
-    role: 'Docente' as const,
+    academyId: 2,
+    role: 'Docente',
     confirmed: true,
     subjectCodes: ['TH-101', 'TH-201', 'TH-102'],
   },
   {
-    name: 'Docente Demo Morfología 2',
-    email: 'docente.morfologia2.demo@example.edu.mx',
+    name: 'Docente Demo Salud Pública',
+    email: 'docente.salud.demo@example.edu.mx',
     password: 'ChangeMeDemo-2026!',
-    academyId: 1, // Academia de Morfología
-    role: 'Docente' as const,
+    academyId: 3,
+    role: 'Docente',
     confirmed: true,
-    subjectCodes: ['M-101', 'M-102', 'M-103', 'M-201'],
+    subjectCodes: ['ASP-101', 'ASP-102', 'ASP-201'],
   },
   {
-    name: 'Docente Demo Terapéutica 2',
-    email: 'docente.terapeutica2.demo@example.edu.mx',
+    name: 'Docente Demo Fisiológicas',
+    email: 'docente.fisiologicas.demo@example.edu.mx',
     password: 'ChangeMeDemo-2026!',
-    academyId: 2, // Academia de Terapeútica Homeopática
-    role: 'Docente' as const,
+    academyId: 4,
+    role: 'Docente',
     confirmed: true,
-    subjectCodes: ['TH-101', 'TH-201', 'TH-102'],
+    subjectCodes: ['F-101', 'F-201', 'F-202'],
   },
   {
-    name: 'Docente Demo Morfología 3',
-    email: 'docente.morfologia3.demo@example.edu.mx',
+    name: 'Docente Demo Clínicas',
+    email: 'docente.clinicas.demo@example.edu.mx',
     password: 'ChangeMeDemo-2026!',
-    academyId: 1, // Academia de Morfología
-    role: 'Docente' as const,
+    academyId: 5,
+    role: 'Docente',
     confirmed: true,
-    subjectCodes: ['M-101', 'M-102', 'M-103', 'M-201'],
+    subjectCodes: ['C-101', 'C-102', 'C-103'],
   },
   {
-    name: 'Administrador',
+    name: 'Administrador Demo',
     email: 'admin.demo@example.edu.mx',
-    password: 'ChangeMeDemo-2026!',
+    password: 'ChangeMeAdmin-2026!',
     academyId: null,
-    role: 'Administrador' as const,
+    role: 'Administrador',
     confirmed: true,
   },
   {
     name: 'Jefe Demo Morfología',
     email: 'jefe.morfologia.demo@example.edu.mx',
-    password: 'ChangeMeDemo-2026!',
+    password: 'ChangeMeHead-2026!',
     academyId: 1,
-    role: 'Jefe de Departamento' as const,
+    role: 'Jefe de Departamento',
     confirmed: true,
   },
   {
     name: 'Jefe Demo Terapéutica',
     email: 'jefe.terapeutica.demo@example.edu.mx',
-    password: 'ChangeMeDemo-2026!',
+    password: 'ChangeMeHead-2026!',
     academyId: 2,
-    role: 'Jefe de Departamento' as const,
+    role: 'Jefe de Departamento',
     confirmed: true,
   },
 ]
