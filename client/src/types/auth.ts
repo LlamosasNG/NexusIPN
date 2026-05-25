@@ -21,6 +21,12 @@ export type ConfirmToken = Pick<Auth, 'token'>
 export type RequestNewCodeForm = Pick<Auth, 'email'>
 export type ForgotPasswordForm = Pick<Auth, 'email'>
 export type NewPasswordForm = Pick<Auth, 'password' | 'password_confirmation'>
+export type ChangeInitialPasswordForm = Pick<
+  Auth,
+  'password' | 'password_confirmation'
+> & {
+  currentPassword: string
+}
 
 export const UserSchema = AuthSchema.pick({ name: true, email: true }).extend({
   id: z.number(),
@@ -30,6 +36,7 @@ export const UserSchema = AuthSchema.pick({ name: true, email: true }).extend({
     'Academia',
     'Administrador',
   ]),
+  mustChangePassword: z.boolean().default(false),
   academy: AcademySchema.nullable(),
   subjects: z.array(SubjectRelationSchema).default([]),
 })

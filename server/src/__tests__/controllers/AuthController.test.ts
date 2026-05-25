@@ -352,6 +352,77 @@ describe('AuthController', () => {
     })
   })
 
+  // ─── changeInitialPassword ───────────────────────────────────
+
+  describe('changeInitialPassword', () => {
+    it('debe retornar 403 si la contraseña actual es incorrecta', async () => {
+      req.user = { id: 1 } as any
+      req.body = {
+        currentPassword: 'temporal123',
+        password: 'nuevaPassword123',
+      }
+      mockUser.findByPk.mockResolvedValue({
+        id: 1,
+        password: 'hashed',
+      } as any)
+      mockCheckPassword.mockResolvedValue(false)
+
+      await AuthController.changeInitialPassword(req as Request, res as Response)
+
+      expect(res.status).toHaveBeenCalledWith(403)
+      expect(res.json).toHaveBeenCalledWith({
+        error: 'La contraseña actual es incorrecta',
+      })
+    })
+
+    it('debe retornar 400 si la nueva contraseña es igual a la actual', async () => {
+      req.user = { id: 1 } as any
+      req.body = {
+        currentPassword: 'temporal123',
+        password: 'temporal123',
+      }
+      mockUser.findByPk.mockResolvedValue({
+        id: 1,
+        password: 'hashed',
+      } as any)
+      mockCheckPassword.mockResolvedValue(true)
+
+      await AuthController.changeInitialPassword(req as Request, res as Response)
+
+      expect(res.status).toHaveBeenCalledWith(400)
+      expect(res.json).toHaveBeenCalledWith({
+        error: 'La nueva contraseña debe ser diferente a la actual',
+      })
+    })
+
+    it('debe cambiar la contraseña y desactivar el cambio obligatorio', async () => {
+      req.user = { id: 1 } as any
+      req.body = {
+        currentPassword: 'temporal123',
+        password: 'nuevaPassword123',
+      }
+      const fakeUser = {
+        id: 1,
+        password: 'hashed',
+        mustChangePassword: true,
+        passwordChangedAt: null,
+        save: jest.fn().mockResolvedValue(undefined),
+      }
+      mockUser.findByPk.mockResolvedValue(fakeUser as any)
+      mockCheckPassword.mockResolvedValue(true)
+
+      await AuthController.changeInitialPassword(req as Request, res as Response)
+
+      expect(fakeUser.password).toBe('hashed_password_123')
+      expect(fakeUser.mustChangePassword).toBe(false)
+      expect(fakeUser.passwordChangedAt).toBeInstanceOf(Date)
+      expect(fakeUser.save).toHaveBeenCalled()
+      expect(res.json).toHaveBeenCalledWith(
+        'Contraseña actualizada exitosamente'
+      )
+    })
+  })
+
   // ─── user ────────────────────────────────────────────────────
 
   describe('user', () => {

@@ -30,7 +30,14 @@ export const authenticate = async (
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
     if (typeof decoded === 'object' && decoded.id) {
       req.user = await User.findByPk(decoded.id, {
-        attributes: ['id', 'name', 'email', 'role', 'academyId'],
+        attributes: [
+          'id',
+          'name',
+          'email',
+          'role',
+          'academyId',
+          'mustChangePassword',
+        ],
         include: [{ model: Academy, attributes: ['id', 'name'] }],
       })
     }

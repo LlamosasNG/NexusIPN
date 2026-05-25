@@ -41,6 +41,14 @@ const getReviewStatus = (
   return 'Pendiente'
 }
 
+const getPlanningStatusesMatchingSearch = (search: string) => {
+  const normalizedSearch = search.toLowerCase()
+
+  return Object.values(PlanningStatus).filter((status) =>
+    status.toLowerCase().includes(normalizedSearch)
+  )
+}
+
 const canReviewPlanning = (status: PlanningStatus) =>
   status === PlanningStatus.SENT || status === PlanningStatus.LATE
 
@@ -94,11 +102,11 @@ const getSortOrder = (
   const direction = sortOrder.toUpperCase() as 'ASC' | 'DESC'
 
   if (sortBy === 'teacherName') {
-    return [[User, 'name', direction]]
+    return [[{ model: User, as: 'user' }, 'name', direction]]
   }
 
   if (sortBy === 'subjectName') {
-    return [[Subject, 'name', direction]]
+    return [[{ model: Subject, as: 'subject' }, 'name', direction]]
   }
 
   if (sortBy === 'period') {
@@ -244,9 +252,12 @@ export class DepartmentHeadPlanningController {
       }
 
       if (search) {
+        const matchingStatuses = getPlanningStatusesMatchingSearch(search)
         planningWhere[Op.or] = [
           { period: { [Op.iLike]: `%${search}%` } },
-          { status: { [Op.iLike]: `%${search}%` } },
+          ...(matchingStatuses.length > 0
+            ? [{ status: { [Op.in]: matchingStatuses } }]
+            : []),
           { '$user.name$': { [Op.iLike]: `%${search}%` } },
           { '$user.email$': { [Op.iLike]: `%${search}%` } },
           { '$subject.name$': { [Op.iLike]: `%${search}%` } },

@@ -166,14 +166,52 @@ export class AuthController {
     }
     user.password = await hashPassword(password)
     user.token = null
+    user.mustChangePassword = false
+    user.passwordChangedAt = new Date()
     await user.save()
     res.json('Contraseña restablecida exitosamente')
+  }
+
+  static changeInitialPassword = async (req: Request, res: Response) => {
+    try {
+      const { currentPassword, password } = req.body
+      const user = await User.findByPk(req.user.id)
+
+      if (!user) {
+        const error = new Error('Usuario no encontrado')
+        return res.status(404).json({ error: error.message })
+      }
+
+      const isPasswordValid = await checkPassword(currentPassword, user.password)
+      if (!isPasswordValid) {
+        const error = new Error('La contraseña actual es incorrecta')
+        return res.status(403).json({ error: error.message })
+      }
+
+      if (currentPassword === password) {
+        const error = new Error(
+          'La nueva contraseña debe ser diferente a la actual'
+        )
+        return res.status(400).json({ error: error.message })
+      }
+
+      user.password = await hashPassword(password)
+      user.mustChangePassword = false
+      user.passwordChangedAt = new Date()
+      await user.save()
+
+      res.json('Contraseña actualizada exitosamente')
+    } catch (error) {
+      res.status(500).json({
+        error: 'Hubo un error al actualizar la contraseña',
+      })
+    }
   }
 
   static user = async (req: Request, res: Response) => {
     try {
       const user = await User.findByPk(req.user.id, {
-        attributes: ['id', 'name', 'email', 'role'],
+        attributes: ['id', 'name', 'email', 'role', 'mustChangePassword'],
         include: [
           {
             model: Academy,

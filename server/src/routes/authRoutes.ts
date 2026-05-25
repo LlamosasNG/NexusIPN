@@ -84,6 +84,26 @@ router.post(
   AuthController.resetPassword
 )
 
+router.post(
+  '/change-initial-password',
+  authLimiter,
+  authenticate,
+  body('currentPassword')
+    .notEmpty()
+    .withMessage('La contraseña actual es obligatoria'),
+  body('password')
+    .isLength({ min: 8 })
+    .withMessage('La contraseña debe tener al menos 8 caracteres'),
+  body('password_confirmation').custom((value, { req }) => {
+    if (value !== req.body.password) {
+      throw new Error('Las contraseñas no coinciden')
+    }
+    return true
+  }),
+  handleInputErrors,
+  AuthController.changeInitialPassword
+)
+
 router.get('/user', authenticate, AuthController.user)
 
 export default router

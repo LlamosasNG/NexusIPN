@@ -136,10 +136,11 @@ export default function SelectSubjectView() {
         <div className="text-center py-12 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300">
           <AcademicCapIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-gray-900 mb-2">
-            No tienes materias asignadas
+            No tienes Unidades de Aprendizaje pendientes para crear una Planeación
           </h3>
           <p className="text-gray-600">
-            Contacta al administrador para que te asigne materias
+            Dirígete a la sección de Planeaciones para visualizar tus
+            planeaciones creadas
           </p>
         </div>
       )}

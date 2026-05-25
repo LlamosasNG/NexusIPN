@@ -20,12 +20,13 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/solid'
 import { useState } from 'react'
-import { Link, Navigate, Outlet, useNavigate } from 'react-router'
+import { Link, Navigate, Outlet, useLocation, useNavigate } from 'react-router'
 import { Toaster } from 'sonner'
 
 export default function UserLayout() {
   const { data, isError, isLoading } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const handleLogout = () => {
@@ -42,6 +43,12 @@ export default function UserLayout() {
   if (isError) return <Navigate to="/auth/login" />
   if (data) {
     const isDepartmentHead = data.role === 'Jefe de Departamento'
+    const isChangingInitialPassword =
+      location.pathname === '/change-initial-password'
+
+    if (data.mustChangePassword && !isChangingInitialPassword) {
+      return <Navigate to="/change-initial-password" replace />
+    }
 
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">

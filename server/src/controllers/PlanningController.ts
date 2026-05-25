@@ -262,9 +262,15 @@ export class PlanningController {
         return res.status(404).json({ error: 'Planeación no encontrada' })
       }
 
-      if (planning.status !== PlanningStatus.DRAFT) {
+      const canSubmitPlanning = [
+        PlanningStatus.DRAFT,
+        PlanningStatus.REJECTED,
+      ].includes(planning.status)
+
+      if (!canSubmitPlanning) {
         return res.status(400).json({
-          error: 'Solo las planeaciones en borrador pueden enviarse',
+          error:
+            'Solo las planeaciones en borrador o rechazadas pueden enviarse',
         })
       }
 
@@ -272,13 +278,16 @@ export class PlanningController {
       const deadline = await PlanningSubmissionDeadline.findOne({
         where: { period: planning.period },
       })
-      const isLate = deadline ? now.getTime() > deadline.deadlineAt.getTime() : false
+      const isLate =
+        planning.isLate ||
+        (deadline ? now.getTime() > deadline.deadlineAt.getTime() : false)
 
       planning.status = PlanningStatus.SENT
       planning.submissionDate = now
       planning.isLate = isLate
-      planning.lateMarkedAt = isLate ? now : null
-      planning.deadlineAtSubmission = deadline?.deadlineAt || null
+      planning.lateMarkedAt = isLate ? planning.lateMarkedAt || now : null
+      planning.deadlineAtSubmission =
+        planning.deadlineAtSubmission || deadline?.deadlineAt || null
       await planning.save()
 
       res.json({

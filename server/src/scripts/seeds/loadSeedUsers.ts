@@ -65,6 +65,15 @@ const assertSeedUser = (value: unknown, index: number): SeedUser => {
   }
 
   if (
+    user.mustChangePassword !== undefined &&
+    typeof user.mustChangePassword !== 'boolean'
+  ) {
+    throw new Error(
+      `El usuario privado ${user.email} tiene mustChangePassword inválido`
+    )
+  }
+
+  if (
     user.subjectCodes &&
     (!Array.isArray(user.subjectCodes) ||
       user.subjectCodes.some((code) => typeof code !== 'string'))
@@ -79,6 +88,7 @@ const assertSeedUser = (value: unknown, index: number): SeedUser => {
     academyId: user.academyId,
     role: user.role,
     confirmed: user.confirmed,
+    mustChangePassword: user.mustChangePassword,
     subjectCodes: user.subjectCodes || [],
   }
 }

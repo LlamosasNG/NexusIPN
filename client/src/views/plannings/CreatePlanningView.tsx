@@ -2,8 +2,8 @@ import {
   createOrUpdatePlagiarismTool,
   getPlagiarismTool,
 } from '@/api/PlagiarismToolAPI'
-import { getReferences, syncReferences } from '@/api/ReferenceAPI'
 import { getPlanningById, submitPlanning } from '@/api/PlanningAPI'
+import { getReferences, syncReferences } from '@/api/ReferenceAPI'
 import { LoadingApp } from '@/components/LoadingApp'
 import PlanningFooter from '@/components/planning/PlanningFooter'
 import { PlanningFormHeader } from '@/components/planning/PlanningFormHeader'
@@ -68,6 +68,8 @@ export default function CreatePlanningView() {
     currentSection <= 3 ? `planning-section-form-${currentSection}` : undefined
   const isPlanningLocked =
     planning?.status === 'Enviada' || planning?.status === 'Aprobada'
+  const canSubmitPlanning =
+    planning?.status === 'Borrador' || planning?.status === 'Rechazada'
 
   useEffect(() => {
     if (!referencesData) return
@@ -112,7 +114,9 @@ export default function CreatePlanningView() {
     if (!planningId) return
 
     if (isPlanningLocked) {
-      toast.info('Esta planeación está en modo sólo lectura y no puede modificarse.')
+      toast.info(
+        'Esta planeación está en modo sólo lectura y no puede modificarse.'
+      )
       return
     }
 
@@ -152,7 +156,9 @@ export default function CreatePlanningView() {
         return
       }
 
-      toast.info('El guardado externo está disponible en las secciones 1 a 3 por ahora.')
+      toast.info(
+        'El guardado externo está disponible en las secciones 1 a 3 por ahora.'
+      )
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message)
@@ -164,7 +170,9 @@ export default function CreatePlanningView() {
     if (!planningId) return
 
     if (isPlanningLocked) {
-      toast.info('Esta planeación está en modo sólo lectura y no puede modificarse.')
+      toast.info(
+        'Esta planeación está en modo sólo lectura y no puede modificarse.'
+      )
       return
     }
 
@@ -278,20 +286,24 @@ export default function CreatePlanningView() {
   }
 
   return (
-    <div className="rounded-[2rem] bg-[#7C2855] overflow-hidden">
+    <div className="rounded-4xl bg-[#7C2855] overflow-hidden">
       <div className="px-4 py-8">
         {/* Main Form Container */}
         <div className="mx-auto rounded-3xl bg-white p-8 shadow-2xl">
           <PlanningFormHeader />
           {isPlanningLocked && (
             <div className="mb-6 rounded-2xl border border-sky-200 bg-sky-50 px-5 py-4 text-sm text-sky-800">
-              Esta planeación se encuentra {planning.status.toLowerCase()} y está
-              disponible únicamente para consulta.
+              Esta planeación se encuentra {planning.status.toLowerCase()} y
+              está disponible únicamente para consulta.
             </div>
           )}
           {/* Render current section */}
           <div
-            className={isPlanningLocked ? 'pointer-events-none select-none opacity-75' : ''}
+            className={
+              isPlanningLocked
+                ? 'pointer-events-none select-none opacity-75'
+                : ''
+            }
             aria-readonly={isPlanningLocked}
           >
             {isLoading ? (
@@ -325,7 +337,7 @@ export default function CreatePlanningView() {
               <PlanningSection5
                 herramientaPlagio={herramientaPlagio}
                 onChange={setHerramientaPlagio}
-                canSubmitPlanning={planning?.status === 'Borrador'}
+                canSubmitPlanning={canSubmitPlanning}
                 isSubmitDialogOpen={isSubmitDialogOpen}
                 isSubmittingPlanning={isSubmittingPlanning}
                 onSubmitDialogChange={setIsSubmitDialogOpen}

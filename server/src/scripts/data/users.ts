@@ -11,6 +11,7 @@ export type SeedUser = {
   academyId: number | null
   role: SeedUserRole
   confirmed: boolean
+  mustChangePassword?: boolean
   subjectCodes?: string[]
 }
 
@@ -24,6 +25,7 @@ export const users: SeedUser[] = [
     academyId: 1,
     role: 'Docente',
     confirmed: true,
+    mustChangePassword: true,
     subjectCodes: ['M-101', 'M-102', 'M-103', 'M-201'],
   },
   {
@@ -33,6 +35,7 @@ export const users: SeedUser[] = [
     academyId: 2,
     role: 'Docente',
     confirmed: true,
+    mustChangePassword: true,
     subjectCodes: ['TH-101', 'TH-201', 'TH-102'],
   },
   {
@@ -42,6 +45,7 @@ export const users: SeedUser[] = [
     academyId: 3,
     role: 'Docente',
     confirmed: true,
+    mustChangePassword: true,
     subjectCodes: ['ASP-101', 'ASP-102', 'ASP-201'],
   },
   {
@@ -51,6 +55,7 @@ export const users: SeedUser[] = [
     academyId: 4,
     role: 'Docente',
     confirmed: true,
+    mustChangePassword: true,
     subjectCodes: ['F-101', 'F-201', 'F-202'],
   },
   {
@@ -60,15 +65,8 @@ export const users: SeedUser[] = [
     academyId: 5,
     role: 'Docente',
     confirmed: true,
+    mustChangePassword: true,
     subjectCodes: ['C-101', 'C-102', 'C-103'],
-  },
-  {
-    name: 'Administrador Demo',
-    email: 'admin.demo@example.edu.mx',
-    password: 'ChangeMeAdmin-2026!',
-    academyId: null,
-    role: 'Administrador',
-    confirmed: true,
   },
   {
     name: 'Jefe Demo Morfología',
@@ -77,6 +75,7 @@ export const users: SeedUser[] = [
     academyId: 1,
     role: 'Jefe de Departamento',
     confirmed: true,
+    mustChangePassword: true,
   },
   {
     name: 'Jefe Demo Terapéutica',
@@ -85,5 +84,42 @@ export const users: SeedUser[] = [
     academyId: 2,
     role: 'Jefe de Departamento',
     confirmed: true,
+    mustChangePassword: true,
+  },
+  {
+    name: 'Jefe Demo Salud Pública',
+    email: 'jefe.salud.demo@example.edu.mx',
+    password: 'ChangeMeHead-2026!',
+    academyId: 3,
+    role: 'Jefe de Departamento',
+    confirmed: true,
+    mustChangePassword: true,
+  },
+  {
+    name: 'Jefe Demo Fisiológicas',
+    email: 'jefe.fisiologicas.demo@example.edu.mx',
+    password: 'ChangeMeHead-2026!',
+    academyId: 4,
+    role: 'Jefe de Departamento',
+    confirmed: true,
+    mustChangePassword: true,
+  },
+  {
+    name: 'Jefe Demo Clínicas',
+    email: 'jefe.clinicas.demo@example.edu.mx',
+    password: 'ChangeMeHead-2026!',
+    academyId: 5,
+    role: 'Jefe de Departamento',
+    confirmed: true,
+    mustChangePassword: true,
+  },
+  {
+    name: 'Administrador Demo',
+    email: 'admin.demo@example.edu.mx',
+    password: 'ChangeMeAdmin-2026!',
+    academyId: null,
+    role: 'Administrador',
+    confirmed: true,
+    mustChangePassword: true,
   },
 ]

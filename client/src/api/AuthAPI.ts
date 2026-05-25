@@ -1,6 +1,7 @@
 import api from '@/lib/axios'
 import {
   UserSchema,
+  type ChangeInitialPasswordForm,
   type ConfirmToken,
   type ForgotPasswordForm,
   type LoginFormValues,
@@ -96,10 +97,25 @@ export async function resetPassword({
   }
 }
 
+export async function changeInitialPassword(
+  formData: ChangeInitialPasswordForm
+) {
+  try {
+    const { data } = await api.post<string>(
+      '/auth/change-initial-password',
+      formData
+    )
+    return data
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.error)
+    }
+  }
+}
+
 export async function getUser() {
   try {
     const { data } = await api('/auth/user')
-    console.log(data)
     const response = UserSchema.safeParse(data)
     if (response.success) {
       return response.data

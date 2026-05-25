@@ -10,6 +10,7 @@ async function seedPrivateUsers() {
     await seedUsers({
       requirePrivateUsers: true,
       updateExistingPasswords: true,
+      markPasswordsAsTemporary: true,
     })
 
     console.log(colors.green.bold('Private users seeding completed successfully'))

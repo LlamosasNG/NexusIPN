@@ -179,7 +179,7 @@ function ReviewPanel({
   )
 
   return (
-    <aside className="space-y-4 rounded-3xl border border-gray-200 bg-gray-50 p-5">
+    <aside className="space-y-4 rounded-3xl border border-gray-200 bg-gray-50 p-5 shadow-sm">
       <div className="flex items-center gap-3">
         <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#7C2855]/10">
           <ChatBubbleLeftRightIcon className="h-6 w-6 text-[#7C2855]" />
@@ -224,11 +224,11 @@ function ReviewPanel({
             className="min-h-28 rounded-2xl bg-white"
             maxLength={2000}
           />
-          <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Button
               type="button"
               variant="outline"
-              className="rounded-xl"
+              className="w-full rounded-xl"
               disabled={isAddingObservation}
               onClick={onSubmitObservation}
             >
@@ -236,7 +236,7 @@ function ReviewPanel({
             </Button>
             <Button
               type="button"
-              className="rounded-xl bg-emerald-600 hover:bg-emerald-700"
+              className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700"
               onClick={() => onOpenReviewDialog('approve')}
             >
               <CheckCircleIcon className="h-5 w-5" />
@@ -244,7 +244,7 @@ function ReviewPanel({
             </Button>
             <Button
               type="button"
-              className="rounded-xl bg-rose-600 hover:bg-rose-700"
+              className="w-full rounded-xl bg-rose-600 hover:bg-rose-700 sm:col-span-2"
               onClick={() => onOpenReviewDialog('reject')}
             >
               <XCircleIcon className="h-5 w-5" />

@@ -10,6 +10,7 @@ import AppLayout from './layouts/AppLayout'
 import UserLayout from './layouts/UserLayout'
 import RoleHomeView from './views/RoleHomeView'
 import ConfirmAccountView from './views/auth/ConfirmAccountView'
+import ChangeInitialPasswordView from './views/auth/ChangeInitialPasswordView'
 import ForgotPasswordView from './views/auth/ForgotPasswordView'
 import NewPasswordView from './views/auth/NewPasswordView'
 import RequestNewCodeView from './views/auth/RequestNewCodeView'
@@ -51,6 +52,7 @@ const staticRouteTitles: Record<string, string> = {
   '/my-plannings': 'Mis planeaciones',
   '/my-resources': 'Mis recursos didácticos',
   '/my-profile': 'Mi perfil',
+  '/change-initial-password': 'Restablecer contraseña inicial',
 }
 
 function getRouteTitle(pathname: string, search: string) {
@@ -153,6 +155,10 @@ export default function Router() {
         />
         <Route element={<UserLayout />}>
           <Route path="/my-home" element={<RoleHomeView />} />
+          <Route
+            path="/change-initial-password"
+            element={<ChangeInitialPasswordView />}
+          />
           <Route
             path="/department-head/dashboard"
             element={<DepartmentHeadDashboardView />}

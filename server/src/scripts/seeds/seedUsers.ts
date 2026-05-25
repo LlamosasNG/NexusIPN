@@ -9,11 +9,13 @@ import { loadSeedUsers } from './loadSeedUsers'
 type SeedUsersOptions = {
   requirePrivateUsers?: boolean
   updateExistingPasswords?: boolean
+  markPasswordsAsTemporary?: boolean
 }
 
 export async function seedUsers({
   requirePrivateUsers = false,
   updateExistingPasswords = false,
+  markPasswordsAsTemporary = false,
 }: SeedUsersOptions = {}) {
   try {
     const { users, source } = loadSeedUsers({ requirePrivateUsers })
@@ -46,12 +48,22 @@ export async function seedUsers({
         role: user.role,
         confirmed: user.confirmed,
       }
+      const mustChangePassword =
+        markPasswordsAsTemporary || user.mustChangePassword === true
+
+      const passwordPolicyPayload = mustChangePassword
+        ? {
+            mustChangePassword: true,
+            passwordChangedAt: null,
+          }
+        : {}
 
       let userId: number
 
       if (existingUser) {
         const updates: Record<string, unknown> = {
           ...userPayload,
+          ...passwordPolicyPayload,
         }
 
         if (updateExistingPasswords) {
@@ -64,6 +76,7 @@ export async function seedUsers({
       } else {
         const createdUser = await User.create({
           ...userPayload,
+          ...passwordPolicyPayload,
           password: await hashPassword(user.password),
         })
         userId = createdUser.id

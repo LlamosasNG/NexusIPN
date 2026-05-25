@@ -211,6 +211,36 @@ describe('PlanningController', () => {
   // ─── submit ─────────────────────────────────────────────────
 
   describe('submit', () => {
+    it('debe permitir reenviar una planeación rechazada', async () => {
+      req.params = { planningId: '10' }
+      const save = jest.fn().mockResolvedValue(undefined)
+      const fakePlanning: any = {
+        id: 10,
+        userId: 1,
+        period: '2026-2',
+        status: 'Rechazada',
+        save,
+      }
+
+      mockPlanning.findOne.mockResolvedValue(fakePlanning as any)
+      mockPlanningSubmissionDeadline.findOne.mockResolvedValue(null)
+
+      await PlanningController.submit(req as Request, res as Response)
+
+      expect(fakePlanning.status).toBe('Enviada')
+      expect(fakePlanning.submissionDate).toBeInstanceOf(Date)
+      expect(fakePlanning.isLate).toBe(false)
+      expect(fakePlanning.lateMarkedAt).toBeNull()
+      expect(fakePlanning.deadlineAtSubmission).toBeNull()
+      expect(save).toHaveBeenCalled()
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          status: 'Enviada',
+          isLate: false,
+        })
+      )
+    })
+
     it('debe mantener Enviada y marcar isLate cuando se envía después de la fecha límite', async () => {
       jest.useFakeTimers().setSystemTime(new Date('2026-08-11T16:30:00.000Z'))
 

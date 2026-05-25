@@ -62,13 +62,25 @@ class User extends Model {
   @Column({
     type: DataType.STRING(6),
   })
-  declare token: string
+  declare token: string | null
 
   @Default(false)
   @Column({
     type: DataType.BOOLEAN,
   })
   declare confirmed: boolean
+
+  @Default(false)
+  @Column({
+    type: DataType.BOOLEAN,
+  })
+  declare mustChangePassword: boolean
+
+  @AllowNull(true)
+  @Column({
+    type: DataType.DATE,
+  })
+  declare passwordChangedAt: Date | null
 
   @BelongsToMany(() => Subject, () => UserSubject)
   declare subjects: Subject[]
