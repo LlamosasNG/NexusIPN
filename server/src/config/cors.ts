@@ -1,16 +1,21 @@
 import { CorsOptions } from 'cors'
+import dotenv from 'dotenv'
 
-const configuredOrigins = [
-  process.env.FRONTEND_URL,
-  ...(process.env.FRONTEND_URLS || '')
+dotenv.config({ quiet: true })
+
+const getConfiguredOrigins = () =>
+  [
+    process.env.FRONTEND_URL,
+    ...(process.env.FRONTEND_URLS || '')
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean),
-]
+  ].filter(Boolean)
 
 export const corsConfig: CorsOptions = {
   origin: (origin, callback) => {
-    const whiteList = [...configuredOrigins]
+    const whiteList = getConfiguredOrigins()
+
     if (process.argv[2] === '--api') {
       whiteList.push(undefined)
     }
@@ -19,5 +24,5 @@ export const corsConfig: CorsOptions = {
     } else {
       callback(new Error('Not allowed by CORS'))
     }
-  }
+  },
 }
