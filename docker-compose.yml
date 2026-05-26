@@ -1,10 +1,12 @@
 services:
   postgres:
     image: postgres:16-alpine
+    env_file:
+      - path: ${APP_ENV_FILE:-.env.production}
+        format: raw
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-nexus_ipn}
       POSTGRES_USER: ${POSTGRES_USER:-nexus_app}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -21,11 +23,13 @@ services:
       context: ./server
       dockerfile: Dockerfile
     env_file:
-      - ${APP_ENV_FILE:-.env.production}
+      - path: ${APP_ENV_FILE:-.env.production}
+        format: raw
     environment:
       NODE_ENV: production
       PORT: 4000
-      DATABASE_URL: postgresql://${POSTGRES_USER:-nexus_app}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-nexus_ipn}
+      DB_HOST: postgres
+      DB_PORT: 5432
       DATABASE_SSL: "false"
     expose:
       - "4000"

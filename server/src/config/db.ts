@@ -11,7 +11,11 @@ const useSsl = process.env.DATABASE_SSL === 'true'
 const rejectUnauthorized =
   process.env.DATABASE_SSL_REJECT_UNAUTHORIZED === 'true'
 
-export const db = new Sequelize(process.env.DATABASE_URL, {
+const databaseUrl =
+  process.env.DATABASE_URL ||
+  `postgresql://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || 5432}/${process.env.POSTGRES_DB}`
+
+export const db = new Sequelize(databaseUrl, {
   models: [__dirname + '/../models/**/*'],
   logging: false,
   dialectOptions: useSsl

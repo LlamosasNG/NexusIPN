@@ -2,7 +2,8 @@
 
 FROM node:22-alpine AS build
 WORKDIR /app
-RUN corepack enable
+RUN apk add --no-cache python3 make g++
+RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
 
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile

@@ -27,9 +27,11 @@ Valores mínimos:
 
 No subas `.env.production` al repositorio.
 
-En Compose, la API se conecta a PostgreSQL con el host interno `postgres`. No cambies ese host por `localhost` dentro de `DATABASE_URL` para contenedores, porque `localhost` apuntaría al propio contenedor de la API.
+En Compose, la API se conecta a PostgreSQL con el host interno `postgres` usando `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `DB_HOST` y `DB_PORT`. No uses `localhost` como host de BD dentro de contenedores, porque apuntaría al propio contenedor de la API.
 
 Si una contraseña o secreto contiene `$`, escríbelo entre comillas simples en `.env.production`, por ejemplo `POSTGRES_PASSWORD='abc$123'`, o escapa cada signo como `$$`. Si no lo haces, Docker Compose intentará interpretar lo que sigue al `$` como otra variable.
+
+Para el despliegue con Compose no configures `DATABASE_URL` en `.env.production`; la API construye la conexión con `POSTGRES_*`, `DB_HOST` y `DB_PORT`. Si dejas `DATABASE_URL` con caracteres especiales, Compose puede mostrar advertencias o interpolar partes del valor durante la validación.
 
 ## 2. Construir y levantar servicios
 
