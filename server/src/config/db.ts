@@ -7,12 +7,19 @@ dotenv.config({ quiet: true })
 //const __filename = fileURLToPath(import.meta.url)
 //const __dirname = dirname(__filename)
 
+const useSsl = process.env.DATABASE_SSL === 'true'
+const rejectUnauthorized =
+  process.env.DATABASE_SSL_REJECT_UNAUTHORIZED === 'true'
+
 export const db = new Sequelize(process.env.DATABASE_URL, {
   models: [__dirname + '/../models/**/*'],
   logging: false,
-  // dialectOptions: {
-  //   ssl: {
-  //     require: false,
-  //   },
-  // },
+  dialectOptions: useSsl
+    ? {
+        ssl: {
+          require: true,
+          rejectUnauthorized,
+        },
+      }
+    : undefined,
 })

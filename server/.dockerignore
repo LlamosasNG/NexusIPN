@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+.env.*
+coverage
+*.log
+src/scripts/data/users.local.ts
+src/scripts/data/users.seed.json
+src/scripts/data/*.private.*

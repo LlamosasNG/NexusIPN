@@ -18,7 +18,9 @@
     "seed:resources": "ts-node -r tsconfig-paths/register src/scripts/seedSampleDigitalResources.ts",
     "db:reset": "ts-node src/scripts/resetDatabase.ts",
     "seed:fresh": "pnpm run db:reset && pnpm run seed",
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
+    "start:seed:catalog": "node ./dist/scripts/seedCatalog.js",
+    "start:seed:users:private": "node ./dist/scripts/seedPrivateUsers.js",
     "test": "jest --verbose",
     "test:coverage": "jest --coverage",
     "typecheck": "tsc --noEmit"
