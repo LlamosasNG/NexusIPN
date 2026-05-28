@@ -23,6 +23,14 @@ Database models
 /server/src/middleware
 Auth and validation middleware
 
+## Deployment docs
+
+/docs/DEPLOYMENT_DOCKER.md
+Docker Compose deployment guide for a self-managed server
+
+/docs/DEPLOYMENT_AZURE.md
+Azure deployment guide preserving the Docker Compose architecture
+
 ## Ignore
 
 Do not analyze:
