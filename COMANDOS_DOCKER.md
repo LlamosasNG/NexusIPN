@@ -20,6 +20,8 @@ Para probar en tu máquina local, ajusta como mínimo:
 
 ```env
 NGINX_PORT=8080
+NGINX_HTTPS_PORT=8443
+PUBLIC_DOMAIN=localhost
 VITE_API_URL=/api
 
 POSTGRES_DB=nexus_ipn
@@ -73,6 +75,8 @@ Si usaste `NGINX_PORT=8080`, abre:
 http://localhost:8080
 ```
 
+Si usas HTTPS en producción, `PUBLIC_DOMAIN` debe ser un dominio o subdominio real apuntando a la IP pública de la VM. Let's Encrypt no emite certificados válidos para una IP directa.
+
 ## 4. Ver estado de los servicios
 
 ```bash
@@ -109,7 +113,69 @@ docker compose --env-file .env.production logs -f postgres
 
 Quita `-f` si solo quieres imprimir logs recientes sin seguirlos en tiempo real.
 
-## 6. Entrar a la base de datos con psql
+## 6. Activar HTTPS con Let's Encrypt
+
+Antes de emitir el certificado, confirma que:
+
+- `PUBLIC_DOMAIN` apunta por DNS a la IP pública de la VM.
+- Azure NSG permite entrada por `80/tcp` y `443/tcp`.
+- Ubuntu permite esos puertos si `ufw` está activo.
+- `.env.production` tiene `FRONTEND_URL=https://PUBLIC_DOMAIN`.
+
+Ejemplo de variables:
+
+```env
+NGINX_PORT=80
+NGINX_HTTPS_PORT=443
+PUBLIC_DOMAIN=nexus.example.com
+FRONTEND_URL=https://nexus.example.com
+```
+
+Levanta Nginx en modo HTTP para servir el challenge:
+
+```bash
+docker compose --env-file .env.production up -d --build
+```
+
+Emite el certificado:
+
+```bash
+docker compose --env-file .env.production run --rm certbot certonly \
+  --webroot \
+  --webroot-path /var/www/certbot \
+  --email correo@example.com \
+  --agree-tos \
+  --no-eff-email \
+  -d nexus.example.com
+```
+
+Recrea Nginx. Al existir el certificado en el volumen persistente, el contenedor activará HTTPS automáticamente:
+
+```bash
+docker compose --env-file .env.production up -d --build nginx
+```
+
+Verifica redirección y certificado:
+
+```bash
+curl -I http://nexus.example.com
+curl -I https://nexus.example.com
+```
+
+Renovar certificados manualmente:
+
+```bash
+docker compose --env-file .env.production run --rm certbot renew
+docker compose --env-file .env.production exec nginx nginx -s reload
+```
+
+Cron sugerido para renovación diaria:
+
+```cron
+0 3 * * * cd /ruta/nexus-ipn && docker compose --env-file .env.production run --rm certbot renew && docker compose --env-file .env.production exec nginx nginx -s reload
+```
+
+## 7. Entrar a la base de datos con psql
 
 ```bash
 docker compose --env-file .env.production exec postgres \
@@ -130,7 +196,7 @@ SELECT * FROM subjects LIMIT 10;
 
 La base de datos vive dentro del contenedor `postgres`, pero los datos se guardan en el volumen Docker `postgres_data`.
 
-## 7. Ver el volumen de PostgreSQL
+## 8. Ver el volumen de PostgreSQL
 
 Listar volúmenes:
 
@@ -146,7 +212,7 @@ docker volume inspect nexus-ipn_postgres_data
 
 No edites directamente los archivos internos del volumen. Para consultar o modificar datos usa `psql`, scripts o un cliente PostgreSQL.
 
-## 8. Ejecutar scripts compilados
+## 9. Ejecutar scripts compilados
 
 Los scripts deben ejecutarse dentro del contenedor `api`, porque ahí existe el código compilado en `dist` y la red interna hacia PostgreSQL.
 
@@ -165,7 +231,7 @@ docker compose --env-file .env.production run --rm \
 
 Este script carga catálogos base como planes de estudio, academias y materias. Ejecútalo antes de cargar usuarios reales, porque los usuarios dependen de academias y materias.
 
-## 9. Cargar usuarios reales o privados
+## 10. Cargar usuarios reales o privados
 
 Opción recomendada: pasar el archivo privado codificado en Base64 sin copiarlo al contenedor.
 
@@ -192,7 +258,7 @@ docker compose --env-file .env.production run --rm \
 
 No guardes archivos con usuarios reales dentro del repositorio público.
 
-## 10. Ejecutar comandos dentro de contenedores
+## 11. Ejecutar comandos dentro de contenedores
 
 Abrir una shell en el backend:
 
@@ -214,7 +280,7 @@ docker compose --env-file .env.production exec nginx sh
 
 Esto sirve para inspeccionar archivos, variables de entorno o conectividad interna.
 
-## 11. Reiniciar servicios
+## 12. Reiniciar servicios
 
 Reiniciar solo la API:
 
@@ -234,7 +300,7 @@ Reiniciar todos los servicios:
 docker compose --env-file .env.production restart
 ```
 
-## 12. Detener servicios sin borrar datos
+## 13. Detener servicios sin borrar datos
 
 ```bash
 docker compose --env-file .env.production down
@@ -242,7 +308,7 @@ docker compose --env-file .env.production down
 
 Esto detiene y elimina contenedores y red, pero conserva el volumen de PostgreSQL. Al levantar de nuevo, los datos siguen ahí.
 
-## 13. Borrar todo el entorno local
+## 14. Borrar todo el entorno local
 
 Advertencia: este comando elimina también el volumen de PostgreSQL y borra la base local.
 
@@ -252,7 +318,7 @@ docker compose --env-file .env.production down -v
 
 Úsalo solo en desarrollo local cuando quieras empezar desde cero. No lo ejecutes en producción si ya tienes datos reales.
 
-## 14. Actualizar despliegue
+## 15. Actualizar despliegue
 
 En servidor remoto, un flujo típico sería:
 
@@ -270,7 +336,7 @@ Qué hace:
 
 Antes de actualizar producción, genera un respaldo de base de datos.
 
-## 15. Respaldar base de datos
+## 16. Respaldar base de datos
 
 ```bash
 docker compose --env-file .env.production exec postgres \
@@ -288,7 +354,7 @@ docker compose --env-file .env.production exec postgres \
 
 Para este segundo ejemplo, `POSTGRES_USER` y `POSTGRES_DB` deben existir en tu shell local.
 
-## 16. Restaurar respaldo
+## 17. Restaurar respaldo
 
 En una base vacía:
 
@@ -299,7 +365,7 @@ docker compose --env-file .env.production exec -T postgres \
 
 Advertencia: restaurar sobre una base con datos existentes puede duplicar registros o fallar por llaves únicas. Para restauraciones reales, valida primero el estado de la base.
 
-## 17. Probar conectividad interna
+## 18. Probar conectividad interna
 
 Desde el contenedor `api`, puedes verificar variables y resolución DNS:
 
@@ -313,7 +379,7 @@ Comprobar que el host `postgres` se resuelve dentro de la red Docker:
 docker compose --env-file .env.production run --rm api sh -lc 'getent hosts postgres'
 ```
 
-## 18. Probar endpoints básicos
+## 19. Probar endpoints básicos
 
 Desde tu máquina:
 
@@ -326,7 +392,7 @@ Si usas `NGINX_PORT=80`, cambia `localhost:8080` por `localhost`.
 
 El primer comando valida que Nginx sirve el frontend. El segundo valida que Nginx redirige `/api` hacia el backend.
 
-## 19. Exponer PostgreSQL para cliente gráfico local
+## 20. Exponer PostgreSQL para cliente gráfico local
 
 Solo para desarrollo local, puedes exponer PostgreSQL agregando esto al servicio `postgres` en `docker-compose.yml`:
 
@@ -353,7 +419,7 @@ Password: valor de POSTGRES_PASSWORD
 
 No expongas PostgreSQL públicamente en producción. En servidor remoto usa `docker compose exec postgres psql` o un túnel SSH.
 
-## 20. Comandos que debes evitar en producción
+## 21. Comandos que debes evitar en producción
 
 Evita ejecutar scripts destructivos contra datos reales:
 
