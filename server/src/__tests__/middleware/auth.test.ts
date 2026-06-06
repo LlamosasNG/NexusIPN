@@ -36,6 +36,14 @@ describe('Middleware — authenticate', () => {
     process.env.JWT_SECRET = 'test-secret'
   })
 
+  it('debe retornar 401 si no existe el header Authorization', async () => {
+    await authenticate(req as Request, res as Response, next)
+
+    expect(res.status).toHaveBeenCalledWith(401)
+    expect(res.json).toHaveBeenCalledWith({ error: 'No autorizado' })
+    expect(next).not.toHaveBeenCalled()
+  })
+
   it('debe retornar 401 si no hay header Authorization con Bearer', async () => {
     req.headers = { authorization: 'InvalidFormat token123' }
 

@@ -17,7 +17,7 @@ export const authenticate = async (
   next: NextFunction
 ) => {
   const bearer = req.headers.authorization
-  if (!bearer.startsWith('Bearer ')) {
+  if (!bearer || !bearer.startsWith('Bearer ')) {
     const error = new Error('No autorizado')
     return res.status(401).json({ error: error.message })
   }
