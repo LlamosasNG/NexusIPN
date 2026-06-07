@@ -31,7 +31,7 @@ router.put(
   planningWriteLimiter,
   body('period')
     .matches(/^\d{4}-[12]$/)
-    .withMessage('El período debe tener el formato YYYY-S'),
+    .withMessage('El periodo debe tener el formato YYYY-S'),
   body('deadlineAt')
     .isISO8601()
     .withMessage('La fecha límite debe ser una fecha válida'),
@@ -65,7 +65,7 @@ router.get(
   readLimiter,
   param('planningId')
     .isInt()
-    .withMessage('El ID de la planeación debe ser un número válido'),
+    .withMessage('El ID de la planificación debe ser un número válido'),
   handleInputErrors,
   DepartmentHeadPlanningController.getById
 )
@@ -75,7 +75,7 @@ router.post(
   planningWriteLimiter,
   param('planningId')
     .isInt()
-    .withMessage('El ID de la planeación debe ser un número válido'),
+    .withMessage('El ID de la planificación debe ser un número válido'),
   body('section')
     .isInt({ min: 1, max: 5 })
     .withMessage('La sección debe estar entre 1 y 5'),
@@ -94,7 +94,7 @@ router.patch(
   planningWriteLimiter,
   param('planningId')
     .isInt()
-    .withMessage('El ID de la planeación debe ser un número válido'),
+    .withMessage('El ID de la planificación debe ser un número válido'),
   body('action')
     .isIn(['approve', 'reject'])
     .withMessage('La acción debe ser approve o reject'),

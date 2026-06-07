@@ -31,7 +31,7 @@ const getSubmissionDate = (status: PlanningStatus) =>
 
 const getFeedback = (status: PlanningStatus) => {
   if (status === PlanningStatus.APPROVED) {
-    return 'Planeación validada para fines de demostración.'
+    return 'Planificación validada para fines de demostración.'
   }
 
   if (status === PlanningStatus.REJECTED) {
@@ -172,7 +172,7 @@ const createPlanningChildren = async ({
           'Relaciona los contenidos con situaciones académicas contextualizadas.',
         ],
         precisions:
-          'Planeación generada automáticamente para poblar datos de demostración.',
+          'Planificación generada automáticamente para poblar datos de demostración.',
       },
       transaction,
     })
@@ -305,16 +305,16 @@ export async function seedSamplePlannings({ closeConnection = false } = {}) {
 
     await transaction.commit()
 
-    console.log(colors.green(`Planeaciones creadas: ${createdCount}`))
-    console.log(colors.yellow(`Planeaciones omitidas por duplicado: ${skippedCount}`))
-    console.log(colors.cyan(`Materias reservadas sin planeación: ${reservedCount}`))
+    console.log(colors.green(`Planificaciones creadas: ${createdCount}`))
+    console.log(colors.yellow(`Planificaciones omitidas por duplicado: ${skippedCount}`))
+    console.log(colors.cyan(`Unidades de aprendizaje reservadas sin planificación: ${reservedCount}`))
 
     if (closeConnection) {
       await db.close()
     }
   } catch (error) {
     await transaction.rollback()
-    console.error(colors.red('Error generando planeaciones de ejemplo:'), error)
+    console.error(colors.red('Error generando planificaciones de ejemplo:'), error)
 
     if (closeConnection) {
       await db.close()

@@ -21,44 +21,38 @@ const metricCards = [
     accent: 'from-[#7C2855] to-[#5a1d3f]',
   },
   {
-    key: 'teachersWithDraftPlannings',
-    title: 'Docentes con borrador',
-    icon: PencilSquareIcon,
-    accent: 'from-indigo-700 to-blue-500',
-  },
-  {
     key: 'totalPlannings',
-    title: 'Total de planeaciones creadas',
+    title: 'Total de planificaciones creadas',
     icon: ClipboardDocumentListIcon,
     accent: 'from-[#D4AF37] to-[#e8c96f]',
   },
   {
     key: 'draftPlannings',
-    title: 'Planeaciones en borrador',
+    title: 'Planificaciones en borrador',
     icon: PencilSquareIcon,
     accent: 'from-slate-700 to-slate-500',
   },
   {
     key: 'pendingPlannings',
-    title: 'Planeaciones en revisión',
+    title: 'Planificaciones en revisión',
     icon: ClockIcon,
     accent: 'from-amber-500 to-orange-400',
   },
   {
     key: 'approvedPlannings',
-    title: 'Planeaciones aprobadas',
+    title: 'Planificaciones aprobadas',
     icon: CheckBadgeIcon,
     accent: 'from-emerald-600 to-emerald-400',
   },
   {
     key: 'latePlannings',
-    title: 'Planeaciones desfasadas',
+    title: 'Planificaciones desfasadas',
     icon: ClockIcon,
     accent: 'from-rose-600 to-red-400',
   },
   {
-    key: 'approvedDigitalResources',
-    title: 'Recursos didácticos aprobados',
+    key: 'totalDigitalResources',
+    title: 'Recursos didácticos creados',
     icon: FolderOpenIcon,
     accent: 'from-cyan-600 to-sky-400',
   },
@@ -171,7 +165,7 @@ export default function DepartmentHeadDashboardView() {
                 Actividad reciente
               </h2>
               <p className="mt-1 text-sm text-gray-600">
-                Últimos movimientos registrados por docentes, planeaciones y
+                Últimos movimientos registrados por docentes, planificaciones y
                 recursos.
               </p>
             </div>
@@ -202,9 +196,9 @@ export default function DepartmentHeadDashboardView() {
                       }`}
                     >
                       {activity.type === 'planning'
-                        ? 'Planeación'
+                        ? 'Planificación'
                         : activity.type === 'resource'
-                          ? 'Recurso digital'
+                          ? 'Recurso didáctico digital'
                           : 'Docente'}
                     </span>
                     <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">

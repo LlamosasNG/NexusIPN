@@ -5,7 +5,6 @@ import { SeedUser, users as demoUsers } from '../data/users'
 const ROLES = new Set([
   'Docente',
   'Jefe de Departamento',
-  'Academia',
   'Administrador',
 ])
 
@@ -73,6 +72,10 @@ const assertSeedUser = (value: unknown, index: number): SeedUser => {
     )
   }
 
+  if (user.isActive !== undefined && typeof user.isActive !== 'boolean') {
+    throw new Error(`El usuario privado ${user.email} tiene isActive inválido`)
+  }
+
   if (
     user.subjectCodes &&
     (!Array.isArray(user.subjectCodes) ||
@@ -89,6 +92,7 @@ const assertSeedUser = (value: unknown, index: number): SeedUser => {
     role: user.role,
     confirmed: user.confirmed,
     mustChangePassword: user.mustChangePassword,
+    isActive: user.isActive,
     subjectCodes: user.subjectCodes || [],
   }
 }

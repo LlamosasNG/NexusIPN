@@ -211,7 +211,7 @@ export function IdentificationSection({
                 <div className="h-px w-40 bg-linear-to-r from-transparent via-[#D4AF37] to-transparent" />
               </div>
               <p className="text-[11px] md:text-xs text-gray-500 tracking-wide">
-                Formato de Recurso Didáctico Digital
+                Formato de recurso didáctico digital
               </p>
             </div>
 
@@ -507,7 +507,7 @@ export function IdentificationSection({
           <div>
             <h2 className="text-lg font-bold text-gray-900">Título del RDD</h2>
             <p className="text-xs text-gray-500 mt-0.5">
-              Nombre descriptivo del Recurso Didáctico Digital
+              Nombre descriptivo del recurso didáctico digital
             </p>
           </div>
         </div>
@@ -544,7 +544,7 @@ export function IdentificationSection({
           <div>
             <h2 className="text-lg font-bold text-gray-900">Unidades Temáticas</h2>
             <p className="text-xs text-gray-500 mt-0.5">
-              Temas que abordará el Recurso Didáctico Digital
+              Temas que abordará el recurso didáctico digital
             </p>
           </div>
         </div>

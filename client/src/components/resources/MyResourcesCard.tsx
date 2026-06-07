@@ -98,7 +98,7 @@ export function MyResourcesCard() {
               </h4>
               <div className="mt-1 flex flex-wrap items-center gap-3">
                 <span className="text-sm text-gray-500">
-                  {resource.subject?.name || 'Materia no disponible'}
+                  {resource.subject?.name || 'Unidad de aprendizaje no disponible'}
                 </span>
                 <span className="text-sm text-gray-500">
                   {resource.subject?.code || 'N/D'}

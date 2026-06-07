@@ -42,7 +42,7 @@ describe('ReferenceController', () => {
   // ─── create ──────────────────────────────────────────────────
 
   describe('create', () => {
-    it('debe retornar 404 si la planeación no existe', async () => {
+    it('debe retornar 404 si la planificación no existe', async () => {
       req.params = { planningId: '999' }
       mockPlanning.findOne.mockResolvedValue(null)
 
@@ -73,7 +73,7 @@ describe('ReferenceController', () => {
   // ─── getAll ──────────────────────────────────────────────────
 
   describe('getAll', () => {
-    it('debe retornar todas las referencias de una planeación', async () => {
+    it('debe retornar todas las referencias de una planificación', async () => {
       req.params = { planningId: '10' }
       const fakeRefs = [{ id: 1 }, { id: 2 }]
       mockReference.findAll.mockResolvedValue(fakeRefs as any)

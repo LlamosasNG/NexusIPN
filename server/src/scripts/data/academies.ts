@@ -2,7 +2,7 @@ export const academies = [
   {
     name: 'Morfología',
     description:
-      'Academia que imparte materias fundamentales como anatomía, fisiología, bioquímica y farmacología.',
+      'Academia que imparte unidades de aprendizaje fundamentales como anatomía, fisiología, bioquímica y farmacología.',
   },
   {
     name: 'Terapeútica Homeopática',
@@ -12,16 +12,16 @@ export const academies = [
   {
     name: 'Ambiente y Salud Pública',
     description:
-      'Academia que imparte materias fundamentales como anatomía, fisiología, bioquímica y farmacología.',
+      'Academia que imparte unidades de aprendizaje fundamentales como anatomía, fisiología, bioquímica y farmacología.',
   },
   {
     name: 'Fisiológicas',
     description:
-      'Academia que imparte materias fundamentales como anatomía, fisiología, bioquímica y farmacología.',
+      'Academia que imparte unidades de aprendizaje fundamentales como anatomía, fisiología, bioquímica y farmacología.',
   },
   {
     name: 'Clínicas',
     description:
-      'Academia que imparte materias fundamentales como anatomía, fisiología, bioquímica y farmacología.',
+      'Academia que imparte unidades de aprendizaje fundamentales como anatomía, fisiología, bioquímica y farmacología.',
   },
 ]

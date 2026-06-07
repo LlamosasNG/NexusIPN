@@ -55,9 +55,16 @@ class User extends Model {
   @AllowNull(false)
   @Default('Docente')
   @Column({
-    type: DataType.ENUM('Docente', 'Jefe de Departamento', 'Academia', 'Administrador'),
+    type: DataType.ENUM('Docente', 'Jefe de Departamento', 'Administrador'),
   })
-  declare role: 'Docente' | 'Jefe de Departamento' | 'Academia' | 'Administrador'
+  declare role: 'Docente' | 'Jefe de Departamento' | 'Administrador'
+
+  @AllowNull(false)
+  @Default(true)
+  @Column({
+    type: DataType.BOOLEAN,
+  })
+  declare isActive: boolean
 
   @Column({
     type: DataType.STRING(6),

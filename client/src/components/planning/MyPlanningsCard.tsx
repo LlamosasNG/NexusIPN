@@ -26,7 +26,7 @@ const statusColors: Record<string, string> = {
 
 const getPlanningActionLabel = (status: string) =>
   status === 'Enviada' || status === 'Aprobada' || status === 'Aceptada'
-    ? 'Ver planeación'
+    ? 'Ver planificación'
     : 'Continuar'
 
 export function MyPlanningsCard() {
@@ -41,10 +41,10 @@ export function MyPlanningsCard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <DocumentTextIcon className="w-6 h-6 text-[#7C2855]" />
-            Mis Planeaciones
+            Mis planificaciones
           </CardTitle>
           <CardDescription>
-            Planeaciones didácticas que has creado
+            Planificaciones didácticas que has creado
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -60,9 +60,9 @@ export function MyPlanningsCard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <DocumentTextIcon className="w-6 h-6 text-[#7C2855]" />
-            Mis Planeaciones
+            Mis planificaciones
           </CardTitle>
-          <CardDescription>No tienes planeaciones creadas</CardDescription>
+          <CardDescription>No tienes planificaciones creadas</CardDescription>
         </CardHeader>
         <CardContent>
           <Link
@@ -70,7 +70,7 @@ export function MyPlanningsCard() {
             className="inline-flex items-center gap-2 px-4 py-2 bg-[#7C2855] text-white font-medium rounded-lg hover:bg-[#5a1d3f] transition-colors"
           >
             <PlusIcon className="w-5 h-5" />
-            Crear mi primera planeación
+            Crear mi primera planificación
           </Link>
         </CardContent>
       </Card>
@@ -82,10 +82,10 @@ export function MyPlanningsCard() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <DocumentTextIcon className="w-6 h-6 text-[#7C2855]" />
-          Mis Planeaciones ({plannings.length})
+          Mis planificaciones ({plannings.length})
         </CardTitle>
         <CardDescription>
-          Continúa editando tus planeaciones didácticas
+          Continúa editando tus planificaciones didácticas
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">

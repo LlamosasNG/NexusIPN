@@ -1,7 +1,6 @@
 import {
   authLimiter,
   confirmAccountLimiter,
-  createAccountLimiter,
   forgotPasswordLimiter,
   loginLimiter,
 } from '@/config/limiter'
@@ -12,22 +11,6 @@ import { Router } from 'express'
 import { body, param } from 'express-validator'
 
 const router: Router = Router()
-
-router.post(
-  '/create-account',
-  createAccountLimiter,
-  body('name').notEmpty().withMessage('El nombre es obligatorio'),
-  body('password')
-    .isLength({ min: 8 })
-    .withMessage('La contraseña debe tener al menos 8 caracteres'),
-  body('email').isEmail().withMessage('Correo electrónico inválido'),
-  body('academyId')
-    .optional()
-    .isInt()
-    .withMessage('El ID de la academia debe ser un número válido'),
-  handleInputErrors,
-  AuthController.createAccount
-)
 
 router.post(
   '/confirm-account',

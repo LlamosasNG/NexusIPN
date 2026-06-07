@@ -44,7 +44,7 @@ function PlanningDeadlineCard() {
               {formatDeadline(deadlineAt)}
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              Periodo {data?.period || 'actual'}. Las planeaciones enviadas después
+              Periodo {data?.period || 'actual'}. Las planificaciones enviadas después
               de esta fecha se marcarán como desfasadas.
             </p>
           </div>
@@ -80,10 +80,10 @@ export default function HomeTeacherView() {
                 ¡Bienvenido, {data.name}!
               </h1>
               <p className="text-lg sm:text-xl text-[#e8c96f] mb-2">
-                Sistema de Gestión de Planificaciones Didácticas
+                Sistema de gestión de planificaciones didácticas
               </p>
               <p className="text-base sm:text-lg text-white/90 max-w-2xl mx-auto">
-                Gestiona tus planificaciones didácticas y recursos digitales de
+                Gestiona tus planificaciones didácticas y recursos didácticos digitales de
                 manera eficiente y organizada
               </p>
             </div>
@@ -102,7 +102,7 @@ export default function HomeTeacherView() {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {/* Botón: Crear Planificación */}
+          {/* Botón: Crear planificación */}
           <Link
             to="/select-subject?type=plannings"
             className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-transparent hover:border-[#7C2855]"
@@ -115,7 +115,7 @@ export default function HomeTeacherView() {
 
               {/* Título */}
               <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">
-                Crear Planificación Didáctica
+                Crear planificación didáctica
               </h3>
 
               {/* Descripción */}
@@ -135,7 +135,7 @@ export default function HomeTeacherView() {
             <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-[#D4AF37]/10 to-transparent rounded-bl-full" />
           </Link>
 
-          {/* Botón: Crear Recurso Digital */}
+          {/* Botón: Crear recurso didáctico digital */}
           <Link
             to="/select-subject?type=resources"
             className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-transparent hover:border-[#D4AF37]"
@@ -148,7 +148,7 @@ export default function HomeTeacherView() {
 
               {/* Título */}
               <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">
-                Crear Recurso Didáctico Digital
+                Crear recurso didáctico digital
               </h3>
 
               {/* Descripción */}
@@ -170,7 +170,7 @@ export default function HomeTeacherView() {
         </div>
       </div>
 
-      {/* Mis Planeaciones */}
+      {/* Mis planificaciones */}
       <div className="mb-12">
         <MyPlanningsCard />
       </div>
@@ -190,7 +190,7 @@ export default function HomeTeacherView() {
             to="/my-plannings"
             className="px-6 py-3 bg-white hover:bg-gray-50 text-gray-700 hover:text-[#7C2855] font-medium rounded-lg border border-gray-300 hover:border-[#7C2855] transition-all duration-200"
           >
-            Ver Mis Planificaciones
+            Ver mis planificaciones
           </Link>
           <Link
             to="/my-resources"

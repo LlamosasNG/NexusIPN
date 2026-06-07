@@ -98,7 +98,7 @@ export function PlanningSection5({
           className="rounded-none bg-[#7C2855] px-6 py-6 font-semibold text-white shadow-lg transition-all duration-300 hover:bg-[#682147] disabled:cursor-not-allowed disabled:opacity-60"
         >
           <SendHorizontal className="mr-2 h-5 w-5" />
-          Enviar planeación
+          Enviar planificación
         </Button>
       </div>
 
@@ -109,7 +109,7 @@ export function PlanningSection5({
               Confirmar envío
             </DialogTitle>
             <DialogDescription className="mt-2 text-sm text-gray-600">
-              La planeación dejará de estar en borrador y su estado cambiará a{' '}
+              La planificación dejará de estar en borrador y su estado cambiará a{' '}
               <strong>Enviada</strong>.
             </DialogDescription>
           </DialogHeader>

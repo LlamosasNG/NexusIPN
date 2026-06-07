@@ -38,7 +38,7 @@ describe('Middleware — subject', () => {
   })
 
   describe('subjectExists', () => {
-    it('debe llamar a next() si la materia existe', async () => {
+    it('debe llamar a next() si la unidad de aprendizaje existe', async () => {
       const fakeSubject = { id: 5, name: 'Matemáticas' }
       mockSubject.findByPk.mockResolvedValue(fakeSubject as any)
 
@@ -49,13 +49,13 @@ describe('Middleware — subject', () => {
       expect(next).toHaveBeenCalled()
     })
 
-    it('debe retornar 404 si la materia no existe', async () => {
+    it('debe retornar 404 si la unidad de aprendizaje no existe', async () => {
       mockSubject.findByPk.mockResolvedValue(null)
 
       await subjectExists(req as Request, res as Response, next, '999', 'subjectId')
 
       expect(res.status).toHaveBeenCalledWith(404)
-      expect(res.json).toHaveBeenCalledWith({ error: 'Materia no encontrada' })
+      expect(res.json).toHaveBeenCalledWith({ error: 'Unidad de aprendizaje no encontrada' })
       expect(next).not.toHaveBeenCalled()
     })
 
@@ -70,7 +70,7 @@ describe('Middleware — subject', () => {
   })
 
   describe('hasAccess', () => {
-    it('debe llamar a next() si el usuario tiene acceso a la materia', async () => {
+    it('debe llamar a next() si el usuario tiene acceso a la unidad de aprendizaje', async () => {
       const fakeUserSubject = { userId: 1, subjectId: 5, period: '2026-1' }
       mockUserSubject.findOne.mockResolvedValue(fakeUserSubject as any)
 
@@ -90,7 +90,7 @@ describe('Middleware — subject', () => {
 
       expect(res.status).toHaveBeenCalledWith(403)
       expect(res.json).toHaveBeenCalledWith({
-        error: 'No tienes acceso a esta materia',
+        error: 'No tienes acceso a esta unidad de aprendizaje',
       })
       expect(next).not.toHaveBeenCalled()
     })

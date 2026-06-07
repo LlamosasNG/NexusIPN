@@ -13,10 +13,6 @@ export const AuthSchema = z.object({
 type Auth = z.infer<typeof AuthSchema>
 
 export type LoginFormValues = Pick<Auth, 'email' | 'password'>
-export type RegisterFormValues = Pick<
-  Auth,
-  'name' | 'email' | 'password' | 'password_confirmation'
->
 export type ConfirmToken = Pick<Auth, 'token'>
 export type RequestNewCodeForm = Pick<Auth, 'email'>
 export type ForgotPasswordForm = Pick<Auth, 'email'>
@@ -33,9 +29,9 @@ export const UserSchema = AuthSchema.pick({ name: true, email: true }).extend({
   role: z.enum([
     'Docente',
     'Jefe de Departamento',
-    'Academia',
     'Administrador',
   ]),
+  isActive: z.boolean(),
   mustChangePassword: z.boolean().default(false),
   academy: AcademySchema.nullable(),
   subjects: z.array(SubjectRelationSchema).default([]),

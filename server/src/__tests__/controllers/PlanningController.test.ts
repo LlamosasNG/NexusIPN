@@ -78,7 +78,7 @@ describe('PlanningController', () => {
   // ─── create ──────────────────────────────────────────────────
 
   describe('create', () => {
-    it('debe retornar 400 si ya existe una planeación para esa materia', async () => {
+    it('debe retornar 400 si ya existe una planificación para esa unidad de aprendizaje', async () => {
       req.params = { subjectId: '5' }
       mockPlanning.findOne.mockResolvedValue({ id: 10 } as any)
 
@@ -86,11 +86,11 @@ describe('PlanningController', () => {
 
       expect(res.status).toHaveBeenCalledWith(400)
       expect(res.json).toHaveBeenCalledWith({
-        error: 'Ya tienes una planeación para esta materia y período',
+        error: 'Ya tienes una planificación para esta unidad de aprendizaje y periodo',
       })
     })
 
-    it('debe retornar 404 si la materia no existe', async () => {
+    it('debe retornar 404 si la unidad de aprendizaje no existe', async () => {
       req.params = { subjectId: '999' }
       mockPlanning.findOne.mockResolvedValue(null)
       mockSubject.findByPk.mockResolvedValue(null)
@@ -98,15 +98,15 @@ describe('PlanningController', () => {
       await PlanningController.create(req as Request, res as Response)
 
       expect(res.status).toHaveBeenCalledWith(404)
-      expect(res.json).toHaveBeenCalledWith({ error: 'Materia no encontrada' })
+      expect(res.json).toHaveBeenCalledWith({ error: 'Unidad de aprendizaje no encontrada' })
     })
 
-    it('debe crear la planeación exitosamente', async () => {
+    it('debe crear la planificación exitosamente', async () => {
       req.params = { subjectId: '5' }
       mockPlanning.findOne.mockResolvedValue(null)
       const fakeSubject = {
         id: 5,
-        name: 'Materia X',
+        name: 'Unidad de aprendizaje X',
         academicUnit: 'ENMH',
         semester: '5',
         areaFormation: 'Profesional',
@@ -141,7 +141,7 @@ describe('PlanningController', () => {
       )
       expect(res.status).toHaveBeenCalledWith(201)
       expect(res.json).toHaveBeenCalledWith({
-        message: 'Planeación creada correctamente',
+        message: 'Planificación creada correctamente',
         data: {
           id: 10,
           status: 'Borrador',
@@ -153,7 +153,7 @@ describe('PlanningController', () => {
   // ─── getAll ──────────────────────────────────────────────────
 
   describe('getAll', () => {
-    it('debe retornar todas las planeaciones del usuario', async () => {
+    it('debe retornar todas las planificaciones del usuario', async () => {
       const fakePlannings = [
         { id: 1, status: 'Borrador' },
         { id: 2, status: 'Enviada' },
@@ -180,7 +180,7 @@ describe('PlanningController', () => {
   // ─── getById ─────────────────────────────────────────────────
 
   describe('getById', () => {
-    it('debe retornar la planeación si existe', async () => {
+    it('debe retornar la planificación si existe', async () => {
       req.params = { planningId: '10' }
       const fakePlanning = { id: 10, status: 'Borrador' }
       mockPlanning.findOne.mockResolvedValue(fakePlanning as any)
@@ -195,7 +195,7 @@ describe('PlanningController', () => {
       expect(res.json).toHaveBeenCalledWith(fakePlanning)
     })
 
-    it('debe retornar 404 si la planeación no existe', async () => {
+    it('debe retornar 404 si la planificación no existe', async () => {
       req.params = { planningId: '999' }
       mockPlanning.findOne.mockResolvedValue(null)
 
@@ -203,7 +203,7 @@ describe('PlanningController', () => {
 
       expect(res.status).toHaveBeenCalledWith(404)
       expect(res.json).toHaveBeenCalledWith({
-        error: 'Planeación no encontrada',
+        error: 'Planificación no encontrada',
       })
     })
   })
@@ -211,7 +211,7 @@ describe('PlanningController', () => {
   // ─── submit ─────────────────────────────────────────────────
 
   describe('submit', () => {
-    it('debe permitir reenviar una planeación rechazada', async () => {
+    it('debe permitir reenviar una planificación rechazada', async () => {
       req.params = { planningId: '10' }
       const save = jest.fn().mockResolvedValue(undefined)
       const fakePlanning: any = {

@@ -82,7 +82,7 @@ export async function seedSubjects() {
       }
       console.log(colors.green(`${totalSubjects} subjects seeded successfully`))
 
-      // Relacionar materias con planes de estudio
+      // Relacionar unidades de aprendizaje con planes de estudio
       const allSubjects = await Subject.findAll()
       const subjectMap = new Map(allSubjects.map((s) => [s.code, s.id]))
 

@@ -52,7 +52,7 @@ describe('ThematicUnitController', () => {
   // ─── CRUD Unidades Temáticas ─────────────────────────────────
 
   describe('create', () => {
-    it('debe retornar 404 si la planeación no existe', async () => {
+    it('debe retornar 404 si la planificación no existe', async () => {
       req.params = { planningId: '999' }
       mockPlanning.findOne.mockResolvedValue(null)
 
@@ -77,7 +77,7 @@ describe('ThematicUnitController', () => {
   })
 
   describe('getAll', () => {
-    it('debe retornar todas las unidades temáticas de una planeación', async () => {
+    it('debe retornar todas las unidades temáticas de una planificación', async () => {
       req.params = { planningId: '10' }
       const fakeUnits = [{ id: 1, unitNumber: 1 }]
       mockThematicUnit.findAll.mockResolvedValue(fakeUnits as any)

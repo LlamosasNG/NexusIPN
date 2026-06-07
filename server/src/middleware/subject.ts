@@ -20,7 +20,7 @@ export const subjectExists: RequestParamHandler = async (
   try {
     const subject = await Subject.findByPk(subjectId)
     if (!subject) {
-      return res.status(404).json({ error: 'Materia no encontrada' })
+      return res.status(404).json({ error: 'Unidad de aprendizaje no encontrada' })
     }
     req.subject = subject
     next()
@@ -40,7 +40,7 @@ export const hasAccess: RequestParamHandler = async (
     where: { userId: req.user.id, subjectId },
   })
   if (!userSubject) {
-    return res.status(403).json({ error: 'No tienes acceso a esta materia' })
+    return res.status(403).json({ error: 'No tienes acceso a esta unidad de aprendizaje' })
   }
   req.userSubject = userSubject
   next()

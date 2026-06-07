@@ -15,7 +15,7 @@ export class ReferenceController {
       if (!planning) {
         return res
           .status(404)
-          .json({ error: 'Planeación no encontrada' })
+          .json({ error: 'Planificación no encontrada' })
       }
 
       const reference = await Reference.create({
@@ -81,7 +81,7 @@ export class ReferenceController {
 
       if (!planning) {
         await transaction.rollback()
-        return res.status(404).json({ error: 'Planeación no encontrada' })
+        return res.status(404).json({ error: 'Planificación no encontrada' })
       }
 
       const existingReferences = await Reference.findAll({

@@ -22,7 +22,7 @@ export class SubjectController {
       })
       res.json(subjects)
     } catch (error) {
-      res.status(500).json({ error: 'Error al obtener las materias' })
+      res.status(500).json({ error: 'Error al obtener las unidades de aprendizaje' })
     }
   }
 
@@ -31,13 +31,13 @@ export class SubjectController {
       const { subjectIds, period } = req.body
       const userId = req.user.id
 
-      // Validar que no se excedan 5 materias
+      // Validar que no se excedan 5 unidades de aprendizaje
       if (subjectIds.length > 5) {
-        const error = new Error('No puedes asignar más de 5 materias')
+        const error = new Error('No puedes asignar más de 5 unidades de aprendizaje')
         return res.status(400).json({ error: error.message })
       }
 
-      // Verificar que todas las materias existan
+      // Verificar que todas las unidades de aprendizaje existan
       const subjects = await Subject.findAll({
         where: {
           id: subjectIds,
@@ -45,7 +45,7 @@ export class SubjectController {
       })
 
       if (subjects.length !== subjectIds.length) {
-        const error = new Error('Una o más materias no existen')
+        const error = new Error('Una o más unidades de aprendizaje no existen')
         return res.status(404).json({ error: error.message })
       }
 
@@ -65,9 +65,9 @@ export class SubjectController {
 
       await UserSubject.bulkCreate(assignments)
 
-      res.json({ message: 'Materias asignadas exitosamente' })
+      res.json({ message: 'Unidades de aprendizaje asignadas exitosamente' })
     } catch (error) {
-      res.status(500).json({ error: 'Error al asignar las materias' })
+      res.status(500).json({ error: 'Error al asignar las unidades de aprendizaje' })
     }
   }
 
@@ -83,12 +83,12 @@ export class SubjectController {
         },
       })
       if (deleted === 0) {
-        const error = new Error('No tienes asignada esta materia')
+        const error = new Error('No tienes asignada esta unidad de aprendizaje')
         return res.status(404).json({ error: error.message })
       }
-      res.json({ message: 'Materia removida exitosamente' })
+      res.json({ message: 'Unidad de aprendizaje eliminada exitosamente' })
     } catch (error) {
-      res.status(500).json({ error: 'Error al remover la materia' })
+      res.status(500).json({ error: 'Error al eliminar la unidad de aprendizaje' })
     }
   }
 
@@ -119,7 +119,7 @@ export class SubjectController {
       })
       res.json(user?.subjects || [])
     } catch (error) {
-      res.status(500).json({ error: 'Error al obtener tus materias' })
+      res.status(500).json({ error: 'Error al obtener tus unidades de aprendizaje' })
     }
   }
 

@@ -16,7 +16,7 @@ export default function PlanningFooter({
         </div>
         <div className="bg-gray-500 w-16 h-9"></div>
         <div className="bg-[#7C2855] text-white px-6 py-2 text-sm font-semibold flex-1 text-right">
-          PLANEACIÓN DIDÁCTICA
+          PLANIFICACIÓN DIDÁCTICA
         </div>
       </div>
 

@@ -111,8 +111,8 @@ export default function DashboardView() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-16">
         {[
           { label: 'Planificaciones', icon: ClipboardDocumentListIcon, desc: 'Crea y gestiona' },
-          { label: 'Recursos Digitales', icon: FolderOpenIcon, desc: 'Organiza y comparte' },
-          { label: 'Materias Activas', icon: BookOpenIcon, desc: 'Consulta y administra' },
+          { label: 'Recursos didácticos digitales', icon: FolderOpenIcon, desc: 'Organiza y comparte' },
+          { label: 'Unidades de aprendizaje activas', icon: BookOpenIcon, desc: 'Consulta y administra' },
         ].map((stat) => (
           <div
             key={stat.label}
@@ -158,7 +158,7 @@ export default function DashboardView() {
                 </span>{' '}
                 y{' '}
                 <span className="font-semibold text-[#e8c96f]">
-                  recursos digitales
+                  recursos didácticos digitales
                 </span>
                 , permitiendo crear, organizar y compartir contenido educativo de
                 manera eficiente, optimizando el tiempo y esfuerzo del docente.
@@ -194,13 +194,13 @@ export default function DashboardView() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Característica 1: Planificaciones Didácticas */}
+          {/* Característica 1: Planificaciones didácticas */}
           <div className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-t-4 border-[#7C2855]">
             <div className="flex items-center justify-center w-14 h-14 bg-linear-to-br from-[#7C2855] to-[#5a1d3f] rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
               <ClipboardDocumentListIcon className="w-8 h-8 text-white" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-3">
-              Planificaciones Didácticas
+              Planificaciones didácticas
             </h3>
             <p className="text-gray-600 leading-relaxed">
               Crea, edita y organiza tus planificaciones didácticas de manera
@@ -209,7 +209,7 @@ export default function DashboardView() {
             </p>
           </div>
 
-          {/* Característica 2: Recursos Digitales */}
+          {/* Característica 2: Recursos didácticos digitales */}
           <div className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-t-4 border-[#D4AF37]">
             <div className="flex items-center justify-center w-14 h-14 bg-linear-to-br from-[#D4AF37] to-[#e8c96f] rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
               <FolderOpenIcon className="w-8 h-8 text-[#7C2855]" />
@@ -219,7 +219,7 @@ export default function DashboardView() {
             </h3>
             <p className="text-gray-600 leading-relaxed">
               Almacena y comparte documentos, presentaciones, videos y
-              materiales educativos. Organiza tus recursos por materia y tema
+              materiales educativos. Organiza tus recursos por unidad de aprendizaje y tema
               para fácil acceso.
             </p>
           </div>

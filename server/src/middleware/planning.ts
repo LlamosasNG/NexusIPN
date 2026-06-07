@@ -17,7 +17,7 @@ export const ensureEditablePlanning = async (
     if (!Number.isInteger(planningId) || planningId < 1) {
       return res
         .status(400)
-        .json({ error: 'El ID de la planeación debe ser un número válido' })
+        .json({ error: 'El ID de la planificación debe ser un número válido' })
     }
 
     const planning = await Planning.findOne({
@@ -26,19 +26,19 @@ export const ensureEditablePlanning = async (
     })
 
     if (!planning) {
-      return res.status(404).json({ error: 'Planeación no encontrada' })
+      return res.status(404).json({ error: 'Planificación no encontrada' })
     }
 
     if (LOCKED_PLANNING_STATUSES.includes(planning.status)) {
       return res.status(409).json({
         error:
-          'No puedes modificar una planeación enviada o aprobada',
+          'No puedes modificar una planificación enviada o aprobada',
       })
     }
 
     next()
   } catch (error) {
     console.log(error)
-    res.status(500).json({ error: 'Error al validar la planeación' })
+    res.status(500).json({ error: 'Error al validar la planificación' })
   }
 }

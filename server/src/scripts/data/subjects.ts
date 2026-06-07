@@ -358,7 +358,7 @@ export const subjectsByAcademy = [
           total2: 54,
         },
         generalObjective:
-          'Elabora documentos multimedia médicos a partir de recursos digitales, herramientas informáticas, ofimática software especializado e internet.',
+          'Elabora documentos multimedia médicos a partir de recursos didácticos digitales, herramientas informáticas, ofimática software especializado e internet.',
         unit1: 'Antecedentes de la Informática',
         competencyUnit1:
           'Identifica la informática médica y la computación con base en sus antecedentes, sistemas operativos, utilería y herramientas.',

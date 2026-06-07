@@ -120,7 +120,7 @@ export class DigitalDidacticResourceController {
       res.json(resources.map(serializeResource))
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Error al obtener los recursos digitales' })
+      res.status(500).json({ error: 'Error al obtener los recursos didácticos digitales' })
     }
   }
 
@@ -274,7 +274,7 @@ export class DigitalDidacticResourceController {
       })
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Error al publicar el recurso digital' })
+      res.status(500).json({ error: 'Error al publicar el recurso didáctico digital' })
     }
   }
 
@@ -323,7 +323,7 @@ export class DigitalDidacticResourceController {
       })
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Error al despublicar el recurso digital' })
+      res.status(500).json({ error: 'Error al despublicar el recurso didáctico digital' })
     }
   }
 
@@ -388,10 +388,10 @@ export class DigitalDidacticResourceController {
 
       await resource.destroy()
 
-      res.json({ message: 'Recurso digital eliminado correctamente' })
+      res.json({ message: 'Recurso didáctico digital eliminado correctamente' })
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Error al eliminar el recurso digital' })
+      res.status(500).json({ error: 'Error al eliminar el recurso didáctico digital' })
     }
   }
 }

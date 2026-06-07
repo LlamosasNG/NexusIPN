@@ -99,8 +99,6 @@ export class DepartmentHeadDashboardController {
               ).toFixed(1)
             )
 
-      const approvedDigitalResources = digitalResources.filter(isResourceComplete)
-
       const recentActivity = [
         ...teachers.map((teacher) => {
           const draftPlanning = latestDraftPlanningByTeacherId.get(teacher.id)
@@ -110,11 +108,11 @@ export class DepartmentHeadDashboardController {
             type: 'teacher' as const,
             title: teacher.name,
             subjectName: draftPlanning
-              ? draftPlanning.subject?.name || 'Materia no disponible'
+              ? draftPlanning.subject?.name || 'Unidad de aprendizaje no disponible'
               : 'Actividad docente en el sistema',
             teacherName: teacher.email,
             status: draftPlanning
-              ? 'Planeación en borrador'
+              ? 'Planificación en borrador'
               : participatingTeacherIds.has(teacher.id)
                 ? 'Con actividad académica'
                 : 'Registrado sin actividad',
@@ -124,8 +122,8 @@ export class DepartmentHeadDashboardController {
         ...plannings.map((planning) => ({
           id: `planning-${planning.id}`,
           type: 'planning' as const,
-          title: planning.subject?.name || `Planeación ${planning.id}`,
-          subjectName: planning.subject?.name || 'Materia no disponible',
+          title: planning.subject?.name || `Planificación ${planning.id}`,
+          subjectName: planning.subject?.name || 'Unidad de aprendizaje no disponible',
           teacherName: planning.user?.name || 'Docente no disponible',
           status: isLatePlanning(planning)
             ? `${planning.status} · Desfasada`
@@ -138,8 +136,8 @@ export class DepartmentHeadDashboardController {
           title:
             resource.identification?.title ||
             resource.subject?.name ||
-            `Recurso digital ${resource.id}`,
-          subjectName: resource.subject?.name || 'Materia no disponible',
+            `Recurso didáctico digital ${resource.id}`,
+          subjectName: resource.subject?.name || 'Unidad de aprendizaje no disponible',
           teacherName: resource.user?.name || 'Docente no disponible',
           status: isResourceComplete(resource) ? 'Completado' : 'En proceso',
           updatedAt: resource.updatedAt,
@@ -161,7 +159,6 @@ export class DepartmentHeadDashboardController {
         metrics: {
           totalTeachers: teachers.length,
           activeTeachers: activeTeacherCount,
-          teachersWithDraftPlannings: latestDraftPlanningByTeacherId.size,
           totalPlannings: plannings.length,
           draftPlannings: draftPlannings.length,
           pendingPlannings: plannings.filter(
@@ -171,7 +168,7 @@ export class DepartmentHeadDashboardController {
             (planning) => planning.status === PlanningStatus.APPROVED
           ).length,
           latePlannings: plannings.filter(isLatePlanning).length,
-          approvedDigitalResources: approvedDigitalResources.length,
+          totalDigitalResources: digitalResources.length,
           teacherParticipation,
           recentActivityCount: recentActivity.length,
         },

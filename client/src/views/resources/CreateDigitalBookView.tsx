@@ -616,7 +616,7 @@ export default function CreateDigitalBookView() {
       <div className="max-w-2xl mx-auto text-center py-16">
         <AcademicCapIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          Materia no encontrada
+          Unidad de aprendizaje no encontrada
         </h2>
         <p className="text-gray-600 mb-6">
           No se encontró información suficiente para construir el recurso didáctico digital.
@@ -626,7 +626,7 @@ export default function CreateDigitalBookView() {
           className="inline-flex items-center gap-2 px-6 py-3 bg-[#7C2855] text-white font-medium rounded-lg hover:bg-[#5a1d3f] transition-colors"
         >
           <ArrowLeftIcon className="w-5 h-5" />
-          Volver a seleccionar materia
+          Volver a seleccionar unidad de aprendizaje
         </Link>
       </div>
     )

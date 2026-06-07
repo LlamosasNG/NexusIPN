@@ -29,3 +29,15 @@ export async function getSubjectById(subjectId: number) {
     }
   }
 }
+
+export async function getSubjectsByAcademy(academyId: number) {
+  try {
+    const { data } = await api(`/subjects/academy/${academyId}`)
+    return SubjectSchema.array().parse(data)
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.error)
+    }
+    throw error
+  }
+}

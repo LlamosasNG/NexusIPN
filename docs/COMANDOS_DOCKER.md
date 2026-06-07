@@ -177,22 +177,49 @@ Cron sugerido para renovación diaria:
 
 ## 7. Entrar a la base de datos con psql
 
+Abre una sesión interactiva usando `POSTGRES_USER` y `POSTGRES_DB` definidos en `.env.production`:
+
 ```bash
 docker compose --env-file .env.production exec postgres \
-  psql -U nexus_app -d nexus_ipn
+  sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
 ```
 
-Si cambiaste `POSTGRES_USER` o `POSTGRES_DB`, usa esos valores.
+Ejecutar una consulta sin abrir una sesión interactiva:
+
+```bash
+docker compose --env-file .env.production exec postgres \
+  sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "\dt"'
+```
+
+Ejecutar un archivo SQL ubicado en la máquina anfitriona:
+
+```bash
+docker compose --env-file .env.production exec -T postgres \
+  sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"' \
+  < /ruta/al/archivo.sql
+```
+
+Abrir una shell dentro del contenedor de PostgreSQL:
+
+```bash
+docker compose --env-file .env.production exec postgres sh
+```
 
 Comandos útiles dentro de `psql`:
 
 ```sql
+\l
+\c nexus_ipn
+\dn
 \dt
+\d users
 SELECT * FROM users LIMIT 10;
 SELECT * FROM academies;
 SELECT * FROM subjects LIMIT 10;
 \q
 ```
+
+El comando `\c nexus_ipn` usa el nombre predeterminado. Si modificaste `POSTGRES_DB`, reemplázalo por el valor configurado.
 
 La base de datos vive dentro del contenedor `postgres`, pero los datos se guardan en el volumen Docker `postgres_data`.
 
@@ -222,6 +249,15 @@ Listar scripts disponibles:
 docker compose --env-file .env.production run --rm api ls dist/scripts
 ```
 
+Aplicar la migración para la gestión jerárquica de usuarios:
+
+```bash
+docker compose --env-file .env.production run --rm \
+  api node dist/scripts/migrateUserManagement.js
+```
+
+Esta migración agrega el estado activo de las cuentas, elimina el rol obsoleto `Academia` del enum y garantiza una sola jefatura activa por academia. Debe ejecutarse después de construir la nueva imagen y antes de habilitar el acceso a la API actualizada. La migración se cancela si aún existen usuarios con el rol `Academia`; corrige esos registros antes de volver a ejecutarla.
+
 Sembrar catálogos:
 
 ```bash
@@ -229,7 +265,7 @@ docker compose --env-file .env.production run --rm \
   api node dist/scripts/seedCatalog.js
 ```
 
-Este script carga catálogos base como planes de estudio, academias y materias. Ejecútalo antes de cargar usuarios reales, porque los usuarios dependen de academias y materias.
+Este script carga catálogos base como planes de estudio, academias y unidades de aprendizaje. Ejecútalo antes de cargar usuarios reales, porque los usuarios dependen de academias y unidades de aprendizaje.
 
 ## 10. Cargar usuarios reales o privados
 
@@ -247,7 +283,7 @@ Qué hace:
 - Crea o actualiza usuarios por correo.
 - Hashea contraseñas antes de guardar.
 - Marca las contraseñas como temporales para forzar el cambio inicial.
-- Asigna materias configuradas en `subjectCodes`.
+- Asigna unidades de aprendizaje configuradas en `subjectCodes`.
 
 Si ya configuraste `SEED_USERS_JSON_BASE64` o `SEED_USERS_JSON` dentro de `.env.production`, puedes ejecutar:
 
@@ -280,7 +316,42 @@ docker compose --env-file .env.production exec nginx sh
 
 Esto sirve para inspeccionar archivos, variables de entorno o conectividad interna.
 
-## 12. Reiniciar servicios
+## 12. Ver y eliminar las imágenes de Nexus IPN
+
+Ver las imágenes asociadas a los contenedores creados por Docker Compose:
+
+```bash
+docker compose --env-file .env.production images
+```
+
+Ver únicamente las imágenes construidas para Nexus IPN:
+
+```bash
+docker image ls --filter 'reference=nexus-ipn-*'
+```
+
+La configuración predeterminada construye estas imágenes:
+
+- `nexus-ipn-api`
+- `nexus-ipn-nginx`
+
+Detén y elimina los contenedores, las redes y solo las imágenes construidas localmente para el proyecto:
+
+```bash
+docker compose --env-file .env.production down --rmi local
+```
+
+Este comando conserva las imágenes externas `postgres:16-alpine` y `certbot/certbot:v2.11.0`. También conserva los volúmenes, incluida la información de PostgreSQL.
+
+Para eliminar únicamente las imágenes de Nexus IPN sin ejecutar `docker compose down`, primero detén y elimina sus contenedores y después ejecuta:
+
+```bash
+docker image rm nexus-ipn-api nexus-ipn-nginx
+```
+
+Docker rechazará la eliminación si algún contenedor todavía utiliza esas imágenes. No agregues `--volumes` al comando `docker compose down` si deseas conservar la base de datos.
+
+## 13. Reiniciar servicios
 
 Reiniciar solo la API:
 
@@ -300,7 +371,7 @@ Reiniciar todos los servicios:
 docker compose --env-file .env.production restart
 ```
 
-## 13. Detener servicios sin borrar datos
+## 14. Detener servicios sin borrar datos
 
 ```bash
 docker compose --env-file .env.production down
@@ -308,7 +379,7 @@ docker compose --env-file .env.production down
 
 Esto detiene y elimina contenedores y red, pero conserva el volumen de PostgreSQL. Al levantar de nuevo, los datos siguen ahí.
 
-## 14. Borrar todo el entorno local
+## 15. Borrar todo el entorno local
 
 Advertencia: este comando elimina también el volumen de PostgreSQL y borra la base local.
 
@@ -318,7 +389,7 @@ docker compose --env-file .env.production down -v
 
 Úsalo solo en desarrollo local cuando quieras empezar desde cero. No lo ejecutes en producción si ya tienes datos reales.
 
-## 15. Actualizar despliegue
+## 16. Actualizar despliegue
 
 En servidor remoto, un flujo típico sería:
 
@@ -336,7 +407,7 @@ Qué hace:
 
 Antes de actualizar producción, genera un respaldo de base de datos.
 
-## 16. Respaldar base de datos
+## 17. Respaldar base de datos
 
 ```bash
 docker compose --env-file .env.production exec postgres \
@@ -354,7 +425,7 @@ docker compose --env-file .env.production exec postgres \
 
 Para este segundo ejemplo, `POSTGRES_USER` y `POSTGRES_DB` deben existir en tu shell local.
 
-## 17. Restaurar respaldo
+## 18. Restaurar respaldo
 
 En una base vacía:
 
@@ -365,7 +436,7 @@ docker compose --env-file .env.production exec -T postgres \
 
 Advertencia: restaurar sobre una base con datos existentes puede duplicar registros o fallar por llaves únicas. Para restauraciones reales, valida primero el estado de la base.
 
-## 18. Probar conectividad interna
+## 19. Probar conectividad interna
 
 Desde el contenedor `api`, puedes verificar variables y resolución DNS:
 
@@ -379,7 +450,7 @@ Comprobar que el host `postgres` se resuelve dentro de la red Docker:
 docker compose --env-file .env.production run --rm api sh -lc 'getent hosts postgres'
 ```
 
-## 19. Probar endpoints básicos
+## 20. Probar endpoints básicos
 
 Desde tu máquina:
 
@@ -392,7 +463,7 @@ Si usas `NGINX_PORT=80`, cambia `localhost:8080` por `localhost`.
 
 El primer comando valida que Nginx sirve el frontend. El segundo valida que Nginx redirige `/api` hacia el backend.
 
-## 20. Exponer PostgreSQL para cliente gráfico local
+## 21. Exponer PostgreSQL para cliente gráfico local
 
 Solo para desarrollo local, puedes exponer PostgreSQL agregando esto al servicio `postgres` en `docker-compose.yml`:
 
@@ -419,7 +490,7 @@ Password: valor de POSTGRES_PASSWORD
 
 No expongas PostgreSQL públicamente en producción. En servidor remoto usa `docker compose exec postgres psql` o un túnel SSH.
 
-## 21. Comandos que debes evitar en producción
+## 22. Comandos que debes evitar en producción
 
 Evita ejecutar scripts destructivos contra datos reales:
 

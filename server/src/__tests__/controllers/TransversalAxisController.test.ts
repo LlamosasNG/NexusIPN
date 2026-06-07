@@ -41,7 +41,7 @@ describe('TransversalAxisController', () => {
   // ─── createOrUpdate ──────────────────────────────────────────
 
   describe('createOrUpdate', () => {
-    it('debe retornar 404 si la planeación no existe', async () => {
+    it('debe retornar 404 si la planificación no existe', async () => {
       req.params = { planningId: '999' }
       mockPlanning.findOne.mockResolvedValue(null)
 
@@ -49,7 +49,7 @@ describe('TransversalAxisController', () => {
 
       expect(res.status).toHaveBeenCalledWith(404)
       expect(res.json).toHaveBeenCalledWith({
-        error: 'Planeación no encontrada',
+        error: 'Planificación no encontrada',
       })
     })
 

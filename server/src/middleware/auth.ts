@@ -36,10 +36,17 @@ export const authenticate = async (
           'email',
           'role',
           'academyId',
+          'isActive',
           'mustChangePassword',
         ],
         include: [{ model: Academy, attributes: ['id', 'name'] }],
       })
+      if (!req.user) {
+        return res.status(401).json({ error: 'No autorizado' })
+      }
+      if (req.user.isActive === false) {
+        return res.status(403).json({ error: 'La cuenta está desactivada' })
+      }
     }
     next()
   } catch (error) {

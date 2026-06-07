@@ -7,16 +7,16 @@ export class GeneralDataController {
     try {
       const { planningId } = req.params
 
-      // Verificar que la planeación exista y pertenezca al usuario
+      // Verificar que la planificación exista y pertenezca al usuario
       const planning = await Planning.findOne({
         where: { id: planningId, userId: req.user.id },
       })
 
       if (!planning) {
-        return res.status(404).json({ error: 'Planeación no encontrada' })
+        return res.status(404).json({ error: 'Planificación no encontrada' })
       }
 
-      // Buscar si ya existen datos generales para esta planeación
+      // Buscar si ya existen datos generales para esta planificación
       const existing = await GeneralData.findOne({
         where: { planningId },
       })

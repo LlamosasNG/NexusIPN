@@ -23,16 +23,16 @@ export default function SelectSubjectView() {
 
   const config = {
     plannings: {
-      title: 'Crear Planificación Didáctica',
+      title: 'Crear planificación didáctica',
       subtitle:
-        'Selecciona la materia para la cual deseas crear una planificación',
+        'Selecciona la unidad de aprendizaje para la cual deseas crear una planificación',
       icon: DocumentTextIcon,
       color: 'guinda',
       route: '/plannings/create',
     },
     resources: {
-      title: 'Crear Recurso Didáctico Digital',
-      subtitle: 'Selecciona la materia para la cual deseas agregar recursos',
+      title: 'Crear recurso didáctico digital',
+      subtitle: 'Selecciona la unidad de aprendizaje para la cual deseas agregar recursos',
       icon: FolderIcon,
       color: 'dorado',
       route: '/resources/create',
@@ -41,7 +41,7 @@ export default function SelectSubjectView() {
 
   const currentConfig = config[type]
 
-  // Filtrar materias que ya tienen planificación creada
+  // Filtrar unidades de aprendizaje que ya tienen planificación creada
   const subjects =
     type === 'plannings'
       ? data?.filter(
@@ -81,7 +81,7 @@ export default function SelectSubjectView() {
         </div>
       </div>
 
-      {/* Lista de Materias */}
+      {/* Lista de unidades de aprendizaje */}
       {subjects && subjects.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {subjects.map((subject) => (
@@ -91,19 +91,19 @@ export default function SelectSubjectView() {
               className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-transparent hover:border-[#7C2855]"
             >
               <div className="p-6">
-                {/* Icono de Materia */}
+                {/* Icono de unidad de aprendizaje */}
                 <div className="flex items-center justify-center w-16 h-16 bg-linear-to-br from-[#7C2855] to-[#5a1d3f] rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
                   <AcademicCapIcon className="w-10 h-10 text-white" />
                 </div>
 
-                {/* Código de Materia */}
+                {/* Código de unidad de aprendizaje */}
                 <div className="mb-2">
                   <span className="inline-block px-3 py-1 bg-[#D4AF37]/10 text-[#7C2855] text-xs font-semibold rounded-full">
                     {subject.code}
                   </span>
                 </div>
 
-                {/* Nombre de Materia */}
+                {/* Nombre de unidad de aprendizaje */}
                 <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#7C2855] transition-colors duration-200">
                   {subject.name}
                 </h3>
@@ -136,11 +136,11 @@ export default function SelectSubjectView() {
         <div className="text-center py-12 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300">
           <AcademicCapIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-gray-900 mb-2">
-            No tienes Unidades de Aprendizaje pendientes para crear una Planeación
+            No tienes unidades de aprendizaje pendientes para crear una planificación
           </h3>
           <p className="text-gray-600">
-            Dirígete a la sección de Planeaciones para visualizar tus
-            planeaciones creadas
+            Dirígete a la sección de Planificaciones para visualizar tus
+            planificaciones creadas
           </p>
         </div>
       )}

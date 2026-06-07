@@ -6,21 +6,9 @@ import {
   type ForgotPasswordForm,
   type LoginFormValues,
   type NewPasswordForm,
-  type RegisterFormValues,
   type RequestNewCodeForm,
 } from '@/types'
 import { isAxiosError } from 'axios'
-
-export async function createAccount(formData: RegisterFormValues) {
-  try {
-    const { data } = await api.post<string>('/auth/create-account', formData)
-    return data
-  } catch (error) {
-    if (isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.error)
-    }
-  }
-}
 
 export async function confirmAccount(formData: ConfirmToken) {
   try {

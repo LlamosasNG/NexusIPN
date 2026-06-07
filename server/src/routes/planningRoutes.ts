@@ -37,7 +37,7 @@ router.get(
   readLimiter,
   param('planningId')
     .isInt()
-    .withMessage('El ID de la planeación debe ser un número válido'),
+    .withMessage('El ID de la planificación debe ser un número válido'),
   handleInputErrors,
   PlanningController.getFeedback
 )
@@ -47,7 +47,7 @@ router.put(
   planningWriteLimiter,
   param('planningId')
     .isInt()
-    .withMessage('El ID de la planeación debe ser un número válido'),
+    .withMessage('El ID de la planificación debe ser un número válido'),
   handleInputErrors,
   PlanningController.submit
 )
@@ -56,7 +56,7 @@ router.delete(
   writeLimiter,
   param('planningId')
     .isInt()
-    .withMessage('El ID de la planeación debe ser un número válido'),
+    .withMessage('El ID de la planificación debe ser un número válido'),
   body('password')
     .isString()
     .notEmpty()

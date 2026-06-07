@@ -72,7 +72,7 @@ export default function MyPlanningsView() {
   const { mutate: removePlanning, isPending: isDeleting } = useMutation({
     mutationFn: deletePlanning,
     onSuccess: (message) => {
-      toast.success(message || 'Planeación eliminada correctamente')
+      toast.success(message || 'Planificación eliminada correctamente')
       setPlanningToDelete(null)
       setPassword('')
       queryClient.invalidateQueries({ queryKey: ['plannings'] })
@@ -113,7 +113,7 @@ export default function MyPlanningsView() {
     if (!planningToDelete) return
 
     if (!password.trim()) {
-      toast.error('Debes ingresar tu contraseña para eliminar la planeación')
+      toast.error('Debes ingresar tu contraseña para eliminar la planificación')
       return
     }
 
@@ -145,19 +145,19 @@ export default function MyPlanningsView() {
             <div className="text-white">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 text-sm font-semibold mb-4">
                 <DocumentTextIcon className="w-4 h-4" />
-                Planificaciones Didácticas
+                Planificaciones didácticas
               </div>
               <h1 className="text-3xl sm:text-4xl font-bold">
-                Mis Planeaciones
+                Mis planificaciones
               </h1>
               <p className="text-white/90 mt-2 text-base sm:text-lg max-w-2xl">
-                Consulta y continúa editando las planeaciones didácticas que ya has creado.
+                Consulta y continúa editando las planificaciones didácticas que ya has creado.
               </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="px-5 py-4 bg-white/15 rounded-2xl text-white min-w-44">
-                <p className="text-sm text-white/80">Planeaciones creadas</p>
+                <p className="text-sm text-white/80">Planificaciones creadas</p>
                 <p className="text-3xl font-bold mt-1">{plannings.length}</p>
               </div>
               <Link
@@ -165,7 +165,7 @@ export default function MyPlanningsView() {
                 className="inline-flex items-center justify-center gap-2 px-6 py-4 bg-white text-[#7C2855] font-semibold rounded-2xl hover:bg-white/90 transition-colors"
               >
                 <PlusIcon className="w-5 h-5" />
-                Nueva planeación
+                Nueva planificación
               </Link>
             </div>
           </div>
@@ -192,11 +192,11 @@ export default function MyPlanningsView() {
                       onClick={() => handleOpenDeleteModal(plan)}
                       disabled={plan.status === 'Enviada' || plan.status === 'Aprobada'}
                       className="inline-flex items-center justify-center rounded-xl border border-red-200 bg-red-50 p-2 text-red-600 transition-colors hover:bg-red-100 hover:text-red-700 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-100 disabled:text-gray-400"
-                      aria-label={`Eliminar planeación ${plan.subject?.name || plan.id}`}
+                      aria-label={`Eliminar planificación ${plan.subject?.name || plan.id}`}
                       title={
                         plan.status === 'Enviada' || plan.status === 'Aprobada'
-                          ? 'No puedes eliminar una planeación enviada o aprobada'
-                          : 'Eliminar planeación'
+                          ? 'No puedes eliminar una planificación enviada o aprobada'
+                          : 'Eliminar planificación'
                       }
                     >
                       <TrashIcon className="w-5 h-5" />
@@ -217,7 +217,7 @@ export default function MyPlanningsView() {
                 </div>
 
                 <h2 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#7C2855] transition-colors">
-                  {plan.subject?.name || 'Materia'}
+                  {plan.subject?.name || 'Unidad de aprendizaje'}
                 </h2>
 
                 <div className="space-y-2 text-sm text-gray-600">
@@ -251,7 +251,7 @@ export default function MyPlanningsView() {
                       className="inline-flex items-center gap-2 text-[#7C2855] font-semibold hover:text-[#5a1d3f] transition-colors"
                     >
                       {plan.status === 'Enviada' || plan.status === 'Aprobada'
-                        ? 'Ver planeación'
+                        ? 'Ver planificación'
                         : 'Continuar edición'}
                       <ArrowRightIcon className="w-4 h-4" />
                     </Link>
@@ -267,17 +267,17 @@ export default function MyPlanningsView() {
             <DocumentTextIcon className="w-10 h-10 text-[#7C2855]" />
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Aún no has creado planeaciones didácticas
+            Aún no has creado planificaciones didácticas
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto mb-6">
-            Comienza creando tu primera planeación para una de tus materias asignadas.
+            Comienza creando tu primera planificación para una de tus unidades de aprendizaje asignadas.
           </p>
           <Link
             to="/select-subject?type=plannings"
             className="inline-flex items-center gap-2 px-6 py-3 bg-[#7C2855] text-white font-semibold rounded-xl hover:bg-[#5a1d3f] transition-colors"
           >
             <PlusIcon className="w-5 h-5" />
-            Crear mi primera planeación
+            Crear mi primera planificación
           </Link>
         </div>
       )}
@@ -294,7 +294,7 @@ export default function MyPlanningsView() {
               Confirmar eliminación
             </DialogTitle>
             <DialogDescription className="mt-2 text-sm text-gray-600">
-              Esta acción eliminará la planeación{' '}
+              Esta acción eliminará la planificación{' '}
               <strong>{planningToDelete?.subject?.name || 'seleccionada'}</strong>{' '}
               y su información relacionada. Para continuar, ingresa tu contraseña.
             </DialogDescription>
@@ -339,7 +339,7 @@ export default function MyPlanningsView() {
               disabled={isDeleting}
               className="bg-red-600 text-white hover:bg-red-700"
             >
-              {isDeleting ? 'Eliminando...' : 'Eliminar planeación'}
+              {isDeleting ? 'Eliminando...' : 'Eliminar planificación'}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -354,11 +354,11 @@ export default function MyPlanningsView() {
         <DialogContent className="max-w-2xl rounded-2xl border-0 p-0 shadow-2xl data-[state=open]:slide-in-from-top-2 data-[state=open]:duration-300">
           <DialogHeader className="border-b border-gray-200 px-6 py-5">
             <DialogTitle className="text-xl font-bold text-gray-900">
-              Retroalimentación de la planeación
+              Retroalimentación de la planificación
             </DialogTitle>
             <DialogDescription className="mt-2 text-sm text-gray-600">
               Consulta las observaciones del Jefe de Departamento sin modificar
-              el formato de tu planeación didáctica.
+              el formato de tu planificación didáctica.
             </DialogDescription>
           </DialogHeader>
 
@@ -427,7 +427,7 @@ export default function MyPlanningsView() {
                 ) : (
                   <div className="rounded-xl bg-gray-50 px-4 py-3 text-sm text-gray-600">
                     Aún no hay observaciones específicas registradas para esta
-                    planeación.
+                    planificación.
                   </div>
                 )}
               </>

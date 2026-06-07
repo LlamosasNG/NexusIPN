@@ -17,7 +17,7 @@ type TermsSection = {
 const introduction = [
   'Los Términos y Condiciones de Uso constituyen un contrato de adhesión entre la institución que opera el sistema y cada uno de sus usuarios, que regula de forma transparente y equitativa la relación entre ambas partes desde el primer momento de acceso a la plataforma.',
   'En el caso del prototipo de sistema web para la planificación digital y la creación de recursos didácticos digitales de la ENMyH del IPN, este documento resulta especialmente relevante por la diversidad de roles que coexisten en el sistema, la naturaleza académica del contenido que se gestiona y la seguridad e integridad de la plataforma.',
-  'Las planeaciones y los recursos didácticos digitales son producciones académicas que reflejan el trabajo docente y tienen implicaciones directas en el proceso de enseñanza-aprendizaje de los estudiantes del primer año de la carrera de Médico Cirujano y Homeopatía.',
+  'Las planificaciones y los recursos didácticos digitales son producciones académicas que reflejan el trabajo docente y tienen implicaciones directas en el proceso de enseñanza-aprendizaje de los estudiantes del primer año de la carrera de Médico Cirujano y Homeopatía.',
   'Al tratarse de una plataforma que almacena información académica y datos personales de los usuarios, es indispensable establecer de forma explícita las conductas prohibidas y las consecuencias de incurrir en ellas.',
 ]
 
@@ -33,7 +33,7 @@ const termsSections: TermsSection[] = [
     title: 'I. Objeto y ámbito de aplicación',
     paragraphs: [
       'Los presentes Términos y Condiciones de Uso regulan el acceso, registro, navegación y uso del sistema web denominado Prototipo de sistema web para la planificación digital y la creación por clasificación de plantillas para recursos didácticos digitales académicas, desarrollado en el marco del Trabajo Terminal A191 de la Escuela Superior de Cómputo del Instituto Politécnico Nacional, para uso exclusivo de la Escuela Nacional de Medicina y Homeopatía.',
-      'El sistema tiene como propósito centralizar y digitalizar la captura y gestión de planeaciones didácticas por periodo escolar, así como la creación, clasificación y publicación de recursos didácticos digitales en tres tipologías: libros digitales, objetos de aprendizaje y libros interactivos.',
+      'El sistema tiene como propósito centralizar y digitalizar la captura y gestión de planificaciones didácticas por periodo escolar, así como la creación, clasificación y publicación de recursos didácticos digitales en tres tipologías: libros digitales, objetos de aprendizaje y libros interactivos.',
       'El presente documento aplica a todos los usuarios que accedan al sistema bajo cualquiera de los roles habilitados: docente, personal de academia, jefe de departamento, administrador y estudiante. La aceptación de estos términos es condición indispensable para el uso del sistema.',
     ],
   },
@@ -54,11 +54,11 @@ const termsSections: TermsSection[] = [
         body: 'Credenciales de acceso que identifican de forma única a cada usuario dentro del sistema.',
       },
       {
-        title: 'Planeación didáctica',
+        title: 'Planificación didáctica',
         body: 'Documento académico estructurado que el docente elabora y registra en el sistema, especificando objetivos, actividades, recursos y criterios de evaluación.',
       },
       {
-        title: 'Recurso Didáctico Digital (RDD)',
+        title: 'Recurso didáctico digital (RDD)',
         body: 'Material educativo digital creado mediante las plantillas del sistema: libro digital, objeto de aprendizaje o libro interactivo.',
       },
       {
@@ -67,7 +67,7 @@ const termsSections: TermsSection[] = [
       },
       {
         title: 'Periodo escolar',
-        body: 'Ciclo académico semestral establecido por la ENMyH para gestionar planeaciones y recursos.',
+        body: 'Ciclo académico semestral establecido por la ENMyH para gestionar planificaciones y recursos.',
       },
     ],
   },
@@ -94,7 +94,7 @@ const termsSections: TermsSection[] = [
     items: [
       {
         title: 'Docente',
-        body: 'Puede crear, editar, guardar y enviar planeaciones didácticas, crear RDD y previsualizar sus propios materiales. No puede acceder a contenidos de otros docentes ni modificar materiales enviados a validación.',
+        body: 'Puede crear, editar, guardar y enviar planificaciones didácticas, crear RDD y previsualizar sus propios materiales. No puede acceder a contenidos de otros docentes ni modificar materiales enviados a validación.',
       },
       {
         title: 'Academia',
@@ -121,7 +121,7 @@ const termsSections: TermsSection[] = [
     id: 'uso',
     title: 'V. Uso aceptable del sistema',
     paragraphs: [
-      'El sistema podrá ser utilizado exclusivamente para fines académicos e institucionales: captura de planeaciones didácticas, creación de recursos didácticos digitales, revisión, validación, supervisión académica y gestión administrativa de cuentas.',
+      'El sistema podrá ser utilizado exclusivamente para fines académicos e institucionales: captura de planificaciones didácticas, creación de recursos didácticos digitales, revisión, validación, supervisión académica y gestión administrativa de cuentas.',
     ],
     bullets: [
       'Queda prohibido registrar contenido falso, plagiado, discriminatorio, difamatorio, obsceno, violento o que vulnere derechos de terceros.',
@@ -139,18 +139,18 @@ const termsSections: TermsSection[] = [
     id: 'contenido',
     title: 'VI. Contenido generado por el usuario',
     paragraphs: [
-      'El usuario es responsable del contenido que registra, carga o publica en el sistema, incluyendo planeaciones, textos, imágenes, preguntas y cualquier material que conforme recursos didácticos digitales.',
+      'El usuario es responsable del contenido que registra, carga o publica en el sistema, incluyendo planificaciones, textos, imágenes, preguntas y cualquier material que conforme recursos didácticos digitales.',
       'El docente declara que el material registrado es de su autoría o cuenta con los permisos necesarios para su uso educativo institucional.',
-      'Los derechos patrimoniales sobre planeaciones y recursos didácticos digitales elaborados dentro del sistema corresponden al Instituto Politécnico Nacional, conforme a la legislación aplicable y políticas institucionales.',
+      'Los derechos patrimoniales sobre planificaciones y recursos didácticos digitales elaborados dentro del sistema corresponden al Instituto Politécnico Nacional, conforme a la legislación aplicable y políticas institucionales.',
       'Todo recurso didáctico digital enviado deberá pasar por el proceso de validación académica antes de ser publicado y visible para estudiantes.',
-      'Las planeaciones didácticas finalizadas y enviadas no podrán ser modificadas por el docente. Sólo el administrador podrá habilitar edición en casos excepcionales y justificados.',
+      'Las planificaciones didácticas finalizadas y enviadas no podrán ser modificadas por el docente. Solo el administrador podrá habilitar edición en casos excepcionales y justificados.',
     ],
   },
   {
     id: 'fechas',
     title: 'VII. Fechas límite y estado de cumplimiento',
     paragraphs: [
-      'El administrador tiene la facultad de establecer y modificar fechas límite de entrega de planeaciones didácticas para cada periodo escolar.',
+      'El administrador tiene la facultad de establecer y modificar fechas límite de entrega de planificaciones didácticas para cada periodo escolar.',
       'El sistema verificará automáticamente la fecha de envío contra la fecha límite establecida. Si el envío se realiza después de la fecha límite, se asignará el estado Desfasado.',
       'El estado Desfasado no impide la entrega ni su posterior validación académica, pero queda registrado para seguimiento institucional.',
     ],
@@ -162,7 +162,7 @@ const termsSections: TermsSection[] = [
       'El sistema estará disponible durante los periodos escolares activos en el entorno tecnológico provisto por la infraestructura del IPN.',
       'La ENMyH y el equipo desarrollador realizarán esfuerzos razonables para mantener la disponibilidad del servicio, sin garantizar funcionamiento ininterrumpido o libre de errores.',
       'El sistema podrá someterse a mantenimiento programado, actualizaciones o intervenciones técnicas con interrupciones temporales.',
-      'Se recomienda al usuario mantener copias de seguridad propias de sus planeaciones y materiales.',
+      'Se recomienda al usuario mantener copias de seguridad propias de sus planificaciones y materiales.',
     ],
   },
   {

@@ -167,7 +167,7 @@ export async function reviewDepartmentHeadPlanning({
       throw new Error(
         error.response.data.error ||
           error.response.data.errors?.[0]?.msg ||
-          'No fue posible actualizar el estado de la planeación'
+          'No fue posible actualizar el estado de la planificación'
       )
     }
   }

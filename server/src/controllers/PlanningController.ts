@@ -29,7 +29,7 @@ export class PlanningController {
       if (existingPlanning) {
         return res
           .status(400)
-          .json({ error: 'Ya tienes una planeación para esta materia y período' })
+          .json({ error: 'Ya tienes una planificación para esta unidad de aprendizaje y periodo' })
       }
 
       const subject = await Subject.findByPk(Number(subjectId), {
@@ -37,7 +37,7 @@ export class PlanningController {
       })
 
       if (!subject) {
-        return res.status(404).json({ error: 'Materia no encontrada' })
+        return res.status(404).json({ error: 'Unidad de aprendizaje no encontrada' })
       }
 
       const planning = await Planning.create({
@@ -47,7 +47,7 @@ export class PlanningController {
         status: PlanningStatus.DRAFT,
       })
       res.status(201).json({
-        message: 'Planeación creada correctamente',
+        message: 'Planificación creada correctamente',
         data: {
           id: planning.id,
           status: planning.status,
@@ -55,7 +55,7 @@ export class PlanningController {
       })
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Hubo un error al crear la planeación' })
+      res.status(500).json({ error: 'Hubo un error al crear la planificación' })
     }
   }
 
@@ -76,7 +76,7 @@ export class PlanningController {
       console.log(error)
       res
         .status(500)
-        .json({ error: 'Hubo un error al obtener las planeaciones' })
+        .json({ error: 'Hubo un error al obtener las planificaciones' })
     }
   }
 
@@ -94,7 +94,7 @@ export class PlanningController {
     } catch (error) {
       console.log(error)
       res.status(500).json({
-        error: 'Hubo un error al obtener la fecha límite de planeaciones',
+        error: 'Hubo un error al obtener la fecha límite de planificaciones',
       })
     }
   }
@@ -110,13 +110,13 @@ export class PlanningController {
       })
 
       if (!planning) {
-        return res.status(404).json({ error: 'Planeación no encontrada' })
+        return res.status(404).json({ error: 'Planificación no encontrada' })
       }
 
       res.json(planning)
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Hubo un error al obtener la planeación' })
+      res.status(500).json({ error: 'Hubo un error al obtener la planificación' })
     }
   }
 
@@ -135,7 +135,7 @@ export class PlanningController {
       })
 
       if (!planning) {
-        return res.status(404).json({ error: 'Planeación no encontrada' })
+        return res.status(404).json({ error: 'Planificación no encontrada' })
       }
 
       const observations = await PlanningObservation.findAll({
@@ -207,7 +207,7 @@ export class PlanningController {
 
       if (!planning) {
         await transaction.rollback()
-        return res.status(404).json({ error: 'Planeación no encontrada' })
+        return res.status(404).json({ error: 'Planificación no encontrada' })
       }
 
       const thematicUnits = await ThematicUnit.findAll({
@@ -242,11 +242,11 @@ export class PlanningController {
       await planning.destroy({ transaction })
       await transaction.commit()
 
-      res.json({ message: 'Planeación eliminada correctamente' })
+      res.json({ message: 'Planificación eliminada correctamente' })
     } catch (error) {
       await transaction.rollback()
       console.log(error)
-      res.status(500).json({ error: 'Hubo un error al eliminar la planeación' })
+      res.status(500).json({ error: 'Hubo un error al eliminar la planificación' })
     }
   }
 
@@ -259,7 +259,7 @@ export class PlanningController {
       })
 
       if (!planning) {
-        return res.status(404).json({ error: 'Planeación no encontrada' })
+        return res.status(404).json({ error: 'Planificación no encontrada' })
       }
 
       const canSubmitPlanning = [
@@ -270,7 +270,7 @@ export class PlanningController {
       if (!canSubmitPlanning) {
         return res.status(400).json({
           error:
-            'Solo las planeaciones en borrador o rechazadas pueden enviarse',
+            'Solo las planificaciones en borrador o rechazadas pueden enviarse',
         })
       }
 
@@ -291,7 +291,7 @@ export class PlanningController {
       await planning.save()
 
       res.json({
-        message: 'Planeación enviada correctamente',
+        message: 'Planificación enviada correctamente',
         status: planning.status,
         submissionDate: planning.submissionDate,
         isLate: planning.isLate,
@@ -300,7 +300,7 @@ export class PlanningController {
       })
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Hubo un error al enviar la planeación' })
+      res.status(500).json({ error: 'Hubo un error al enviar la planificación' })
     }
   }
 }

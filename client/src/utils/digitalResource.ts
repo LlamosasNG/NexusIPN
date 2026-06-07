@@ -12,7 +12,7 @@ export const getDigitalResourceTitle = (resource: DigitalBookResource) => {
   return (
     resource.identification?.title ||
     resource.learningObject?.precisionTema ||
-    'Recurso digital sin título'
+    'Recurso didáctico digital sin título'
   )
 }
 

@@ -143,7 +143,7 @@ export class DepartmentHeadPlanningController {
     } catch (error) {
       console.log(error)
       res.status(500).json({
-        error: 'Hubo un error al obtener la fecha límite de planeaciones',
+        error: 'Hubo un error al obtener la fecha límite de planificaciones',
       })
     }
   }
@@ -167,7 +167,7 @@ export class DepartmentHeadPlanningController {
       }
 
       res.json({
-        message: 'Fecha límite de planeaciones actualizada correctamente',
+        message: 'Fecha límite de planificaciones actualizada correctamente',
         data: {
           period: deadline.period,
           deadlineAt: deadline.deadlineAt,
@@ -176,7 +176,7 @@ export class DepartmentHeadPlanningController {
     } catch (error) {
       console.log(error)
       res.status(500).json({
-        error: 'Hubo un error al guardar la fecha límite de planeaciones',
+        error: 'Hubo un error al guardar la fecha límite de planificaciones',
       })
     }
   }
@@ -408,7 +408,7 @@ export class DepartmentHeadPlanningController {
       console.log(error)
       res.status(500).json({
         error:
-          'Hubo un error al obtener la gestión de planeaciones del departamento',
+          'Hubo un error al obtener la gestión de planificaciones del departamento',
       })
     }
   }
@@ -427,7 +427,7 @@ export class DepartmentHeadPlanningController {
       const planning = await findPlanningForDepartmentHead(planningId, academyId)
 
       if (!planning) {
-        return res.status(404).json({ error: 'Planeación no encontrada' })
+        return res.status(404).json({ error: 'Planificación no encontrada' })
       }
 
       if (
@@ -439,7 +439,7 @@ export class DepartmentHeadPlanningController {
       ) {
         return res.status(403).json({
           error:
-            'Solo puedes visualizar planeaciones enviadas, aprobadas o rechazadas',
+            'Solo puedes visualizar planificaciones enviadas, aprobadas o rechazadas',
         })
       }
 
@@ -568,7 +568,7 @@ export class DepartmentHeadPlanningController {
       console.log(error)
       res.status(500).json({
         error:
-          'Hubo un error al obtener el detalle de la planeación del departamento',
+          'Hubo un error al obtener el detalle de la planificación del departamento',
       })
     }
   }
@@ -589,12 +589,12 @@ export class DepartmentHeadPlanningController {
       const planning = await findPlanningForDepartmentHead(planningId, academyId)
 
       if (!planning) {
-        return res.status(404).json({ error: 'Planeación no encontrada' })
+        return res.status(404).json({ error: 'Planificación no encontrada' })
       }
 
       if (!canReviewPlanning(planning.status)) {
         return res.status(400).json({
-          error: 'Solo puedes agregar observaciones a planeaciones en revisión',
+          error: 'Solo puedes agregar observaciones a planificaciones en revisión',
         })
       }
 
@@ -645,18 +645,18 @@ export class DepartmentHeadPlanningController {
       const planning = await findPlanningForDepartmentHead(planningId, academyId)
 
       if (!planning) {
-        return res.status(404).json({ error: 'Planeación no encontrada' })
+        return res.status(404).json({ error: 'Planificación no encontrada' })
       }
 
       if (!canReviewPlanning(planning.status)) {
         return res.status(400).json({
-          error: 'Solo puedes aprobar o rechazar planeaciones en revisión',
+          error: 'Solo puedes aprobar o rechazar planificaciones en revisión',
         })
       }
 
       if (action === 'reject' && !feedback) {
         return res.status(400).json({
-          error: 'La retroalimentación es obligatoria para rechazar la planeación',
+          error: 'La retroalimentación es obligatoria para rechazar la planificación',
         })
       }
 
@@ -676,8 +676,8 @@ export class DepartmentHeadPlanningController {
       res.json({
         message:
           action === 'approve'
-            ? 'Planeación aprobada correctamente'
-            : 'Planeación rechazada correctamente',
+            ? 'Planificación aprobada correctamente'
+            : 'Planificación rechazada correctamente',
         status: planning.status,
         reviewStatus: getReviewStatus(planning.status),
         feedback: planning.feedback,
@@ -685,7 +685,7 @@ export class DepartmentHeadPlanningController {
     } catch (error) {
       console.log(error)
       res.status(500).json({
-        error: 'Hubo un error al actualizar el estado de la planeación',
+        error: 'Hubo un error al actualizar el estado de la planificación',
       })
     }
   }

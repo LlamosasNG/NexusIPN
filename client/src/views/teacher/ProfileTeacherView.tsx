@@ -13,6 +13,7 @@ import {
   DocumentTextIcon,
   EnvelopeIcon,
   FolderIcon,
+  LockClosedIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/solid'
 import { useQuery } from '@tanstack/react-query'
@@ -97,15 +98,30 @@ export default function ProfileTeacherView() {
         id="plannings"
         className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
       >
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center gap-3">
-          <BuildingLibraryIcon className="w-6 h-6 text-[#7C2855]" />
-          <h2 className="text-xl font-bold text-gray-900">
-            Datos Institucionales
-          </h2>
+        <div className="border-b border-gray-200 px-6 py-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+              <BuildingLibraryIcon className="w-6 h-6 text-[#7C2855]" />
+              <h2 className="text-xl font-bold text-gray-900">
+                Datos Institucionales
+              </h2>
+            </div>
+            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#7C2855]/20 bg-[#7C2855]/8 px-3 py-1.5 text-xs font-bold text-[#7C2855]">
+              <LockClosedIcon className="h-4 w-4" />
+              Información protegida
+            </span>
+          </div>
+          <div className="mt-4 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            <LockClosedIcon className="mt-0.5 h-5 w-5 shrink-0 text-amber-700" />
+            <p>
+              Estos datos son asignados por la institución y no pueden
+              modificarse desde tu perfil.
+            </p>
+          </div>
         </div>
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+            <div className="relative flex items-start gap-4 rounded-xl border border-gray-200 bg-gray-50 p-4 pr-12">
               <UserCircleIcon className="w-6 h-6 text-[#7C2855] mt-0.5 shrink-0" />
               <div>
                 <p className="text-sm font-medium text-gray-500">
@@ -115,9 +131,16 @@ export default function ProfileTeacherView() {
                   {user.name}
                 </p>
               </div>
+              <span
+                className="absolute right-3 top-3 text-gray-400"
+                title="Dato no editable"
+                aria-label="Dato no editable"
+              >
+                <LockClosedIcon className="h-5 w-5" />
+              </span>
             </div>
 
-            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+            <div className="relative flex items-start gap-4 rounded-xl border border-gray-200 bg-gray-50 p-4 pr-12">
               <EnvelopeIcon className="w-6 h-6 text-[#7C2855] mt-0.5 shrink-0" />
               <div>
                 <p className="text-sm font-medium text-gray-500">
@@ -127,9 +150,16 @@ export default function ProfileTeacherView() {
                   {user.email}
                 </p>
               </div>
+              <span
+                className="absolute right-3 top-3 text-gray-400"
+                title="Dato no editable"
+                aria-label="Dato no editable"
+              >
+                <LockClosedIcon className="h-5 w-5" />
+              </span>
             </div>
 
-            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+            <div className="relative flex items-start gap-4 rounded-xl border border-gray-200 bg-gray-50 p-4 pr-12">
               <BuildingLibraryIcon className="w-6 h-6 text-[#7C2855] mt-0.5 shrink-0" />
               <div>
                 <p className="text-sm font-medium text-gray-500">Academia</p>
@@ -140,17 +170,24 @@ export default function ProfileTeacherView() {
                   {user.academy?.description || 'Sin descripción disponible'}
                 </p>
               </div>
+              <span
+                className="absolute right-3 top-3 text-gray-400"
+                title="Dato no editable"
+                aria-label="Dato no editable"
+              >
+                <LockClosedIcon className="h-5 w-5" />
+              </span>
             </div>
 
-            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+            <div className="relative flex items-start gap-4 rounded-xl border border-gray-200 bg-gray-50 p-4 pr-12">
               <AcademicCapIcon className="w-6 h-6 text-[#7C2855] mt-0.5 shrink-0" />
               <div>
                 <p className="text-sm font-medium text-gray-500">
-                  Materias asignadas
+                  Unidades de aprendizaje asignadas
                 </p>
                 <p className="text-base font-semibold text-gray-900">
                   {user.subjects.length}{' '}
-                  {user.subjects.length === 1 ? 'materia' : 'materias'}
+                  {user.subjects.length === 1 ? 'unidad de aprendizaje' : 'unidades de aprendizaje'}
                 </p>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {user.subjects.map((subject) => (
@@ -163,12 +200,19 @@ export default function ProfileTeacherView() {
                   ))}
                 </div>
               </div>
+              <span
+                className="absolute right-3 top-3 text-gray-400"
+                title="Dato no editable"
+                aria-label="Dato no editable"
+              >
+                <LockClosedIcon className="h-5 w-5" />
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Planificaciones Didácticas */}
+      {/* Planificaciones didácticas */}
       <div
         id="resources"
         className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
@@ -177,7 +221,7 @@ export default function ProfileTeacherView() {
           <div className="flex items-center gap-3">
             <DocumentTextIcon className="w-6 h-6 text-[#7C2855]" />
             <h2 className="text-xl font-bold text-gray-900">
-              Planificaciones Didácticas
+              Planificaciones didácticas
             </h2>
           </div>
           <Link
@@ -191,7 +235,7 @@ export default function ProfileTeacherView() {
           {planningsLoading ? (
             <div className="text-center py-8">
               <div className="animate-spin w-8 h-8 border-4 border-[#7C2855] border-t-transparent rounded-full mx-auto" />
-              <p className="text-gray-500 mt-2">Cargando planeaciones...</p>
+              <p className="text-gray-500 mt-2">Cargando planificaciones...</p>
             </div>
           ) : plannings.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -219,7 +263,7 @@ export default function ProfileTeacherView() {
                     </div>
                   </div>
                   <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-[#7C2855] transition-colors">
-                    {plan.subject?.name || 'Materia'}
+                    {plan.subject?.name || 'Unidad de aprendizaje'}
                   </h3>
                   <p className="text-sm text-gray-600 mb-2">
                     Periodo: {plan.period}
@@ -283,7 +327,7 @@ export default function ProfileTeacherView() {
                     {getDigitalResourceTitle(resource)}
                   </h3>
                   <p className="text-sm text-gray-600 mb-2">
-                    {resource.subject?.name || 'Materia no disponible'}
+                    {resource.subject?.name || 'Unidad de aprendizaje no disponible'}
                   </p>
                   <div className="flex items-center gap-1 text-sm text-gray-500">
                     <CalendarDaysIcon className="w-3.5 h-3.5" />

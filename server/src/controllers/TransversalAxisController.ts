@@ -14,7 +14,7 @@ export class TransversalAxisController {
       if (!planning) {
         return res
           .status(404)
-          .json({ error: 'Planeación no encontrada' })
+          .json({ error: 'Planificación no encontrada' })
       }
 
       const existing = await TransversalAxis.findOne({

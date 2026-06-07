@@ -64,7 +64,13 @@ describe('Middleware — authenticate', () => {
   })
 
   it('debe llamar a next() con un token válido y usuario existente', async () => {
-    const fakeUser = { id: 1, name: 'Test', email: 'test@test.com', role: 'Docente' }
+    const fakeUser = {
+      id: 1,
+      name: 'Test',
+      email: 'test@test.com',
+      role: 'Docente',
+      isActive: true,
+    }
     const token = jwt.sign({ id: 1 }, 'test-secret')
     req.headers = { authorization: `Bearer ${token}` }
     mockUser.findByPk.mockResolvedValue(fakeUser as any)
@@ -74,6 +80,24 @@ describe('Middleware — authenticate', () => {
     expect(mockUser.findByPk).toHaveBeenCalledWith(1, expect.any(Object))
     expect(req.user).toEqual(fakeUser)
     expect(next).toHaveBeenCalled()
+  })
+
+  it('debe retornar 403 si el usuario del token está inactivo', async () => {
+    const token = jwt.sign({ id: 1 }, 'test-secret')
+    req.headers = { authorization: `Bearer ${token}` }
+    mockUser.findByPk.mockResolvedValue({
+      id: 1,
+      role: 'Docente',
+      isActive: false,
+    } as any)
+
+    await authenticate(req as Request, res as Response, next)
+
+    expect(res.status).toHaveBeenCalledWith(403)
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'La cuenta está desactivada',
+    })
+    expect(next).not.toHaveBeenCalled()
   })
 
   it('debe retornar 500 si el token es inválido', async () => {

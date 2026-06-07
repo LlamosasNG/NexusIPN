@@ -254,7 +254,7 @@ function ReviewPanel({
         </div>
       ) : (
         <p className="rounded-2xl border border-gray-200 bg-white p-4 text-sm text-gray-600">
-          Esta planeación ya fue {planning.reviewStatus.toLowerCase()} y no admite
+          Esta planificación ya fue {planning.reviewStatus.toLowerCase()} y no admite
           nuevas acciones de revisión.
         </p>
       )}
@@ -563,7 +563,7 @@ export default function DepartmentHeadPlanningViewerView() {
     if (!reviewDialogAction) return
 
     if (reviewDialogAction === 'reject' && !reviewFeedback.trim()) {
-      toast.error('Agrega una retroalimentación para rechazar la planeación')
+      toast.error('Agrega una retroalimentación para rechazar la planificación')
       return
     }
 
@@ -588,15 +588,15 @@ export default function DepartmentHeadPlanningViewerView() {
     return (
       <div className="mx-auto max-w-5xl rounded-3xl border border-gray-200 bg-white p-8 shadow-xl">
         <p className="text-lg font-bold text-gray-900">
-          No fue posible cargar la planeación
+          No fue posible cargar la planificación
         </p>
         <p className="mt-2 text-sm text-gray-600">
           {error instanceof Error
             ? error.message
-            : 'La planeación no está disponible para consulta.'}
+            : 'La planificación no está disponible para consulta.'}
         </p>
         <Button asChild className="mt-5 rounded-xl bg-[#7C2855]">
-          <Link to="/department-head/plannings">Volver a planeaciones</Link>
+          <Link to="/department-head/plannings">Volver a planificaciones</Link>
         </Button>
       </div>
     )
@@ -610,7 +610,7 @@ export default function DepartmentHeadPlanningViewerView() {
             <Button asChild variant="outline" className="rounded-xl">
               <Link to="/department-head/plannings">
                 <ArrowLeftIcon className="h-4 w-4" />
-                Volver a planeaciones
+                Volver a planificaciones
               </Link>
             </Button>
           </div>
@@ -690,11 +690,11 @@ export default function DepartmentHeadPlanningViewerView() {
           <DialogHeader className="border-b border-gray-200 px-6 py-5">
             <DialogTitle className="text-xl font-bold text-gray-900">
               {reviewDialogAction === 'approve'
-                ? 'Aprobar planeación'
-                : 'Rechazar planeación'}
+                ? 'Aprobar planificación'
+                : 'Rechazar planificación'}
             </DialogTitle>
             <DialogDescription className="mt-2 text-sm text-gray-600">
-              Esta acción actualizará el estado de la planeación y notificará la
+              Esta acción actualizará el estado de la planificación y notificará la
               decisión en la gestión del departamento.
             </DialogDescription>
           </DialogHeader>

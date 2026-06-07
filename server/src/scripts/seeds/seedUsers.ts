@@ -47,6 +47,7 @@ export async function seedUsers({
         academyId: user.academyId,
         role: user.role,
         confirmed: user.confirmed,
+        isActive: user.isActive ?? true,
       }
       const mustChangePassword =
         markPasswordsAsTemporary || user.mustChangePassword === true
@@ -88,12 +89,12 @@ export async function seedUsers({
           const subject = subjectMap.get(code)
 
           if (!subject) {
-            throw new Error(`La materia ${code} no existe en el catálogo`)
+            throw new Error(`La unidad de aprendizaje ${code} no existe en el catálogo`)
           }
 
           if (subject.academyId !== user.academyId) {
             throw new Error(
-              `La materia ${code} no pertenece a la academia configurada para uno de los usuarios`
+              `La unidad de aprendizaje ${code} no pertenece a la academia configurada para uno de los usuarios`
             )
           }
 

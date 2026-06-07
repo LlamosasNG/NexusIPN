@@ -12,11 +12,11 @@ import { useAuth } from '@/hooks/useAuth'
 import {
   ArrowRightStartOnRectangleIcon,
   Bars3Icon,
-  ChartBarIcon,
   DocumentTextIcon,
   FolderIcon,
   HomeIcon,
   UserIcon,
+  UserGroupIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid'
 import { useState } from 'react'
@@ -43,6 +43,7 @@ export default function UserLayout() {
   if (isError) return <Navigate to="/auth/login" />
   if (data) {
     const isDepartmentHead = data.role === 'Jefe de Departamento'
+    const isAdmin = data.role === 'Administrador'
     const isChangingInitialPassword =
       location.pathname === '/change-initial-password'
 
@@ -111,7 +112,19 @@ export default function UserLayout() {
                     </NavigationMenuLink>
                   </NavigationMenuItem>
 
-                  {isDepartmentHead ? (
+                  {isAdmin ? (
+                    <NavigationMenuItem>
+                      <NavigationMenuLink
+                        asChild
+                        className="flex items-center gap-2 px-4 py-2.5 text-gray-700 hover:text-[#7C2855] hover:bg-[#7C2855]/5 rounded-lg font-medium transition-all duration-200 border-b-2 border-transparent hover:border-[#7C2855]"
+                      >
+                        <Link to="/admin/department-heads">
+                          <UserGroupIcon className="w-5 h-5" />
+                          <span>Jefes de Departamento</span>
+                        </Link>
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+                  ) : isDepartmentHead ? (
                     <>
                       <NavigationMenuItem>
                         <NavigationMenuLink
@@ -120,7 +133,18 @@ export default function UserLayout() {
                         >
                           <Link to="/department-head/plannings">
                             <DocumentTextIcon className="w-5 h-5" />
-                            <span>Planeaciones</span>
+                            <span>Planificaciones</span>
+                          </Link>
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
+                      <NavigationMenuItem>
+                        <NavigationMenuLink
+                          asChild
+                          className="flex items-center gap-2 px-4 py-2.5 text-gray-700 hover:text-[#7C2855] hover:bg-[#7C2855]/5 rounded-lg font-medium transition-all duration-200 border-b-2 border-transparent hover:border-[#7C2855]"
+                        >
+                          <Link to="/department-head/teachers">
+                            <UserGroupIcon className="w-5 h-5" />
+                            <span>Docentes</span>
                           </Link>
                         </NavigationMenuLink>
                       </NavigationMenuItem>
@@ -201,23 +225,32 @@ export default function UserLayout() {
                   <HomeIcon className="w-5 h-5" />
                   <span>Inicio</span>
                 </Link>
-                {isDepartmentHead ? (
+                {isAdmin ? (
+                  <Link
+                    to="/admin/department-heads"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 text-gray-700 hover:text-[#7C2855] hover:bg-[#7C2855]/5 font-medium py-2.5 px-4 rounded-lg transition-all duration-200"
+                  >
+                    <UserGroupIcon className="w-5 h-5" />
+                    <span>Jefes de Departamento</span>
+                  </Link>
+                ) : isDepartmentHead ? (
                   <>
-                    <Link
-                      to="/department-head/dashboard"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 text-gray-700 hover:text-[#7C2855] hover:bg-[#7C2855]/5 font-medium py-2.5 px-4 rounded-lg transition-all duration-200"
-                    >
-                      <ChartBarIcon className="w-5 h-5" />
-                      <span>Panel</span>
-                    </Link>
                     <Link
                       to="/department-head/plannings"
                       onClick={() => setMobileMenuOpen(false)}
                       className="flex items-center gap-3 text-gray-700 hover:text-[#7C2855] hover:bg-[#7C2855]/5 font-medium py-2.5 px-4 rounded-lg transition-all duration-200"
                     >
                       <DocumentTextIcon className="w-5 h-5" />
-                      <span>Planeaciones</span>
+                      <span>Planificaciones</span>
+                    </Link>
+                    <Link
+                      to="/department-head/teachers"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 text-gray-700 hover:text-[#7C2855] hover:bg-[#7C2855]/5 font-medium py-2.5 px-4 rounded-lg transition-all duration-200"
+                    >
+                      <UserGroupIcon className="w-5 h-5" />
+                      <span>Docentes</span>
                     </Link>
                   </>
                 ) : (

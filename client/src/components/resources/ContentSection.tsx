@@ -399,7 +399,7 @@ export function ContentSection({
           </h2>
           <p className="text-xs text-gray-500 mt-0.5">
             {mode === 'learning-object'
-              ? 'Explica sólo lo necesario para resolver el objetivo puntual del OA. Usa los temas consecutivos definidos para microaprendizaje.'
+              ? 'Explica solo lo necesario para resolver el objetivo puntual del OA. Usa los temas consecutivos definidos para microaprendizaje.'
               : 'Organiza el contenido por unidades, temas y subtemas.'}
           </p>
         </div>

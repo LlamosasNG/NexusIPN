@@ -115,7 +115,7 @@ export default function CreatePlanningView() {
 
     if (isPlanningLocked) {
       toast.info(
-        'Esta planeación está en modo sólo lectura y no puede modificarse.'
+        'Esta planificación está en modo solo lectura y no puede modificarse.'
       )
       return
     }
@@ -171,7 +171,7 @@ export default function CreatePlanningView() {
 
     if (isPlanningLocked) {
       toast.info(
-        'Esta planeación está en modo sólo lectura y no puede modificarse.'
+        'Esta planificación está en modo solo lectura y no puede modificarse.'
       )
       return
     }
@@ -203,7 +203,7 @@ export default function CreatePlanningView() {
       })
 
       setIsSubmitDialogOpen(false)
-      toast.success(response?.message || 'Planeación enviada correctamente')
+      toast.success(response?.message || 'Planificación enviada correctamente')
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message)
@@ -293,7 +293,7 @@ export default function CreatePlanningView() {
           <PlanningFormHeader />
           {isPlanningLocked && (
             <div className="mb-6 rounded-2xl border border-sky-200 bg-sky-50 px-5 py-4 text-sm text-sky-800">
-              Esta planeación se encuentra {planning.status.toLowerCase()} y
+              Esta planificación se encuentra {planning.status.toLowerCase()} y
               está disponible únicamente para consulta.
             </div>
           )}

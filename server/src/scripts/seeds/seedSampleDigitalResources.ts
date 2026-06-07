@@ -98,7 +98,7 @@ const buildMethodology = (subject: Subject): MethodologySection => ({
     subject.generalObjective ||
     `Desarrolla habilidades para comprender y aplicar contenidos de ${subject.name}.`,
   generalObjectives: [
-    `Fortalecer el aprendizaje de ${subject.name} mediante recursos digitales estructurados.`,
+    `Fortalecer el aprendizaje de ${subject.name} mediante recursos didácticos digitales estructurados.`,
   ],
   specificObjectives: [
     'Reconocer conceptos y procedimientos clave.',

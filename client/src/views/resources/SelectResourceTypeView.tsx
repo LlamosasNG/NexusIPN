@@ -76,10 +76,10 @@ export default function SelectResourceTypeView() {
       <div className="max-w-2xl mx-auto text-center py-16">
         <AcademicCapIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          Materia no encontrada
+          Unidad de aprendizaje no encontrada
         </h2>
         <p className="text-gray-600 mb-6">
-          No se encontró la materia seleccionada en tu lista de materias
+          No se encontró la unidad de aprendizaje seleccionada en tu lista de unidades de aprendizaje
           asignadas.
         </p>
         <Link
@@ -87,7 +87,7 @@ export default function SelectResourceTypeView() {
           className="inline-flex items-center gap-2 px-6 py-3 bg-[#7C2855] text-white font-medium rounded-lg hover:bg-[#5a1d3f] transition-colors"
         >
           <ArrowLeftIcon className="w-5 h-5" />
-          Volver a seleccionar materia
+          Volver a seleccionar unidad de aprendizaje
         </Link>
       </div>
     )
@@ -105,7 +105,7 @@ export default function SelectResourceTypeView() {
               Seleccionar Tipo de Recurso
             </h1>
             <p className="text-gray-600 mt-1">
-              Elige el tipo de recurso didáctico digital para la materia
+              Elige el tipo de recurso didáctico digital para la unidad de aprendizaje
               seleccionada
             </p>
           </div>
@@ -177,7 +177,7 @@ export default function SelectResourceTypeView() {
           className="inline-flex items-center gap-2 px-5 py-2.5 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors"
         >
           <ArrowLeftIcon className="w-5 h-5" />
-          Cambiar materia
+          Cambiar unidad de aprendizaje
         </Link>
 
         <div className="flex items-center gap-3">

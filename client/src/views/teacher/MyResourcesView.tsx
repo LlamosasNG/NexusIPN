@@ -54,7 +54,7 @@ export default function MyResourcesView() {
   const { mutate: removeResource, isPending: isDeleting } = useMutation({
     mutationFn: deleteDigitalResource,
     onSuccess: (message) => {
-      toast.success(message || 'Recurso digital eliminado correctamente')
+      toast.success(message || 'Recurso didáctico digital eliminado correctamente')
       setResourceToDelete(null)
       setPassword('')
       queryClient.invalidateQueries({ queryKey: ['digital-resources'] })
@@ -81,7 +81,7 @@ export default function MyResourcesView() {
     if (!resourceToDelete) return
 
     if (!password.trim()) {
-      toast.error('Debes ingresar tu contraseña para eliminar el recurso digital')
+      toast.error('Debes ingresar tu contraseña para eliminar el recurso didáctico digital')
       return
     }
 
@@ -108,7 +108,7 @@ export default function MyResourcesView() {
             <div className="text-white">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 text-sm font-semibold mb-4">
                 <FolderIcon className="w-4 h-4" />
-                Recursos Didácticos Digitales
+                Recursos didácticos digitales
               </div>
               <h1 className="text-3xl sm:text-4xl font-bold">
                 Mis Recursos
@@ -171,7 +171,7 @@ export default function MyResourcesView() {
                 <div className="space-y-2 text-sm text-gray-600">
                   <p className="inline-flex items-center gap-2">
                     <BookOpenIcon className="w-4 h-4 text-[#7C2855]" />
-                    {resource.subject?.name || 'Materia no disponible'}
+                    {resource.subject?.name || 'Unidad de aprendizaje no disponible'}
                   </p>
                   <p className="inline-flex items-center gap-2">
                     <CalendarDaysIcon className="w-4 h-4 text-[#7C2855]" />
@@ -217,7 +217,7 @@ export default function MyResourcesView() {
             Aún no has creado recursos didácticos
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto mb-6">
-            Comienza creando tu primer libro digital para una de tus materias asignadas.
+            Comienza creando tu primer libro digital para una de tus unidades de aprendizaje asignadas.
           </p>
           <Link
             to="/select-subject?type=resources"
@@ -241,7 +241,7 @@ export default function MyResourcesView() {
               Confirmar eliminación
             </DialogTitle>
             <DialogDescription className="mt-2 text-sm text-gray-600">
-              Esta acción eliminará el recurso digital{' '}
+              Esta acción eliminará el recurso didáctico digital{' '}
               <strong>
                 {resourceToDelete
                   ? getDigitalResourceTitle(resourceToDelete)

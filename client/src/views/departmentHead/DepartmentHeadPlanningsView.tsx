@@ -224,10 +224,10 @@ export default function DepartmentHeadPlanningsView() {
             Gestión Académica
           </span>
           <h1 className="mt-4 text-4xl font-bold text-gray-900">
-            Gestión de planeaciones
+            Gestión de planificaciones
           </h1>
           <p className="mt-3 max-w-3xl text-lg text-gray-600">
-            Consulta, filtra y revisa las planeaciones didácticas registradas en tu academia.
+            Consulta, filtra y revisa las planificaciones didácticas registradas en tu academia.
           </p>
         </div>
       </div>
@@ -327,7 +327,7 @@ export default function DepartmentHeadPlanningsView() {
               <Input
                 value={searchDraft}
                 onChange={(event) => setSearchDraft(event.target.value)}
-                placeholder="Docente, materia, código, periodo..."
+                placeholder="Docente, unidad de aprendizaje, código, periodo..."
                 className="h-11 rounded-xl pl-10"
               />
             </div>
@@ -522,7 +522,7 @@ export default function DepartmentHeadPlanningsView() {
             </div>
             <div>
               <h2 className="text-xl font-bold text-gray-900">
-                Tabla de planeaciones
+                Tabla de planificaciones
               </h2>
               <p className="text-sm text-gray-600">
                 {meta?.total || 0} registros encontrados.
@@ -538,13 +538,13 @@ export default function DepartmentHeadPlanningsView() {
         {isError ? (
           <div className="px-6 py-10 text-center">
             <p className="text-lg font-semibold text-gray-900">
-              No fue posible cargar la gestión de planeaciones
+              No fue posible cargar la gestión de planificaciones
             </p>
             <p className="mt-2 text-sm text-gray-600">{error.message}</p>
           </div>
         ) : plannings.length === 0 ? (
           <div className="px-6 py-14 text-center text-gray-500">
-            No se encontraron planeaciones con los filtros seleccionados.
+            No se encontraron planificaciones con los filtros seleccionados.
           </div>
         ) : (
           <>
@@ -580,7 +580,7 @@ export default function DepartmentHeadPlanningsView() {
                       </th>
                     ))}
                     <th className="px-6 py-4 text-left text-xs font-bold tracking-wider text-gray-600 uppercase">
-                      Planeación
+                      Planificación
                     </th>
                   </tr>
                 </thead>
@@ -638,15 +638,15 @@ export default function DepartmentHeadPlanningsView() {
                             disabled={!canViewPlanning}
                             title={
                               canViewPlanning
-                                ? 'Ver planeación enviada'
-                                : 'Disponible sólo para planeaciones enviadas'
+                                ? 'Ver planificación enviada'
+                                : 'Disponible solo para planificaciones enviadas'
                             }
                             onClick={() =>
                               navigate(`/department-head/plannings/${planning.id}`)
                             }
                           >
                             <EyeIcon className="h-4 w-4" />
-                            Ver planeación
+                            Ver planificación
                           </Button>
                         </td>
                       </tr>
@@ -663,7 +663,7 @@ export default function DepartmentHeadPlanningsView() {
                   (meta?.pageSize || 0) * (meta?.page || 1),
                   meta?.total || 0
                 )}{' '}
-                de {meta?.total || 0} planeaciones
+                de {meta?.total || 0} planificaciones
               </p>
 
               <div className="flex items-center gap-2">

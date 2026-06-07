@@ -1,6 +1,5 @@
 import AuthLayout from '@/layouts/AuthLayout'
 import LoginView from '@/views/auth/LoginView'
-import RegisterView from '@/views/auth/RegisterView'
 import ProfileTeacherView from '@/views/teacher/ProfileTeacherView'
 import MyPlanningsView from '@/views/teacher/MyPlanningsView'
 import MyResourcesView from '@/views/teacher/MyResourcesView'
@@ -26,6 +25,8 @@ import DigitalResourceReaderView from './views/resources/DigitalResourceReaderVi
 import SelectResourceTypeView from './views/resources/SelectResourceTypeView'
 import RegisterCodeView from './views/students/RegisterCodeView'
 import SelectSubjectView from './views/subjects/SelectSubjectView'
+import AdminDashboardView from './views/admin/AdminDashboardView'
+import UserManagementView from './views/userManagement/UserManagementView'
 
 const APP_TITLE_SUFFIX = 'ENHM'
 
@@ -38,7 +39,6 @@ const resourceTypeTitle: Record<string, string> = {
 const staticRouteTitles: Record<string, string> = {
   '/': 'Inicio',
   '/auth/login': 'Ingresa al sitio',
-  '/auth/register': 'Crear cuenta',
   '/auth/confirm-account': 'Confirmar cuenta',
   '/auth/request-new-code': 'Solicitar nuevo código',
   '/auth/forgot-password': 'Recuperar contraseña',
@@ -48,8 +48,11 @@ const staticRouteTitles: Record<string, string> = {
   '/register-code': 'Registro de código',
   '/my-home': 'Panel principal',
   '/department-head/dashboard': 'Panel de Jefatura',
-  '/department-head/plannings': 'Planeaciones docentes',
-  '/my-plannings': 'Mis planeaciones',
+  '/department-head/plannings': 'Planificaciones docentes',
+  '/department-head/teachers': 'Gestión de docentes',
+  '/admin/dashboard': 'Panel de administración',
+  '/admin/department-heads': 'Gestión de Jefes de Departamento',
+  '/my-plannings': 'Mis planificaciones',
   '/my-resources': 'Mis recursos didácticos',
   '/my-profile': 'Mi perfil',
   '/change-initial-password': 'Restablecer contraseña inicial',
@@ -62,20 +65,20 @@ function getRouteTitle(pathname: string, search: string) {
   if (pathname === '/select-subject') {
     const type = new URLSearchParams(search).get('type')
     return type === 'resources'
-      ? 'Seleccionar materia para RDD'
-      : 'Seleccionar materia para planeación'
+      ? 'Seleccionar unidad de aprendizaje para RDD'
+      : 'Seleccionar unidad de aprendizaje para planificación'
   }
 
   if (matchPath('/department-head/plannings/:planningId', pathname)) {
-    return 'Revisión de planeación'
+    return 'Revisión de planificación'
   }
 
   if (matchPath('/plannings/create/:subjectId', pathname)) {
-    return 'Crear planeación didáctica'
+    return 'Crear planificación didáctica'
   }
 
   if (matchPath('/plannings/:planningId', pathname)) {
-    return 'Planeación didáctica'
+    return 'Planificación didáctica'
   }
 
   if (matchPath('/resources/create/:subjectId', pathname)) {
@@ -89,7 +92,7 @@ function getRouteTitle(pathname: string, search: string) {
   if (createResourceMatch?.params.resourceType) {
     const typeLabel =
       resourceTypeTitle[createResourceMatch.params.resourceType] ??
-      'Recurso Didáctico Digital'
+      'Recurso didáctico digital'
     return `Crear ${typeLabel}`
   }
 
@@ -100,12 +103,12 @@ function getRouteTitle(pathname: string, search: string) {
   if (viewResourceMatch?.params.resourceType) {
     const typeLabel =
       resourceTypeTitle[viewResourceMatch.params.resourceType] ??
-      'Recurso Didáctico Digital'
+      'Recurso didáctico digital'
     return `Ver ${typeLabel}`
   }
 
   if (matchPath('/r/:publicSlug', pathname)) {
-    return 'Recurso Didáctico Digital'
+    return 'Recurso didáctico digital'
   }
 
   return 'Nexus IPN'
@@ -128,7 +131,6 @@ export default function Router() {
       <Routes>
         <Route element={<AuthLayout />}>
           <Route path="/auth/login" element={<LoginView />} />
-          <Route path="/auth/register" element={<RegisterView />} />
           <Route
             path="/auth/confirm-account"
             element={<ConfirmAccountView />}
@@ -170,6 +172,15 @@ export default function Router() {
           <Route
             path="/department-head/plannings/:planningId"
             element={<DepartmentHeadPlanningViewerView />}
+          />
+          <Route
+            path="/department-head/teachers"
+            element={<UserManagementView mode="department-head" />}
+          />
+          <Route path="/admin/dashboard" element={<AdminDashboardView />} />
+          <Route
+            path="/admin/department-heads"
+            element={<UserManagementView mode="admin" />}
           />
           <Route path="/my-plannings" element={<MyPlanningsView />} />
           <Route path="/my-resources" element={<MyResourcesView />} />

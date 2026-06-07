@@ -29,7 +29,7 @@ export function PlanningFormHeader() {
           </div>
         </div>
 
-        {/* Lado Derecho: Planeación Didáctica */}
+        {/* Lado Derecho: Planificación didáctica */}
         <div className="flex flex-col gap-1 min-w-0 flex-1">
           {/* Tu diseño actual - alineado a la derecha */}
           <div className="flex items-center gap-1 self-end">
@@ -42,7 +42,7 @@ export function PlanningFormHeader() {
 
           {/* Nuevos elementos - ancho completo */}
           <div className="bg-[#7C2855] h-7 text-white font-bold text-lg px-2">
-            PLANEACIÓN DIDÁCTICA
+            PLANIFICACIÓN DIDÁCTICA
           </div>
           <div className="flex items-center gap-1">
             <div className="flex flex-col gap-y-1">

@@ -11,9 +11,7 @@ jest.mock('@/models/User', () => ({
 
 jest.mock('@/models/Academy', () => ({
   __esModule: true,
-  default: {
-    findByPk: jest.fn(),
-  },
+  default: {},
 }))
 
 jest.mock('@/models/Subject', () => ({
@@ -43,14 +41,12 @@ jest.mock('@/emails/AuthEmail', () => ({
 
 import { AuthController } from '@/controllers/AuthController'
 import User from '@/models/User'
-import Academy from '@/models/Academy'
 import { hashPassword, checkPassword } from '@/utils/auth'
 import { generateJWT } from '@/utils/jwt'
 import { generateToken } from '@/utils/token'
 import { AuthEmail } from '@/emails/AuthEmail'
 
 const mockUser = User as jest.Mocked<typeof User>
-const mockAcademy = Academy as jest.Mocked<typeof Academy>
 const mockCheckPassword = checkPassword as jest.Mock
 
 describe('AuthController', () => {
@@ -67,58 +63,6 @@ describe('AuthController', () => {
       status: jest.fn().mockReturnThis(),
       json: jest.fn().mockReturnThis(),
     }
-  })
-
-  // ─── createAccount ───────────────────────────────────────────
-
-  describe('createAccount', () => {
-    it('debe retornar 409 si el usuario ya existe', async () => {
-      req.body = { email: 'usuario.demo@example.edu.mx', password: '123456' }
-      mockUser.findOne.mockResolvedValue({ id: 1 } as any)
-
-      await AuthController.createAccount(req as Request, res as Response)
-
-      expect(res.status).toHaveBeenCalledWith(409)
-      expect(res.json).toHaveBeenCalledWith({
-        error: 'Un usuario con este correo ya existe',
-      })
-    })
-
-    it('debe retornar 404 si la academyId no existe', async () => {
-      req.body = { email: 'usuario.demo@example.edu.mx', password: '123456', academyId: 999 }
-      mockUser.findOne.mockResolvedValue(null)
-      mockAcademy.findByPk.mockResolvedValue(null)
-
-      await AuthController.createAccount(req as Request, res as Response)
-
-      expect(res.status).toHaveBeenCalledWith(404)
-      expect(res.json).toHaveBeenCalledWith({
-        error: 'La academia seleccionada no existe',
-      })
-    })
-
-    it('debe crear la cuenta exitosamente y enviar correo', async () => {
-      req.body = { email: 'usuario.demo@example.edu.mx', password: '123456', name: 'Test' }
-      mockUser.findOne.mockResolvedValue(null)
-      const fakeUser = {
-        id: 1,
-        name: 'Test',
-        email: 'usuario.demo@example.edu.mx',
-        token: null,
-        password: null,
-        save: jest.fn().mockResolvedValue(undefined),
-      }
-      mockUser.create.mockResolvedValue(fakeUser as any)
-
-      await AuthController.createAccount(req as Request, res as Response)
-
-      expect(mockUser.create).toHaveBeenCalledWith(req.body)
-      expect(fakeUser.save).toHaveBeenCalled()
-      expect(AuthEmail.sendConfirmationEmail).toHaveBeenCalled()
-      expect(res.json).toHaveBeenCalledWith(
-        'Cuenta creada exitosamente, verifique su correo para confirmarla'
-      )
-    })
   })
 
   // ─── confirmAccount ──────────────────────────────────────────
@@ -163,6 +107,23 @@ describe('AuthController', () => {
 
       expect(res.status).toHaveBeenCalledWith(404)
       expect(res.json).toHaveBeenCalledWith({ error: 'Usuario no encontrado' })
+    })
+
+    it('debe retornar 403 si la cuenta está inactiva', async () => {
+      req.body = { email: 'usuario.demo@example.edu.mx', password: '123456' }
+      mockUser.findOne.mockResolvedValue({
+        id: 1,
+        isActive: false,
+        confirmed: true,
+      } as any)
+
+      await AuthController.login(req as Request, res as Response)
+
+      expect(res.status).toHaveBeenCalledWith(403)
+      expect(res.json).toHaveBeenCalledWith({
+        error: 'La cuenta está desactivada',
+      })
+      expect(mockCheckPassword).not.toHaveBeenCalled()
     })
 
     it('debe retornar 401 si la cuenta no está confirmada y reenviar correo', async () => {

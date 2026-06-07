@@ -50,18 +50,6 @@ export const loginLimiter = rateLimit({
   skipSuccessfulRequests: false,
 })
 
-export const createAccountLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  limit: 3,
-  standardHeaders,
-  legacyHeaders,
-  keyGenerator,
-  message: {
-    error: 'Has creado demasiadas cuentas. Intenta más tarde.',
-  },
-  skipSuccessfulRequests: true,
-})
-
 export const forgotPasswordLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   limit: 3,

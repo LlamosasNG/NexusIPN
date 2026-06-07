@@ -60,11 +60,11 @@ describe('SubjectController', () => {
   // ─── getByAcademy ────────────────────────────────────────────
 
   describe('getByAcademy', () => {
-    it('debe retornar las materias de una academia', async () => {
+    it('debe retornar las unidades de aprendizaje de una academia', async () => {
       req.params = { academyId: '1' }
       const fakeSubjects = [
-        { id: 1, name: 'Materia 1' },
-        { id: 2, name: 'Materia 2' },
+        { id: 1, name: 'Unidad de aprendizaje 1' },
+        { id: 2, name: 'Unidad de aprendizaje 2' },
       ]
       mockSubject.findAll.mockResolvedValue(fakeSubjects as any)
 
@@ -84,7 +84,7 @@ describe('SubjectController', () => {
 
       expect(res.status).toHaveBeenCalledWith(500)
       expect(res.json).toHaveBeenCalledWith({
-        error: 'Error al obtener las materias',
+        error: 'Error al obtener las unidades de aprendizaje',
       })
     })
   })
@@ -92,18 +92,18 @@ describe('SubjectController', () => {
   // ─── assign ──────────────────────────────────────────────────
 
   describe('assign', () => {
-    it('debe retornar 400 si se intentan asignar más de 5 materias', async () => {
+    it('debe retornar 400 si se intentan asignar más de 5 unidades de aprendizaje', async () => {
       req.body = { subjectIds: [1, 2, 3, 4, 5, 6], period: '2026-1' }
 
       await SubjectController.assign(req as Request, res as Response)
 
       expect(res.status).toHaveBeenCalledWith(400)
       expect(res.json).toHaveBeenCalledWith({
-        error: 'No puedes asignar más de 5 materias',
+        error: 'No puedes asignar más de 5 unidades de aprendizaje',
       })
     })
 
-    it('debe retornar 404 si alguna materia no existe', async () => {
+    it('debe retornar 404 si alguna unidad de aprendizaje no existe', async () => {
       req.body = { subjectIds: [1, 2, 999], period: '2026-1' }
       mockSubject.findAll.mockResolvedValue([{ id: 1 }, { id: 2 }] as any)
 
@@ -111,11 +111,11 @@ describe('SubjectController', () => {
 
       expect(res.status).toHaveBeenCalledWith(404)
       expect(res.json).toHaveBeenCalledWith({
-        error: 'Una o más materias no existen',
+        error: 'Una o más unidades de aprendizaje no existen',
       })
     })
 
-    it('debe asignar materias exitosamente', async () => {
+    it('debe asignar unidades de aprendizaje exitosamente', async () => {
       req.body = { subjectIds: [1, 2], period: '2026-1' }
       mockSubject.findAll.mockResolvedValue([{ id: 1 }, { id: 2 }] as any)
       mockUserSubject.destroy.mockResolvedValue(0 as any)
@@ -131,7 +131,7 @@ describe('SubjectController', () => {
         { userId: 1, subjectId: 2, period: '2026-1', active: true },
       ])
       expect(res.json).toHaveBeenCalledWith({
-        message: 'Materias asignadas exitosamente',
+        message: 'Unidades de aprendizaje asignadas exitosamente',
       })
     })
   })
@@ -139,7 +139,7 @@ describe('SubjectController', () => {
   // ─── remove ──────────────────────────────────────────────────
 
   describe('remove', () => {
-    it('debe retornar 404 si la materia no está asignada', async () => {
+    it('debe retornar 404 si la unidad de aprendizaje no está asignada', async () => {
       req.params = { subjectId: '5' }
       mockUserSubject.destroy.mockResolvedValue(0 as any)
 
@@ -147,18 +147,18 @@ describe('SubjectController', () => {
 
       expect(res.status).toHaveBeenCalledWith(404)
       expect(res.json).toHaveBeenCalledWith({
-        error: 'No tienes asignada esta materia',
+        error: 'No tienes asignada esta unidad de aprendizaje',
       })
     })
 
-    it('debe remover la materia exitosamente', async () => {
+    it('debe eliminar la unidad de aprendizaje exitosamente', async () => {
       req.params = { subjectId: '5' }
       mockUserSubject.destroy.mockResolvedValue(1 as any)
 
       await SubjectController.remove(req as Request, res as Response)
 
       expect(res.json).toHaveBeenCalledWith({
-        message: 'Materia removida exitosamente',
+        message: 'Unidad de aprendizaje eliminada exitosamente',
       })
     })
   })
@@ -166,8 +166,8 @@ describe('SubjectController', () => {
   // ─── getByUser ───────────────────────────────────────────────
 
   describe('getByUser', () => {
-    it('debe retornar las materias del usuario', async () => {
-      const fakeSubjects = [{ id: 1, name: 'Materia 1' }]
+    it('debe retornar las unidades de aprendizaje del usuario', async () => {
+      const fakeSubjects = [{ id: 1, name: 'Unidad de aprendizaje 1' }]
       mockUser.findByPk.mockResolvedValue({
         subjects: fakeSubjects,
       } as any)
@@ -178,7 +178,7 @@ describe('SubjectController', () => {
       expect(res.json).toHaveBeenCalledWith(fakeSubjects)
     })
 
-    it('debe retornar array vacío si el usuario no tiene materias', async () => {
+    it('debe retornar array vacío si el usuario no tiene unidades de aprendizaje', async () => {
       mockUser.findByPk.mockResolvedValue(null)
 
       await SubjectController.getByUser(req as Request, res as Response)
@@ -198,8 +198,8 @@ describe('SubjectController', () => {
   // ─── subject ─────────────────────────────────────────────────
 
   describe('subject', () => {
-    it('debe retornar la materia del request', async () => {
-      const fakeSubject = { id: 5, name: 'Materia X' }
+    it('debe retornar la unidad de aprendizaje del request', async () => {
+      const fakeSubject = { id: 5, name: 'Unidad de aprendizaje X' }
       req.subject = fakeSubject as any
 
       await SubjectController.subject(req as Request, res as Response)

@@ -263,10 +263,10 @@ router.get('/', readLimiter, DigitalDidacticResourceController.getAllByUser)
 router.put(
   '/:subjectId/:resourceType/publish',
   planningWriteLimiter,
-  param('subjectId').isInt().withMessage('El ID de la materia debe ser un número válido'),
+  param('subjectId').isInt().withMessage('El ID de la unidad de aprendizaje debe ser un número válido'),
   param('resourceType')
     .isIn(supportedResourceTypes)
-    .withMessage('El tipo de recurso digital no es compatible'),
+    .withMessage('El tipo de recurso didáctico digital no es compatible'),
   handleInputErrors,
   DigitalDidacticResourceController.publish
 )
@@ -274,10 +274,10 @@ router.put(
 router.put(
   '/:subjectId/:resourceType/unpublish',
   planningWriteLimiter,
-  param('subjectId').isInt().withMessage('El ID de la materia debe ser un número válido'),
+  param('subjectId').isInt().withMessage('El ID de la unidad de aprendizaje debe ser un número válido'),
   param('resourceType')
     .isIn(supportedResourceTypes)
-    .withMessage('El tipo de recurso digital no es compatible'),
+    .withMessage('El tipo de recurso didáctico digital no es compatible'),
   handleInputErrors,
   DigitalDidacticResourceController.unpublish
 )
@@ -285,10 +285,10 @@ router.put(
 router.post(
   '/:subjectId/:resourceType',
   planningWriteLimiter,
-  param('subjectId').isInt().withMessage('El ID de la materia debe ser un número válido'),
+  param('subjectId').isInt().withMessage('El ID de la unidad de aprendizaje debe ser un número válido'),
   param('resourceType')
     .isIn(supportedResourceTypes)
-    .withMessage('El tipo de recurso digital no es compatible'),
+    .withMessage('El tipo de recurso didáctico digital no es compatible'),
   body().custom((value, { req }) =>
     validateDigitalBookPayload(value, req.params.resourceType)
   ),
@@ -299,10 +299,10 @@ router.post(
 router.put(
   '/:subjectId/:resourceType',
   planningWriteLimiter,
-  param('subjectId').isInt().withMessage('El ID de la materia debe ser un número válido'),
+  param('subjectId').isInt().withMessage('El ID de la unidad de aprendizaje debe ser un número válido'),
   param('resourceType')
     .isIn(supportedResourceTypes)
-    .withMessage('El tipo de recurso digital no es compatible'),
+    .withMessage('El tipo de recurso didáctico digital no es compatible'),
   body().custom((value, { req }) =>
     validateDigitalBookPayload(value, req.params.resourceType)
   ),
@@ -313,10 +313,10 @@ router.put(
 router.get(
   '/:subjectId/:resourceType',
   readLimiter,
-  param('subjectId').isInt().withMessage('El ID de la materia debe ser un número válido'),
+  param('subjectId').isInt().withMessage('El ID de la unidad de aprendizaje debe ser un número válido'),
   param('resourceType')
     .isIn(supportedResourceTypes)
-    .withMessage('El tipo de recurso digital no es compatible'),
+    .withMessage('El tipo de recurso didáctico digital no es compatible'),
   handleInputErrors,
   DigitalDidacticResourceController.get
 )
@@ -324,10 +324,10 @@ router.get(
 router.delete(
   '/:subjectId/:resourceType',
   planningWriteLimiter,
-  param('subjectId').isInt().withMessage('El ID de la materia debe ser un número válido'),
+  param('subjectId').isInt().withMessage('El ID de la unidad de aprendizaje debe ser un número válido'),
   param('resourceType')
     .isIn(supportedResourceTypes)
-    .withMessage('El tipo de recurso digital no es compatible'),
+    .withMessage('El tipo de recurso didáctico digital no es compatible'),
   body('password')
     .isString()
     .notEmpty()

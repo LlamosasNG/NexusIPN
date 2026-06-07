@@ -57,10 +57,10 @@ export default function ConfirmPlanningView() {
       <div className="max-w-2xl mx-auto text-center py-16">
         <AcademicCapIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          Materia no encontrada
+          Unidad de aprendizaje no encontrada
         </h2>
         <p className="text-gray-600 mb-6">
-          No se encontró la materia seleccionada en tu lista de materias
+          No se encontró la unidad de aprendizaje seleccionada en tu lista de unidades de aprendizaje
           asignadas.
         </p>
         <Link
@@ -68,7 +68,7 @@ export default function ConfirmPlanningView() {
           className="inline-flex items-center gap-2 px-6 py-3 bg-[#7C2855] text-white font-medium rounded-lg hover:bg-[#5a1d3f] transition-colors"
         >
           <ArrowLeftIcon className="w-5 h-5" />
-          Volver a seleccionar materia
+          Volver a seleccionar unidad de aprendizaje
         </Link>
       </div>
     )
@@ -91,7 +91,7 @@ export default function ConfirmPlanningView() {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
-              Confirmar Creación de Planificación
+              Confirmar creación de planificación
             </h1>
             <p className="text-gray-600 mt-1">
               Revisa los datos antes de crear la planificación didáctica
@@ -110,11 +110,11 @@ export default function ConfirmPlanningView() {
 
         {/* Información de la planificación */}
         <div className="p-8 space-y-6">
-          {/* Materia */}
+          {/* Unidad de aprendizaje */}
           <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
             <AcademicCapIcon className="w-6 h-6 text-[#7C2855] mt-0.5 shrink-0" />
             <div>
-              <p className="text-sm font-medium text-gray-500">Materia</p>
+              <p className="text-sm font-medium text-gray-500">Unidad de aprendizaje</p>
               <p className="text-lg font-semibold text-gray-900">
                 {subject.name}
               </p>
@@ -188,7 +188,7 @@ export default function ConfirmPlanningView() {
             disabled={isPending}
             className="px-8 py-3 bg-[#7C2855] text-white font-semibold rounded-lg hover:bg-[#5a1d3f] transition-all duration-300 hover:shadow-lg disabled:opacity-50"
           >
-            {isPending ? 'Creando planificación...' : 'Crear Planificación'}
+            {isPending ? 'Creando planificación...' : 'Crear planificación'}
           </Button>
         </div>
       </div>

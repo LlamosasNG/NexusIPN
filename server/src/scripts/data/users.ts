@@ -1,7 +1,6 @@
 export type SeedUserRole =
   | 'Docente'
   | 'Jefe de Departamento'
-  | 'Academia'
   | 'Administrador'
 
 export type SeedUser = {
@@ -12,6 +11,7 @@ export type SeedUser = {
   role: SeedUserRole
   confirmed: boolean
   mustChangePassword?: boolean
+  isActive?: boolean
   subjectCodes?: string[]
 }
 

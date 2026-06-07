@@ -70,7 +70,7 @@ export function PlanningNavigation({
             className="flex items-center gap-2 rounded-2xl bg-[#D4AF37] px-5 py-6 font-semibold text-[#7C2855] shadow-lg transition-all duration-300 hover:bg-[#e8c96f]"
           >
             <Save className="h-5 w-5" />
-            {isReadOnly ? 'Sólo lectura' : 'Guardar sección'}
+            {isReadOnly ? 'Solo lectura' : 'Guardar sección'}
           </Button>
 
           <Button

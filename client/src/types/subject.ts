@@ -51,7 +51,7 @@ export const SubjectSchema = z.object({
 })
 export type Subject = z.infer<typeof SubjectSchema>
 
-/** Subject Card (vista de selección de materia) */
+/** Subject Card (vista de selección de unidad de aprendizaje) */
 export const SubjectCardSchema = z.object({
   id: z.number(),
   name: z.string(),

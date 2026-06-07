@@ -1,6 +1,7 @@
 import { useAuth } from '@/hooks/useAuth'
 import DepartmentHeadDashboardView from './departmentHead/DepartmentHeadDashboardView'
 import HomeTeacherView from './teacher/HomeTeacherView'
+import AdminDashboardView from './admin/AdminDashboardView'
 
 export default function RoleHomeView() {
   const { data } = useAuth()
@@ -9,6 +10,10 @@ export default function RoleHomeView() {
 
   if (data.role === 'Jefe de Departamento') {
     return <DepartmentHeadDashboardView />
+  }
+
+  if (data.role === 'Administrador') {
+    return <AdminDashboardView />
   }
 
   return <HomeTeacherView />

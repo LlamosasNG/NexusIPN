@@ -7,6 +7,7 @@
       "academyId": 1,
       "role": "Docente",
       "confirmed": true,
+      "isActive": true,
       "subjectCodes": ["M-101", "M-102"]
     },
     {
@@ -16,6 +17,7 @@
       "academyId": 1,
       "role": "Jefe de Departamento",
       "confirmed": true,
+      "isActive": true,
       "subjectCodes": []
     }
   ]
