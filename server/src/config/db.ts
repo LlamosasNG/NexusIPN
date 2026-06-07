@@ -18,7 +18,6 @@ const databaseUrl =
 export const db = new Sequelize(databaseUrl, {
   models: [__dirname + '/../models/**/*'],
   logging: false,
-  /*
   dialectOptions: useSsl
     ? {
         ssl: {
@@ -27,5 +26,4 @@ export const db = new Sequelize(databaseUrl, {
         },
       }
     : undefined,
-  */
 })
