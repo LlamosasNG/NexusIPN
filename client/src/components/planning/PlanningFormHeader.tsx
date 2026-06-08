@@ -1,3 +1,5 @@
+import { planningManual } from '@/config/materialManuals'
+import { MaterialManualLink } from '../MaterialManualLink'
 import { LogoIPN } from '../LogoIPN'
 
 export function PlanningFormHeader() {
@@ -52,6 +54,11 @@ export function PlanningFormHeader() {
           </div>
         </div>
       </div>
+      <MaterialManualLink
+        manual={planningManual}
+        compact
+        className="mb-8 ml-auto w-full md:w-96"
+      />
     </>
   )
 }

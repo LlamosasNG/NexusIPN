@@ -1,6 +1,9 @@
 import { getUserSubjects } from '@/api/SubjectAPI'
 import { LoadingApp } from '@/components/LoadingApp'
+import { MaterialManualLink } from '@/components/MaterialManualLink'
 import { Button } from '@/components/ui/button'
+import { digitalResourceManuals } from '@/config/materialManuals'
+import type { DigitalResourceType } from '@/types'
 import {
   AcademicCapIcon,
   ArrowLeftIcon,
@@ -13,10 +16,8 @@ import { CheckCircle2Icon } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router'
 
-type ResourceType = 'digital-book' | 'interactive-digital-book' | 'learning-object'
-
 const resourceOptions: {
-  id: ResourceType
+  id: DigitalResourceType
   title: string
   description: string
   icon: typeof BookOpenIcon
@@ -46,7 +47,9 @@ const resourceOptions: {
 
 export default function SelectResourceTypeView() {
   const { subjectId } = useParams()
-  const [selectedType, setSelectedType] = useState<ResourceType | null>(null)
+  const [selectedType, setSelectedType] = useState<DigitalResourceType | null>(
+    null
+  )
 
   const { data: subjects, isLoading } = useQuery({
     queryKey: ['user-subjects'],
@@ -127,37 +130,47 @@ export default function SelectResourceTypeView() {
               const Icon = option.icon
 
               return (
-                <button
+                <div
                   key={option.id}
-                  type="button"
-                  onClick={() => setSelectedType(option.id)}
-                  className={`text-left rounded-2xl border-2 p-6 transition-all duration-300 cursor-pointer ${
+                  className={`flex flex-col rounded-2xl border-2 p-3 transition-all duration-300 ${
                     isSelected
                       ? 'border-[#7C2855] bg-[#7C2855]/5 shadow-lg'
                       : 'border-gray-200 bg-white hover:border-[#D4AF37] hover:shadow-md'
                   }`}
                 >
-                  <div className="flex items-start justify-between gap-3 mb-4">
-                    <div
-                      className={`inline-flex items-center justify-center w-12 h-12 rounded-xl ${
-                        isSelected
-                          ? 'bg-[#7C2855] text-white'
-                          : 'bg-[#D4AF37]/20 text-[#7C2855]'
-                      }`}
-                    >
-                      <Icon className="w-7 h-7" />
+                  <button
+                    type="button"
+                    onClick={() => setSelectedType(option.id)}
+                    aria-pressed={isSelected}
+                    className="flex flex-1 cursor-pointer flex-col rounded-xl p-3 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7C2855]"
+                  >
+                    <div className="flex items-start justify-between gap-3 mb-4">
+                      <div
+                        className={`inline-flex items-center justify-center w-12 h-12 rounded-xl ${
+                          isSelected
+                            ? 'bg-[#7C2855] text-white'
+                            : 'bg-[#D4AF37]/20 text-[#7C2855]'
+                        }`}
+                      >
+                        <Icon className="w-7 h-7" />
+                      </div>
+                      {isSelected && (
+                        <CheckCircle2Icon className="w-6 h-6 text-[#7C2855]" />
+                      )}
                     </div>
-                    {isSelected && (
-                      <CheckCircle2Icon className="w-6 h-6 text-[#7C2855]" />
-                    )}
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    {option.title}
-                  </h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    {option.description}
-                  </p>
-                </button>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      {option.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      {option.description}
+                    </p>
+                  </button>
+                  <MaterialManualLink
+                    manual={digitalResourceManuals[option.id]}
+                    compact
+                    className="mt-3 min-h-20 w-full"
+                  />
+                </div>
               )
             })}
           </div>

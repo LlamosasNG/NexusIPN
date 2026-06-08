@@ -1,7 +1,9 @@
 import { createPlanning } from '@/api/PlanningAPI'
 import { getUserSubjects } from '@/api/SubjectAPI'
 import { LoadingApp } from '@/components/LoadingApp'
+import { MaterialManualLink } from '@/components/MaterialManualLink'
 import { Button } from '@/components/ui/button'
+import { planningManual } from '@/config/materialManuals'
 import { useAuth } from '@/hooks/useAuth'
 import {
   AcademicCapIcon,
@@ -85,18 +87,25 @@ export default function ConfirmPlanningView() {
     <div className="max-w-3xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-4 mb-2">
-          <div className="p-3 rounded-xl bg-[#7C2855]">
-            <DocumentTextIcon className="w-8 h-8 text-white" />
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-xl bg-[#7C2855]">
+              <DocumentTextIcon className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">
+                Confirmar creación de planificación
+              </h1>
+              <p className="text-gray-600 mt-1">
+                Revisa los datos antes de crear la planificación didáctica
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              Confirmar creación de planificación
-            </h1>
-            <p className="text-gray-600 mt-1">
-              Revisa los datos antes de crear la planificación didáctica
-            </p>
-          </div>
+          <MaterialManualLink
+            manual={planningManual}
+            compact
+            className="w-full lg:w-96"
+          />
         </div>
       </div>
 

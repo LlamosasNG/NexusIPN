@@ -67,7 +67,7 @@ export default function ChangeInitialPasswordView() {
         </CardHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
-          <CardContent className="space-y-5">
+          <CardContent className="space-y-5 mb-2">
             <div className="space-y-2">
               <Label htmlFor="currentPassword">Contraseña actual</Label>
               <Input
@@ -132,11 +132,7 @@ export default function ChangeInitialPasswordView() {
           </CardContent>
 
           <CardFooter>
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isSubmitting}
-            >
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
               Actualizar contraseña
             </Button>
           </CardFooter>

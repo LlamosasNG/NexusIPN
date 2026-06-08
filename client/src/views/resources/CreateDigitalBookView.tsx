@@ -6,6 +6,7 @@ import {
 } from '@/api/DigitalResourceAPI'
 import { getSubjectById, getUserSubjects } from '@/api/SubjectAPI'
 import { LoadingApp } from '@/components/LoadingApp'
+import { MaterialManualLink } from '@/components/MaterialManualLink'
 import { ContentSection } from '@/components/resources/ContentSection'
 import { CreditsSection } from '@/components/resources/CreditsSection'
 import { EvaluationSection } from '@/components/resources/EvaluationSection'
@@ -15,6 +16,7 @@ import { LearningActivitiesSection } from '@/components/resources/LearningActivi
 import { MethodologySection } from '@/components/resources/MethodologySection'
 import { PedagogicalFrameworkSection } from '@/components/resources/PedagogicalFrameworkSection'
 import { Button } from '@/components/ui/button'
+import { digitalResourceManuals } from '@/config/materialManuals'
 import type { ContentFormValues, CreditsSectionFormValues, DigitalBookPayload, DigitalResourceType, EvaluationFormValues, HelpSectionFormValues, IdentificationFormValues, LearningActivitiesFormValues, MethodologyFormValues, PedagogicalFormValues } from '@/types'
 import {
   AcademicCapIcon,
@@ -742,7 +744,7 @@ export default function CreateDigitalBookView() {
       {/* ══════════════════════════════════════════════════════════
           Section Title
          ══════════════════════════════════════════════════════════ */}
-      <div className="flex items-center gap-4 mb-6">
+      <div className="flex flex-col gap-4 mb-6 lg:flex-row lg:items-center">
         <div className="p-3 rounded-xl bg-[#D4AF37]">
           <activeStep.icon className="w-8 h-8 text-[#7C2855]" />
         </div>
@@ -752,9 +754,16 @@ export default function CreateDigitalBookView() {
             {activeStep.subtitle} ·{' '}
             {selectedResourceType
               ? resourceTypeLabels[selectedResourceType]
-              : 'Tipo no disponible'}
+            : 'Tipo no disponible'}
           </p>
         </div>
+        {selectedResourceType && (
+          <MaterialManualLink
+            manual={digitalResourceManuals[selectedResourceType]}
+            compact
+            className="w-full lg:w-96"
+          />
+        )}
         {isPublished && (
           <Button
             type="button"

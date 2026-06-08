@@ -1,6 +1,8 @@
 // SelectSubjectView.tsx
 import { getUserSubjects } from '@/api/SubjectAPI'
 import { LoadingApp } from '@/components/LoadingApp'
+import { MaterialManualLink } from '@/components/MaterialManualLink'
+import { planningManual } from '@/config/materialManuals'
 import {
   AcademicCapIcon,
   ArrowLeftIcon,
@@ -64,20 +66,29 @@ export default function SelectSubjectView() {
     <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-4 mb-4">
-          <div
-            className={`p-3 rounded-xl ${type === 'plannings' ? 'bg-[#7C2855]' : 'bg-[#D4AF37]'}`}
-          >
-            <currentConfig.icon className="w-8 h-8 text-white" />
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-center gap-4">
+            <div
+              className={`p-3 rounded-xl ${type === 'plannings' ? 'bg-[#7C2855]' : 'bg-[#D4AF37]'}`}
+            >
+              <currentConfig.icon className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
+                {currentConfig.title}
+              </h1>
+              <p className="text-lg text-gray-600 mt-1">
+                {currentConfig.subtitle}
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              {currentConfig.title}
-            </h1>
-            <p className="text-lg text-gray-600 mt-1">
-              {currentConfig.subtitle}
-            </p>
-          </div>
+          {type === 'plannings' && (
+            <MaterialManualLink
+              manual={planningManual}
+              compact
+              className="w-full lg:w-96"
+            />
+          )}
         </div>
       </div>
 
